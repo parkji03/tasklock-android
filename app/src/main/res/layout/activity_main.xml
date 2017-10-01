@@ -6,13 +6,66 @@
     android:layout_height="match_parent"
     tools:context="com.example.jipark.tasklock_app.main.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="15dp"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="46dp"
+            android:text="@string/app_name"/>
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/logo"
+            android:layout_marginBottom="100dp" />
+
+        <Button
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/white"
+            android:background="@color/mainBlue"
+            android:id="@+id/launch_app_manager_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:onClick="launchAppManagerActivity"
+            android:text="@string/launch_app_manager_activity" />
+
+        <Button
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/white"
+            android:background="@color/mainBlue"
+            android:id="@+id/launch_task_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:onClick="launchTaskActivity"
+            android:text="@string/launch_task_activity" />
+
+        <Button
+            android:textColor="@color/white"
+            android:background="@color/mainBlue"
+            android:id="@+id/lock_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:onClick="launchLockActivity"
+            android:text="@string/launch_lock_activty" />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

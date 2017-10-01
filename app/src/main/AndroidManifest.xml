@@ -16,6 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".task.TaskActivity" />
+        <activity android:name=".app_manager.AppManagerActivity" />
+        <activity android:name=".lock.LockActivity"></activity>
     </application>
 
 </manifest>

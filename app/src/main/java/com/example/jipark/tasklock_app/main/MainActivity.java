@@ -1,14 +1,12 @@
 package com.example.jipark.tasklock_app.main;
 
-        import android.content.Intent;
-        import android.support.v7.app.AppCompatActivity;
-        import android.os.Bundle;
-        import android.view.View;
-        import android.widget.EditText;
-
-        import com.example.jipark.tasklock_app.R;
-
-        import static android.provider.AlarmClock.EXTRA_MESSAGE;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import com.example.jipark.tasklock_app.R;
+import com.example.jipark.tasklock_app.app_manager.AppManagerActivity;
+import com.example.jipark.tasklock_app.lock.LockActivity;
+import com.example.jipark.tasklock_app.task.TaskActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,13 +16,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    public void launchTaskActivity() {
+        Intent intent = new Intent(this, TaskActivity.class);
+        startActivity(intent);
+    }
 
-//    /** Called when the user taps the Send button */
-//    public void sendMessage(View view) {
-//        Intent intent = new Intent(this, DisplayMessageActivity.class);
-//        EditText editText = (EditText) findViewById(R.id.editText);
-//        String message = editText.getText().toString();
-//        intent.putExtra(EXTRA_MESSAGE, message);
-//        startActivity(intent);
-//    }
+    public void launchAppManagerActivity() {
+        Intent intent = new Intent(this, AppManagerActivity.class);
+        startActivity(intent);
+    }
+
+    public void launchLockActivity() {
+        Intent intent = new Intent(this, LockActivity.class);
+        startActivity(intent);
+    }
 }
