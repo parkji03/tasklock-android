@@ -7,14 +7,86 @@
     tools:context="com.example.jipark.tasklock_app.task.TaskActivity">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="15dp"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/plain_text_input"
+                android:layout_alignParentLeft="true"
+                android:layout_height="wrap_content"
+                android:layout_width="250dp"
+                android:inputType="text"
+                android:hint="Create a new task"/>
+
+            <Button
+                android:textColor="@color/white"
+                android:background="@color/mainBlue"
+                android:id="@+id/add_task_button"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="Add Task"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:onClick="addTask"/>
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/task_list"
+            android:layout_width="fill_parent"
+            android:layout_height="400dp"
+            android:drawSelectorOnTop="false"
+            />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/text_view_id"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="Hello, from the TaskActivity" />
+        android:layout_height="0dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="15dp"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
+
+        <Button
+            android:textColor="@color/white"
+            android:background="@color/mainBlue"
+            android:id="@+id/finish_task_button"
+            android:layout_width="200dp"
+            android:onClick="finishTaskActivity"
+            android:text="Done"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
