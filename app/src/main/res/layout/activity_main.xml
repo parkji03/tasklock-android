@@ -7,7 +7,7 @@
     tools:context="com.example.jipark.tasklock_app.main.MainActivity">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
@@ -41,54 +41,54 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginEnd="92dp"
+        android:layout_marginLeft="92dp"
+        android:layout_marginRight="92dp"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="15dp"
         android:gravity="bottom"
         android:orientation="vertical"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="15dp"
-        tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="15dp"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1">
 
         <Button
-            android:layout_marginBottom="10dp"
-            android:textColor="@color/white"
-            android:background="@color/mainBlue"
             android:id="@+id/launch_app_manager_button"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@color/mainBlue"
             android:onClick="launchAppManagerActivity"
-            android:text="@string/launch_app_manager_activity" />
+            android:text="@string/launch_app_manager_activity"
+            android:textColor="@color/white" />
 
         <Button
-            android:layout_marginBottom="10dp"
-            android:textColor="@color/white"
-            android:background="@color/mainBlue"
             android:id="@+id/launch_task_button"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@color/mainBlue"
             android:onClick="launchTaskActivity"
-            android:text="@string/launch_task_activity" />
+            android:text="@string/launch_task_activity"
+            android:textColor="@color/white" />
 
         <Button
-            android:textColor="@color/white"
-            android:background="@color/mainBlue"
             android:id="@+id/lock_button"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:background="@color/mainBlue"
             android:onClick="launchLockActivity"
-            android:text="@string/launch_lock_activty" />
+            android:text="@string/launch_lock_activty"
+            android:textColor="@color/white" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
