@@ -3,6 +3,8 @@ package com.example.jipark.tasklock_app.main;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.app_manager.AppManagerActivity;
 import com.example.jipark.tasklock_app.lock.LockActivity;
@@ -16,18 +18,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void launchTaskActivity() {
-        Intent intent = new Intent(this, TaskActivity.class);
+    public void launchTaskActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, TaskActivity.class);
         startActivity(intent);
     }
 
-    public void launchAppManagerActivity() {
-        Intent intent = new Intent(this, AppManagerActivity.class);
+    public void launchAppManagerActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, AppManagerActivity.class);
         startActivity(intent);
     }
 
-    public void launchLockActivity() {
-        Intent intent = new Intent(this, LockActivity.class);
+    public void launchLockActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, LockActivity.class);
         startActivity(intent);
     }
 }
