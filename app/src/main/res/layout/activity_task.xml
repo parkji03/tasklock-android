@@ -7,6 +7,12 @@
     tools:context="com.example.jipark.tasklock_app.task.TaskActivity">
 
     <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0px"
+        android:layout_height="0px"/>
+
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center_horizontal"
@@ -33,6 +39,8 @@
 
             <EditText
                 android:id="@+id/task_edit_text"
+                android:nextFocusUp="@id/task_edit_text"
+                android:nextFocusLeft="@id/task_edit_text"
                 android:layout_alignParentLeft="true"
                 android:layout_height="wrap_content"
                 android:layout_width="220dp"
