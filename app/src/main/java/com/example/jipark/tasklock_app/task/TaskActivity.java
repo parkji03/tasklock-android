@@ -2,6 +2,9 @@ package com.example.jipark.tasklock_app.task;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.example.jipark.tasklock_app.R;
@@ -10,20 +13,94 @@ import com.example.jipark.tasklock_app.Task;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TaskActivity extends AppCompatActivity {
-    ArrayList<Task> taskList = new ArrayList<>();
+    private List<Task> taskList = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private TasksAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
+
+        recyclerView = (RecyclerView)findViewById(R.id.task_list);
+        mAdapter = new TasksAdapter(taskList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mAdapter);
+
+        loadTasksData();
     }
+
+    private void loadTasksData() {
+        Task task = new Task("Test task 1");
+        taskList.add(task);
+        task = new Task("Test task 2");
+        taskList.add(task);
+        task = new Task("Test task 3");
+        taskList.add(task);
+        task = new Task("Test task 4");
+        taskList.add(task);
+        task = new Task("Test task 5");
+        taskList.add(task);
+        task = new Task("Test task 6");
+        taskList.add(task);
+        task = new Task("Test task 7");
+        taskList.add(task);
+        task = new Task("Test task 8");
+        taskList.add(task);
+        task = new Task("Test task 9");
+        taskList.add(task);
+        task = new Task("Test task 10");
+        taskList.add(task);
+        task = new Task("Test task 11");
+        taskList.add(task);
+        task = new Task("Test task 12");
+        taskList.add(task);
+        task = new Task("Test task 13");
+        taskList.add(task);
+        task = new Task("Test task 14");
+        taskList.add(task);
+        task = new Task("Test task 15");
+        taskList.add(task);
+
+        mAdapter.notifyDataSetChanged();
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     public void finishTaskActivity(View view) {
         saveTasks();
         finish();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //reading and writing data
     private String loadJSON() {

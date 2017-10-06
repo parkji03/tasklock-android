@@ -24,7 +24,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
+        android:layout_marginRight="16dp"
+        android:id="@+id/linearLayout3">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -50,38 +51,33 @@
                 android:onClick="addTask"/>
         </RelativeLayout>
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/task_list"
-            android:layout_width="fill_parent"
-            android:layout_height="400dp"
-            android:drawSelectorOnTop="false"
-            />
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp"
-        android:layout_marginEnd="92dp"
-        android:layout_marginLeft="92dp"
-        android:layout_marginRight="92dp"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="15dp"
-        android:gravity="bottom"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1">
+        tools:layout_constraintBottom_creator="1"
+        android:layout_marginStart="72dp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout3"
+        android:layout_marginEnd="72dp"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="72dp"
+        android:layout_marginRight="72dp">
 
         <Button
             android:id="@+id/finish_task_button"
-            android:layout_width="200dp"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:background="@color/mainBlue"
             android:onClick="finishTaskActivity"
