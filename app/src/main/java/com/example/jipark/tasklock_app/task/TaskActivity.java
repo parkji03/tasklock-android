@@ -6,6 +6,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.EditText;
 
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Task;
@@ -17,22 +18,36 @@ import java.util.List;
 
 public class TaskActivity extends AppCompatActivity {
     private List<Task> taskList = new ArrayList<>();
-    private RecyclerView recyclerView;
+    private RecyclerView mRecyclerView;
     private TasksAdapter mAdapter;
+    private EditText mEditTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
 
-        recyclerView = (RecyclerView)findViewById(R.id.task_list);
+
+        mRecyclerView = (RecyclerView)findViewById(R.id.task_list);
+        mEditTextView = (EditText) findViewById(R.id.task_edit_text);
+
         mAdapter = new TasksAdapter(taskList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setAdapter(mAdapter);
 
         loadTasksData();
+    }
+
+    public void addTask(View view) {
+        String taskText = mEditTextView.getText().toString();
+        Task task = new Task(taskText);
+        taskList.add(task);
+
+        mAdapter.notifyItemInserted(taskList.size() - 1);
+
     }
 
     private void loadTasksData() {
@@ -67,19 +82,10 @@ public class TaskActivity extends AppCompatActivity {
         task = new Task("Test task 15");
         taskList.add(task);
 
-        mAdapter.notifyDataSetChanged();
+//        mAdapter.notifyDataSetChanged();
+        mAdapter.notifyItemInserted(taskList.size() - 1);
+
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public void finishTaskActivity(View view) {
         saveTasks();
