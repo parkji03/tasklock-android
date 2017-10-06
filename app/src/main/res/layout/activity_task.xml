@@ -35,7 +35,7 @@
                 android:id="@+id/plain_text_input"
                 android:layout_alignParentLeft="true"
                 android:layout_height="wrap_content"
-                android:layout_width="250dp"
+                android:layout_width="220dp"
                 android:inputType="text"
                 android:hint="Create a new task"/>
 
@@ -56,7 +56,8 @@
             android:id="@+id/task_list"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"
+            android:isScrollContainer="false"/>
     </LinearLayout>
 
     <LinearLayout
@@ -76,6 +77,7 @@
         android:layout_marginRight="72dp">
 
         <Button
+            android:fitsSystemWindows="false"
             android:id="@+id/finish_task_button"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
