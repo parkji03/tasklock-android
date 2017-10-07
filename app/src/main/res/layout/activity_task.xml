@@ -64,7 +64,7 @@
             android:id="@+id/task_list"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:isScrollContainer="false"/>
     </LinearLayout>
 

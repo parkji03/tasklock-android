@@ -1,5 +1,6 @@
 package com.example.jipark.tasklock_app.task;
 
+import android.content.Context;
 import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import java.util.List;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyViewHolder> {
     private List<Task> taskList;
+    private AdapterCallback mAdapterCallback;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView mTask;
@@ -30,8 +32,14 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyViewHolder
         }
     }
 
-    public TasksAdapter(List<Task> taskList) {
+    public TasksAdapter(List<Task> taskList, Context context) {
         this.taskList = taskList;
+        try {
+            this.mAdapterCallback = ((AdapterCallback) context);
+        }
+        catch (ClassCastException e) {
+            throw new ClassCastException("Activity must implement AdapterCallback.");
+        }
     }
 
     @Override
@@ -53,6 +61,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyViewHolder
                 taskList.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, taskList.size());
+                try {
+                    mAdapterCallback.onMethodCallback();
+                }
+                catch (ClassCastException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -62,5 +76,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyViewHolder
         return taskList.size();
     }
 
-
+    public static interface AdapterCallback {
+        void onMethodCallback();
+    }
 }

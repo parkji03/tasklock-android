@@ -1,0 +1,15 @@
+study
+math
+chemistry
+homework
+read
+history
+science
+biology
+cook
+clean
+scripture
+music
+write
+english
+
