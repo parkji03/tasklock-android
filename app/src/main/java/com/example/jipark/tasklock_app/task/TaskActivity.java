@@ -40,6 +40,7 @@ public class TaskActivity extends AppCompatActivity {
         String taskText = mMultiAutoCompleteTextView.getText().toString();
         if (!taskText.isEmpty()) {
             //hide soft keyboard
+            mMultiAutoCompleteTextView.getText().clear();
             InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             Task task = new Task(taskText);
@@ -61,7 +62,6 @@ public class TaskActivity extends AppCompatActivity {
         String[] words = { "study", "math", "chemistry", "homework", "read", "history", "science", "biology", "cook", "clean", "scriptures"}; //TODO: change this to load a .txt file of keywords
         ArrayAdapter<String> wordAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_item, words);
         mMultiAutoCompleteTextView.setThreshold(2);
-//        mMultiAutoCompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
         mMultiAutoCompleteTextView.setTokenizer(new SpaceTokenizer());
         mMultiAutoCompleteTextView.setAdapter(wordAdapter);
         return true;
