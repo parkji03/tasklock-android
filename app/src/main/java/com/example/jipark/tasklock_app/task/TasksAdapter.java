@@ -1,10 +1,11 @@
 package com.example.jipark.tasklock_app.task;
 
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.jipark.tasklock_app.R;
@@ -20,7 +21,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyViewHolder
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView mTask;
-        public Button mRemoveButton;
+        public ImageButton mRemoveButton;
 
         public MyViewHolder(View view) {
             super(view);

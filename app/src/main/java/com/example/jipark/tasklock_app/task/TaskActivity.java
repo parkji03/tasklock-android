@@ -1,11 +1,13 @@
 package com.example.jipark.tasklock_app.task;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.Toast;
@@ -37,6 +39,9 @@ public class TaskActivity extends AppCompatActivity {
     public void addTask(View view) { //grab value from EditText, create a Task object, and add it to RecyclerView.
         String taskText = mMultiAutoCompleteTextView.getText().toString();
         if (!taskText.isEmpty()) {
+            //hide soft keyboard
+            InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             Task task = new Task(taskText);
             taskList.add(task);
             mAdapter.notifyItemInserted(taskList.size() - 1);
