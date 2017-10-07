@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
+            <MultiAutoCompleteTextView
                 android:id="@+id/task_edit_text"
                 android:nextFocusUp="@id/task_edit_text"
                 android:nextFocusLeft="@id/task_edit_text"

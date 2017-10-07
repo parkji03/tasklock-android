@@ -16,8 +16,16 @@
         android:textColor="@color/black"
         android:textSize="12dp"
         android:textStyle="bold"
+        android:text="example"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/delete_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="x"
+        android:layout_alignParentRight="true"/>
 
     <!--<TextView-->
         <!--android:id="@+id/genre"-->

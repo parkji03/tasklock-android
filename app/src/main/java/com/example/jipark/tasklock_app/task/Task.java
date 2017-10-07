@@ -1,4 +1,4 @@
-package com.example.jipark.tasklock_app;
+package com.example.jipark.tasklock_app.task;
 
 /**
  * Created by jipark on 10/4/17.
