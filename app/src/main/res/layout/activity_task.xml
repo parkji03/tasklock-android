@@ -35,7 +35,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
 
             <MultiAutoCompleteTextView
                 android:id="@+id/task_edit_text"
@@ -59,13 +60,18 @@
                 android:onClick="addTask"/>
         </RelativeLayout>
 
+
+
         <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/task_list"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="450dp"
             android:isScrollContainer="false"/>
+
     </LinearLayout>
 
     <LinearLayout

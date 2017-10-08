@@ -13,9 +13,9 @@ public class Task {
         isComplete = false;
     }
 
-    public boolean markedAsComplete() {
-        return false;
-    }
+//    public boolean markedAsComplete() {
+//        return false;
+//    }
 
     // getters and setters
     public String getTask() {
