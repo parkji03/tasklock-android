@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:focusable="true"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
     android:clickable="true"
     android:background="?android:attr/selectableItemBackground"
-    android:orientation="vertical">
+    android:orientation="horizontal"
+    android:weightSum="1">
 
     <TextView
         android:id="@+id/task"
@@ -17,30 +18,19 @@
         android:textSize="12dp"
         android:textStyle="bold"
         android:text="example"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
 
     <ImageButton
         android:background="@android:color/transparent"
         android:padding="5dp"
+        android:layout_marginLeft="18dp"
         android:scaleType="fitCenter"
         android:id="@+id/delete_task"
         android:layout_alignParentRight="true"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:src="@drawable/delete_button"/>
-
-    <!--<TextView-->
-        <!--android:id="@+id/genre"-->
-        <!--android:layout_below="@id/title"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/year"-->
-        <!--android:textColor="@color/black"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_height="wrap_content" />-->
-
-</RelativeLayout>
+        android:src="@drawable/delete_button"
+        android:layout_weight="0.03" />
+</LinearLayout>

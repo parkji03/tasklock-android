@@ -9,8 +9,10 @@
     <LinearLayout
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:layout_width="0px"
-        android:layout_height="0px"/>
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="0dp" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -60,7 +62,16 @@
                 android:onClick="addTask"/>
         </RelativeLayout>
 
-
+        <TextView
+            android:textColor="@color/gray"
+            android:id="@+id/hidden_text"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:gravity="center"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="1000dp"
+            android:visibility="gone"
+            android:text="You have no tasks." />
 
         <android.support.v7.widget.RecyclerView
             android:layout_marginTop="10dp"
@@ -71,7 +82,6 @@
             android:layout_width="match_parent"
             android:layout_height="450dp"
             android:isScrollContainer="false"/>
-
     </LinearLayout>
 
     <LinearLayout

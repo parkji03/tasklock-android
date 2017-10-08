@@ -6,10 +6,15 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jipark.tasklock_app.R;
@@ -34,6 +39,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
     private List<Task> taskList = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private TasksAdapter mAdapter;
+    private TextView mHiddenText;
     private MultiAutoCompleteTextView mMultiAutoCompleteTextView;
     private String tasksFileName = "tasks.json";
 
@@ -45,6 +51,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
         //initializing views
         initAutoCompleteTextView();
         initRecyclerView();
+        mHiddenText = (TextView)findViewById(R.id.hidden_text);
 
         //readTasks
         if (isFilePresent(this, tasksFileName)) {
@@ -53,24 +60,24 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
         else {
             //file doesn't exist
         }
+        showHiddenText();
     }
 
     @Override
     public void onMethodCallback() {
         saveTasks();
+        showHiddenText();
     }
 
     public void addTask(View view) { //grab value from EditText, create a Task object, and add it to RecyclerView.
         String taskText = mMultiAutoCompleteTextView.getText().toString();
         if (!taskText.isEmpty()) {
             mMultiAutoCompleteTextView.getText().clear();
-            //hide soft keyboard
-            InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             Task task = new Task(taskText);
             taskList.add(task);
             mAdapter.notifyItemInserted(taskList.size() - 1);
             saveTasks();
+            showHiddenText();
         }
         else {
             Toast.makeText(this, "Cannot create empty task!", Toast.LENGTH_SHORT).show();
@@ -84,6 +91,33 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
 
     private boolean initAutoCompleteTextView() {
         mMultiAutoCompleteTextView = (MultiAutoCompleteTextView)findViewById(R.id.task_edit_text);
+
+        //TODO: add animations for focus change
+        mMultiAutoCompleteTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus) {
+                    //shorten animation
+                }
+                else {
+                    //expand animation
+                }
+            }
+        });
+
+        mMultiAutoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId== EditorInfo.IME_ACTION_DONE){
+//                    addTask(mMultiAutoCompleteTextView);
+                    //hide soft keyboard
+                    InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    mMultiAutoCompleteTextView.clearFocus();
+                }
+                return false;
+            }
+        });
 
         //load in words from keywords.txt from assets
         BufferedReader reader;
@@ -188,5 +222,18 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
         String path = context.getFilesDir().getAbsolutePath() + "/" + fileName;
         File file = new File(path);
         return file.exists();
+    }
+
+    private void showHiddenText() {
+        final Animation in = new AlphaAnimation(0.0f, 1.0f);
+        in.setDuration(1100);
+
+        if (taskList.isEmpty()) {
+            mHiddenText.startAnimation(in);
+            mHiddenText.setVisibility(View.VISIBLE);
+        }
+        else {
+            mHiddenText.setVisibility(View.GONE);
+        }
     }
 }
