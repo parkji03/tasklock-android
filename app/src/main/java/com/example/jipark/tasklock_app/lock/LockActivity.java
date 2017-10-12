@@ -23,9 +23,7 @@ public class LockActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lock);
 
         taskList = (List<Task>)getIntent().getSerializableExtra("myTasks");
-
         initRecyclerView();
-//        mAdapter.notifyDataSetChanged();
     }
 
     private boolean initRecyclerView() {
@@ -38,7 +36,6 @@ public class LockActivity extends AppCompatActivity {
         return true;
     }
 
-//    private void init
 
     /* TODO:    always have this display on
        TODO:    show a list of tasks
