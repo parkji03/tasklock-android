@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.jipark.tasklock_app.lock.LockActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/lock_task_list"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="450dp"
+            android:isScrollContainer="false"/>
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

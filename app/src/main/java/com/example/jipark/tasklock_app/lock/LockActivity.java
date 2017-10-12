@@ -2,6 +2,8 @@ package com.example.jipark.tasklock_app.lock;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.jipark.tasklock_app.R;
@@ -13,11 +15,27 @@ import java.util.List;
 public class LockActivity extends AppCompatActivity {
     private List<Task> taskList = new ArrayList<>();
     private RecyclerView mRecyclerView;
+    private LockAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock);
+
+        taskList = (List<Task>)getIntent().getSerializableExtra("myTasks");
+
+        initRecyclerView();
+//        mAdapter.notifyDataSetChanged();
+    }
+
+    private boolean initRecyclerView() {
+        mRecyclerView = (RecyclerView)findViewById(R.id.lock_task_list);
+        mAdapter = new LockAdapter(taskList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setAdapter(mAdapter);
+        return true;
     }
 
 //    private void init
