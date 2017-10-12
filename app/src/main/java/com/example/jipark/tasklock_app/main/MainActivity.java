@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,18 +36,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //readTasks
+        //read tasks
         if (isFilePresent(this, tasksFileName)) {
             loadTasks(this, tasksFileName);
-
-        }
-        else {
-            //file doesn't exist
         }
     }
 
     public void launchTaskActivity(View view) {
         Intent intent = new Intent(MainActivity.this, TaskActivity.class);
+        intent.putExtra("myTasks", (Serializable)taskList);
         startActivity(intent);
     }
 
@@ -58,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void launchLockActivity(View view) {
         Intent intent = new Intent(MainActivity.this, LockActivity.class);
+        intent.putExtra("myTasks", (Serializable)taskList);
         startActivity(intent);
     }
 
@@ -72,15 +71,19 @@ public class MainActivity extends AppCompatActivity {
                 sb.append(line);
             }
 
-            JSONObject jsonTask = new JSONObject(sb.toString());
-            JSONArray jsonTasksArray = jsonTask.getJSONArray("tasks");
+            JSONObject jsonTaskListHolder = new JSONObject(sb.toString());
+            JSONArray jsonTaskList = jsonTaskListHolder.getJSONArray("tasks");
+            JSONObject jsonTask;
+            String taskText;
+            boolean isComplete;
 
-            for (int i = 0; i < jsonTasksArray.length(); i++) {
-                taskList.add(new Task(jsonTasksArray.getString(i)));
-                System.out.println(jsonTasksArray.getString(i));
+            for (int i = 0; i < jsonTaskList.length(); i++) {
+                jsonTask = jsonTaskList.getJSONObject(i);
+                taskText = jsonTask.getString("task");
+                isComplete = jsonTask.getBoolean("complete");
+
+                taskList.add(new Task(taskText, isComplete));
             }
-//            mAdapter.notifyDataSetChanged();
-
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -97,5 +100,15 @@ public class MainActivity extends AppCompatActivity {
         String path = context.getFilesDir().getAbsolutePath() + "/" + fileName;
         File file = new File(path);
         return file.exists();
+    }
+
+    @Override
+    protected void onResume() {
+        //Since we might have altered the tasks on resume, load it again
+        super.onResume();
+        if (isFilePresent(this, tasksFileName)) {
+            taskList = new ArrayList<>();
+            loadTasks(this, tasksFileName);
+        }
     }
 }

@@ -1,21 +1,19 @@
 package com.example.jipark.tasklock_app.task;
 
+import java.io.Serializable;
+
 /**
  * Created by jipark on 10/4/17.
  */
 
-public class Task {
+public class Task implements Serializable{
     private String task;
     private boolean isComplete;
 
-    public Task(String task) {
+    public Task(String task, boolean isComplete) {
         this.task = task;
-        isComplete = false;
+        this.isComplete = isComplete;
     }
-
-//    public boolean markedAsComplete() {
-//        return false;
-//    }
 
     // getters and setters
     public String getTask() {

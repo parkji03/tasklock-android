@@ -48,18 +48,12 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
 
+        taskList = (List<Task>)getIntent().getSerializableExtra("myTasks");
         //initializing views
         initAutoCompleteTextView();
         initRecyclerView();
         mHiddenText = (TextView)findViewById(R.id.hidden_text);
-
-        //readTasks
-        if (isFilePresent(this, tasksFileName)) {
-            loadTasks(this, tasksFileName);
-        }
-        else {
-            //file doesn't exist
-        }
+        mAdapter.notifyDataSetChanged();
         showHiddenText();
     }
 
@@ -73,7 +67,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
         String taskText = mMultiAutoCompleteTextView.getText().toString();
         if (!taskText.isEmpty()) {
             mMultiAutoCompleteTextView.getText().clear();
-            Task task = new Task(taskText);
+            Task task = new Task(taskText, false);
             taskList.add(task);
             mAdapter.notifyItemInserted(taskList.size() - 1);
             saveTasks();
@@ -111,6 +105,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
                 if(actionId== EditorInfo.IME_ACTION_DONE){
 //                    addTask(mMultiAutoCompleteTextView);
                     //hide soft keyboard
+                    mMultiAutoCompleteTextView.getText().clear();
                     InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     mMultiAutoCompleteTextView.clearFocus();
@@ -155,48 +150,52 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
         return true;
     }
 
-    private void loadTasks(Context context, String fileName) {
-        try {
-            FileInputStream fis = context.openFileInput(fileName);
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader bufferedReader = new BufferedReader(isr);
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line);
-            }
-
-            JSONObject jsonTask = new JSONObject(sb.toString());
-            JSONArray jsonTasksArray = jsonTask.getJSONArray("tasks");
-
-            for (int i = 0; i < jsonTasksArray.length(); i++) {
-                taskList.add(new Task(jsonTasksArray.getString(i)));
-            }
-            mAdapter.notifyDataSetChanged();
-
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
-        catch (FileNotFoundException fileNotFound) {
-            fileNotFound.printStackTrace();
-        }
-        catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-    }
+//    private void loadTasks(Context context, String fileName) {
+//        try {
+//            FileInputStream fis = context.openFileInput(fileName);
+//            InputStreamReader isr = new InputStreamReader(fis);
+//            BufferedReader bufferedReader = new BufferedReader(isr);
+//            StringBuilder sb = new StringBuilder();
+//            String line;
+//            while ((line = bufferedReader.readLine()) != null) {
+//                sb.append(line);
+//            }
+//
+//            JSONObject jsonTask = new JSONObject(sb.toString());
+//            JSONArray jsonTasksArray = jsonTask.getJSONArray("tasks");
+//
+//            for (int i = 0; i < jsonTasksArray.length(); i++) {
+//                taskList.add(new Task(jsonTasksArray.getString(i)));
+//            }
+//            mAdapter.notifyDataSetChanged();
+//
+//        }
+//        catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        catch (FileNotFoundException fileNotFound) {
+//            fileNotFound.printStackTrace();
+//        }
+//        catch (IOException ioe) {
+//            ioe.printStackTrace();
+//        }
+//    }
 
     public boolean saveTasks() {
-        JSONArray jsonTasksArray = new JSONArray();
-        JSONObject jsonTasks = new JSONObject();
+        JSONObject jsonTaskListHolder = new JSONObject();
+        JSONArray jsonTaskList = new JSONArray();
+        JSONObject jsonTask;
         String jsonString;
 
         try {
             for (int i = 0; i < taskList.size(); i++) {
-                jsonTasksArray.put(taskList.get(i).getTask());
+                jsonTask = new JSONObject();
+                jsonTask.put("task", taskList.get(i).getTask());
+                jsonTask.put("complete", taskList.get(i).isComplete());
+                jsonTaskList.put(jsonTask);
             }
-            jsonTasks.put("tasks", jsonTasksArray);
-            jsonString = jsonTasks.toString();
+            jsonTaskListHolder.put("tasks", jsonTaskList);
+            jsonString = jsonTaskListHolder.toString();
 
             FileOutputStream fos = openFileOutput(tasksFileName, Context.MODE_PRIVATE);
             if (jsonString != null) {
@@ -216,12 +215,6 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
             ioe.printStackTrace();
             return false;
         }
-    }
-
-    private boolean isFilePresent(Context context, String fileName) {
-        String path = context.getFilesDir().getAbsolutePath() + "/" + fileName;
-        File file = new File(path);
-        return file.exists();
     }
 
     private void showHiddenText() {
