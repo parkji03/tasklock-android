@@ -26,7 +26,7 @@ public class LockAdapter extends RecyclerView.Adapter<com.example.jipark.taskloc
         public MyViewHolder(View view) {
             super(view);
             mCheckBox = view.findViewById(R.id.lock_checkbox);
-            mTask = view.findViewById(R.id.task);
+            mTask = view.findViewById(R.id.lock_task);
         }
     }
 
@@ -43,12 +43,9 @@ public class LockAdapter extends RecyclerView.Adapter<com.example.jipark.taskloc
 
     @Override
     public void onBindViewHolder(com.example.jipark.tasklock_app.lock.LockAdapter.MyViewHolder holder, final int position) {
-        if(taskList != null) {
-            Task task = taskList.get(position);
-            holder.mCheckBox.setChecked(task.isComplete());
-            holder.mTask.setText(task.getTask());
-        }
-
+        Task task = taskList.get(position);
+        holder.mCheckBox.setChecked(task.isComplete());
+        holder.mTask.setText(task.getTask());
     }
 
     @Override
