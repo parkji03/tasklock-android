@@ -43,4 +43,14 @@ public class AppManagerActivity extends AppCompatActivity {
 //        String label = (String)pm.getApplicationLabel(app);
 //        Drawable icon = pm.getApplicationIcon(app);
 //    }
+
+
+    //TODO: https://stackoverflow.com/questions/36261909/how-to-make-app-lock-app-in-android
+    //TODO: https://stackoverflow.com/questions/45829540/how-to-code-an-app-that-blocks-other-apps-from-launching-for-a-certain-time-usin
+    //TODO: https://developer.android.com/reference/android/Manifest.permission.html#SYSTEM_ALERT_WINDOW
+    //TODO: https://stackoverflow.com/questions/7623767/how-do-android-app-lock-applications-work
+
+
+
+
 }
