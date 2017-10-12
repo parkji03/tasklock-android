@@ -49,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchAppManagerActivity(View view) {
-//        Intent intent = new Intent(MainActivity.this, AppManagerActivity.class);
-//        startActivity(intent);
-        Toast.makeText(this, "Coming soon!", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(MainActivity.this, AppManagerActivity.class);
+        startActivity(intent);
+//        Toast.makeText(this, "Coming soon!", Toast.LENGTH_LONG).show();
     }
 
     public void launchLockActivity(View view) {
