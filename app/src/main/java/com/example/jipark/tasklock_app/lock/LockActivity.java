@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.jipark.tasklock_app.R;
+import com.example.jipark.tasklock_app.Utils;
 import com.example.jipark.tasklock_app.task.Task;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 
 public class LockActivity extends AppCompatActivity {
     private List<Task> taskList = new ArrayList<>();
+    private Utils SINGLETON;
     private RecyclerView mRecyclerView;
     private LockAdapter mAdapter;
 
@@ -21,8 +23,8 @@ public class LockActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock);
-
-        taskList = (List<Task>)getIntent().getSerializableExtra("myTasks");
+        SINGLETON = Utils.getInstance();
+        taskList = SINGLETON.getTaskList();
         initRecyclerView();
     }
 
@@ -40,6 +42,7 @@ public class LockActivity extends AppCompatActivity {
     /* TODO:    always have this display on
        TODO:    show a list of tasks
        TODO:    have check mark boxes to each task
+       TODO:    save tasks to "tasks.json" if checked...
        TODO:    on completion, all done, return to main activity
             check with a loop every time the user checks a check mark, check how many is left, and if 0, we're done
 
