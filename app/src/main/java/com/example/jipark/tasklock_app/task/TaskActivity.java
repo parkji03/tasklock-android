@@ -30,7 +30,6 @@ import java.util.List;
 
 public class TaskActivity extends AppCompatActivity implements TasksAdapter.AdapterCallback {
     private Utils SINGLETON;
-    private List<Task> taskList = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private TasksAdapter mAdapter;
     private TextView mHiddenText;
@@ -41,7 +40,6 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
         SINGLETON = Utils.getInstance();
-        taskList = SINGLETON.getTaskList();
 
         //initializing views
         initAutoCompleteTextView();
@@ -62,8 +60,8 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
         if (!taskText.isEmpty()) {
             mMultiAutoCompleteTextView.getText().clear();
             Task task = new Task(taskText, false);
-            taskList.add(task);
-            mAdapter.notifyItemInserted(taskList.size() - 1);
+            SINGLETON.addTask(task);
+            mAdapter.notifyItemInserted(SINGLETON.getTaskList().size() - 1);
             SINGLETON.saveTasks(this);
             showHiddenText();
         }
@@ -97,7 +95,6 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId== EditorInfo.IME_ACTION_DONE){
-//                    addTask(mMultiAutoCompleteTextView);
                     //hide soft keyboard
                     mMultiAutoCompleteTextView.getText().clear();
                     InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -136,7 +133,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
 
     private boolean initRecyclerView() {
         mRecyclerView = (RecyclerView)findViewById(R.id.task_list);
-        mAdapter = new TasksAdapter(taskList, this);
+        mAdapter = new TasksAdapter(SINGLETON.getTaskList(), this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -148,7 +145,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
         final Animation in = new AlphaAnimation(0.0f, 1.0f);
         in.setDuration(1100);
 
-        if (taskList.isEmpty()) {
+        if (SINGLETON.getTaskList().isEmpty()) {
             mHiddenText.startAnimation(in);
             mHiddenText.setVisibility(View.VISIBLE);
         }

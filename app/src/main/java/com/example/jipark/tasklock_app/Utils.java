@@ -25,31 +25,16 @@ import java.util.List;
 
 public class Utils {
     private static final Utils ourInstance = new Utils();
-    private List<Task> taskList = new ArrayList<>();
-    private String tasksFileName = "tasks.json";
+    private List<Task> taskList;
+    private String tasksFileName;
 
     public static Utils getInstance() {
         return ourInstance;
     }
 
     private Utils() {
-
-    }
-
-    public void addTask(Task task) {
-        taskList.add(task);
-    }
-
-    public void resetTaskList() {
         taskList = new ArrayList<>();
-    }
-
-    public List<Task> getTaskList() {
-        return taskList;
-    }
-
-    public void setTaskList(List<Task> taskList) {
-        this.taskList = taskList;
+        tasksFileName = "tasks.json";
     }
 
     public void loadTasks(Context context) {
@@ -128,6 +113,18 @@ public class Utils {
         String path = context.getFilesDir().getAbsolutePath() + "/" + fileName;
         File file = new File(path);
         return file.exists();
+    }
+
+    public void addTask(Task task) {
+        taskList.add(task);
+    }
+
+    public void resetTaskList() {
+        taskList = new ArrayList<>();
+    }
+
+    public List<Task> getTaskList() {
+        return taskList;
     }
 
 }

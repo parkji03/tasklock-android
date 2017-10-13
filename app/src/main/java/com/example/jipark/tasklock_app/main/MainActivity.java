@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     public void launchAppManagerActivity(View view) {
         Intent intent = new Intent(MainActivity.this, AppManagerActivity.class);
         startActivity(intent);
-//        Toast.makeText(this, "Coming soon!", Toast.LENGTH_LONG).show();
     }
 
     public void launchLockActivity(View view) {
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        //Since we might have altered the tasks on resume, load it again
+        // Since we might have altered the tasks on resume, load it again.
         super.onResume();
         if (SINGLETON.isFilePresent(this, tasksFileName)) {
             SINGLETON.resetTaskList();
