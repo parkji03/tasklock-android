@@ -28,7 +28,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskActivity extends AppCompatActivity implements TasksAdapter.AdapterCallback {
+public class TaskActivity extends AppCompatActivity implements TasksAdapter.TasksAdapterCallback {
     private Utils SINGLETON;
     private RecyclerView mRecyclerView;
     private TasksAdapter mAdapter;

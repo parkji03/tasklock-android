@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
 
-public class LockActivity extends AppCompatActivity {
+public class LockActivity extends AppCompatActivity implements LockAdapter.LockAdapterCallback {
     private Utils SINGLETON;
     private RecyclerView mRecyclerView;
     private LockAdapter mAdapter;
@@ -22,9 +22,14 @@ public class LockActivity extends AppCompatActivity {
         initRecyclerView();
     }
 
+    @Override
+    public void onMethodCallback() {
+        SINGLETON.saveTasks(this);
+    }
+
     private boolean initRecyclerView() {
         mRecyclerView = (RecyclerView)findViewById(R.id.lock_task_list);
-        mAdapter = new LockAdapter(SINGLETON.getTaskList());
+        mAdapter = new LockAdapter(SINGLETON.getTaskList(), this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());

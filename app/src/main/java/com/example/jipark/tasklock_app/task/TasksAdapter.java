@@ -18,7 +18,7 @@ import java.util.List;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyViewHolder> {
     private List<Task> taskList;
-    private AdapterCallback mAdapterCallback;
+    private TasksAdapterCallback mAdapterCallback;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView mTask;
@@ -34,7 +34,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyViewHolder
     public TasksAdapter(List<Task> taskList, Context context) {
         this.taskList = taskList;
         try {
-            this.mAdapterCallback = ((AdapterCallback) context);
+            this.mAdapterCallback = ((TasksAdapterCallback) context);
         }
         catch (ClassCastException e) {
             throw new ClassCastException("Activity must implement AdapterCallback.");
@@ -75,7 +75,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.MyViewHolder
         return taskList.size();
     }
 
-    public static interface AdapterCallback {
+    public static interface TasksAdapterCallback {
         void onMethodCallback();
     }
 }
