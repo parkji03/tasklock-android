@@ -109,22 +109,22 @@ public class Utils {
         }
     }
 
-    public boolean isFilePresent(Context context, String fileName) {
-        String path = context.getFilesDir().getAbsolutePath() + "/" + fileName;
-        File file = new File(path);
-        return file.exists();
-    }
-
     public void addTask(Task task) {
         taskList.add(task);
     }
 
     public void resetTaskList() {
-        taskList = new ArrayList<>();
+        taskList.clear();
+//        taskList = new ArrayList<>();
     }
 
     public List<Task> getTaskList() {
         return taskList;
     }
 
+    public boolean isFilePresent(Context context, String fileName) {
+        String path = context.getFilesDir().getAbsolutePath() + "/" + fileName;
+        File file = new File(path);
+        return file.exists();
+    }
 }

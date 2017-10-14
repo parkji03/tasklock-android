@@ -6,8 +6,6 @@
         <item name="colorPrimaryDark">@color/mainOrange</item>
         <item name="colorAccent">@color/gray</item>
         <item name="android:textColorHint">@color/gray</item>
-        <!--<item name="android:buttonStyle">@style/ButtonStyle1</item>-->
     </style>
-
 
 </resources>

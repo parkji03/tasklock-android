@@ -2,5 +2,5 @@
     <string name="app_name">TaskLock</string>
     <string name="launch_task_activity">Edit Tasks</string>
     <string name="launch_app_manager_activity">App Manager</string>
-    <string name="launch_lock_activity">Lock</string>
+    <string name="launch_lock_activity">Start Tasks</string>
 </resources>

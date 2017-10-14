@@ -58,7 +58,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Task
     public void addTask(View view) { //grab value from EditText, create a Task object, and add it to RecyclerView.
         String taskText = mMultiAutoCompleteTextView.getText().toString();
         if (!taskText.isEmpty()) {
-            mMultiAutoCompleteTextView.getText().clear();
+            mMultiAutoCompleteTextView.setText("");
             Task task = new Task(taskText, false);
             SINGLETON.addTask(task);
             mAdapter.notifyItemInserted(SINGLETON.getTaskList().size() - 1);
@@ -96,7 +96,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Task
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId== EditorInfo.IME_ACTION_DONE){
                     //hide soft keyboard
-                    mMultiAutoCompleteTextView.getText().clear();
+                    mMultiAutoCompleteTextView.setText("");
                     InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     mMultiAutoCompleteTextView.clearFocus();

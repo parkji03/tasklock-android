@@ -1,10 +1,14 @@
 package com.example.jipark.tasklock_app.lock;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
@@ -25,6 +29,23 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
     @Override
     public void onMethodCallback() {
         SINGLETON.saveTasks(this);
+        if (checkTasksAllTrue()) {
+            SINGLETON.getTaskList().clear();
+            SINGLETON.saveTasks(LockActivity.this);
+
+            AlertDialog alertDialog = new AlertDialog.Builder(LockActivity.this).create();
+            alertDialog.setMessage("Congrats! You finished!");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Return",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            finish();
+                        }
+                    });
+            alertDialog.show();
+
+        }
     }
 
     private boolean initRecyclerView() {
@@ -37,17 +58,22 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
         return true;
     }
 
+    private boolean checkTasksAllTrue() {
+        for (int i = 0; i < SINGLETON.getTaskList().size(); i++) {
+            if(!SINGLETON.getTaskList().get(i).isComplete()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-    /* TODO:    always have this display on
-       TODO:    show a list of tasks
-       TODO:    have check mark boxes to each task
-       TODO:    save tasks to "tasks.json" if checked...
-       TODO:    on completion, all done, return to main activity
-            check with a loop every time the user checks a check mark, check how many is left, and if 0, we're done
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-
-    */
-
-
-
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+    }
 }
