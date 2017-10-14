@@ -109,13 +109,12 @@ public class Utils {
         }
     }
 
-    public void addTask(Task task) {
-        taskList.add(task);
+    public void addTaskToHead(Task task) {
+        taskList.add(0, task);
     }
 
     public void resetTaskList() {
         taskList.clear();
-//        taskList = new ArrayList<>();
     }
 
     public List<Task> getTaskList() {

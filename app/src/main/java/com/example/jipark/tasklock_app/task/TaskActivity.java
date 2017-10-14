@@ -60,8 +60,10 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Task
         if (!taskText.isEmpty()) {
             mMultiAutoCompleteTextView.setText("");
             Task task = new Task(taskText, false);
-            SINGLETON.addTask(task);
-            mAdapter.notifyItemInserted(SINGLETON.getTaskList().size() - 1);
+            SINGLETON.addTaskToHead(task);
+            mAdapter.notifyItemInserted(0);
+            mRecyclerView.smoothScrollToPosition(0);
+//            mAdapter.notifyItemInserted(SINGLETON.getTaskList().size() - 1);
             SINGLETON.saveTasks(this);
             showHiddenText();
         }

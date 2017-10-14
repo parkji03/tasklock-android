@@ -30,6 +30,8 @@ public class LockAdapter extends RecyclerView.Adapter<com.example.jipark.taskloc
             super(view);
             mCheckBox = view.findViewById(R.id.lock_checkbox);
             mTask = view.findViewById(R.id.lock_task);
+
+            this.setIsRecyclable(false);
         }
     }
 
