@@ -121,6 +121,10 @@ public class Utils {
         return taskList;
     }
 
+    public int getTaskCount() {
+        return taskList.size();
+    }
+
     public boolean isFilePresent(Context context, String fileName) {
         String path = context.getFilesDir().getAbsolutePath() + "/" + fileName;
         File file = new File(path);

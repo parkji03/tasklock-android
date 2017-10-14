@@ -30,10 +30,19 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
     public void onMethodCallback() {
         SINGLETON.saveTasks(this);
         if (checkTasksAllTrue()) {
+            int completedTaskCount = SINGLETON.getTaskCount();
             SINGLETON.getTaskList().clear();
             SINGLETON.saveTasks(LockActivity.this);
 
             AlertDialog alertDialog = new AlertDialog.Builder(LockActivity.this).create();
+
+            if(completedTaskCount == 1) {
+                alertDialog.setTitle("You completed " + completedTaskCount + " task.");
+            }
+            else {
+                alertDialog.setTitle("You completed " + completedTaskCount + " tasks.");
+            }
+
             alertDialog.setMessage("Congrats! You finished!");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Return",
                     new DialogInterface.OnClickListener() {

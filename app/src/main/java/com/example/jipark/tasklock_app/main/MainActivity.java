@@ -46,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+            if(SINGLETON.getTaskCount() == 1) {
+                alertDialog.setTitle("You have " + SINGLETON.getTaskCount() + " task.");
+            }
+            else {
+                alertDialog.setTitle("You have " + SINGLETON.getTaskCount() + " tasks.");
+            }
             alertDialog.setMessage("Are you sure?");
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm",
                     new DialogInterface.OnClickListener() {
