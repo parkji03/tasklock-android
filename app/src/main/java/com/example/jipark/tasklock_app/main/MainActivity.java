@@ -1,9 +1,12 @@
 package com.example.jipark.tasklock_app.main;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
@@ -38,8 +41,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchLockActivity(View view) {
-        Intent intent = new Intent(MainActivity.this, LockActivity.class);
-        startActivity(intent);
+        if(SINGLETON.getTaskList().isEmpty()) {
+            Toast.makeText(this, "No tasks are available to start!", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+            if(SINGLETON.getTaskCount() == 1) {
+                alertDialog.setTitle("You have " + SINGLETON.getTaskCount() + " task.");
+            }
+            else {
+                alertDialog.setTitle("You have " + SINGLETON.getTaskCount() + " tasks.");
+            }
+            alertDialog.setMessage("Are you sure?");
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            Intent intent = new Intent(MainActivity.this, LockActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+            alertDialog.show();
+        }
     }
 
     @Override
