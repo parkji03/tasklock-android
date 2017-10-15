@@ -125,6 +125,24 @@ public class Utils {
         return taskList.size();
     }
 
+    public boolean checkTasksAllTrue() {
+        for (int i = 0; i < taskList.size(); i++) {
+            if(!taskList.get(i).isComplete()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int getTasksRemaining() {
+        int remaining = 0;
+        for (int i = 0; i < taskList.size(); i++) {
+            if(!taskList.get(i).isComplete())
+                remaining++;
+        }
+        return remaining;
+    }
+
     public boolean isFilePresent(Context context, String fileName) {
         String path = context.getFilesDir().getAbsolutePath() + "/" + fileName;
         File file = new File(path);
