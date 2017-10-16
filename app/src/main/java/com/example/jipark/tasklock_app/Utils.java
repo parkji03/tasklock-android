@@ -2,6 +2,8 @@ package com.example.jipark.tasklock_app;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.View;
+import android.widget.Toast;
 
 import com.example.jipark.tasklock_app.task.Task;
 

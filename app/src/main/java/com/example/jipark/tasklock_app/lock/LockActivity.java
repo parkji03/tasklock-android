@@ -13,9 +13,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
+import com.example.jipark.tasklock_app.task.Task;
 
 public class LockActivity extends AppCompatActivity implements LockAdapter.LockAdapterCallback {
     private Utils SINGLETON;
@@ -87,6 +89,22 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
         return true;
     }
 
+    private boolean quickAddTask(EditText inputView) {
+        String taskText = inputView.getText().toString();
+        if (!taskText.isEmpty()) {
+            inputView.setText("");
+            Task task = new Task(taskText, false);
+            SINGLETON.getTaskList().add(task);
+            mAdapter.notifyItemInserted(SINGLETON.getTaskList().size() - 1);
+            SINGLETON.saveTasks(this);
+            return true;
+        }
+        else {
+            Toast.makeText(this, "Cannot create empty task!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -135,12 +153,13 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
         FloatingActionButton mFAB = (FloatingActionButton)findViewById(R.id.lock_float_action);
         final AlertDialog alertDialog = new AlertDialog.Builder(LockActivity.this).create();
         alertDialog.setTitle("Quick Add");
-        alertDialog.setView(mEditText, 80, 0, 80, 0);
+        alertDialog.setView(mEditText, 50, 0, 50, 0);
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                //add to list and notify adapter
-                dialogInterface.dismiss();
+                if(quickAddTask(mEditText)) {
+                    dialogInterface.dismiss();
+                }
             }
         });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
