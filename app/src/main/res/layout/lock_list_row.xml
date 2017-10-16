@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:focusable="true"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
@@ -13,14 +14,20 @@
     android:weightSum="1">
 
     <CheckBox
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:gravity="center_vertical"
+        app:buttonTint="@color/mainBlue"
         android:id="@+id/lock_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <TextView
+        android:layout_marginLeft="10dp"
+        android:gravity="center_vertical"
         android:id="@+id/lock_task"
         android:textColor="@color/black"
-        android:textSize="12dp"
+        android:textSize="16dp"
         android:textStyle="bold"
         android:text="example"
         android:layout_width="0dp"

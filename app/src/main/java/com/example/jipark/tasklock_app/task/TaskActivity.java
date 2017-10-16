@@ -19,36 +19,28 @@ import android.widget.Toast;
 
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.SpaceTokenizer;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.jipark.tasklock_app.Utils;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskActivity extends AppCompatActivity implements TasksAdapter.AdapterCallback {
-    private List<Task> taskList = new ArrayList<>();
+public class TaskActivity extends AppCompatActivity implements TasksAdapter.TasksAdapterCallback {
+    private Utils SINGLETON;
     private RecyclerView mRecyclerView;
     private TasksAdapter mAdapter;
     private TextView mHiddenText;
     private MultiAutoCompleteTextView mMultiAutoCompleteTextView;
-    private String tasksFileName = "tasks.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
+        SINGLETON = Utils.getInstance();
 
-        taskList = (List<Task>)getIntent().getSerializableExtra("myTasks");
         //initializing views
         initAutoCompleteTextView();
         initRecyclerView();
@@ -59,18 +51,20 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
 
     @Override
     public void onMethodCallback() {
-        saveTasks();
+        SINGLETON.saveTasks(this);
         showHiddenText();
     }
 
     public void addTask(View view) { //grab value from EditText, create a Task object, and add it to RecyclerView.
         String taskText = mMultiAutoCompleteTextView.getText().toString();
         if (!taskText.isEmpty()) {
-            mMultiAutoCompleteTextView.getText().clear();
+            mMultiAutoCompleteTextView.setText("");
             Task task = new Task(taskText, false);
-            taskList.add(task);
-            mAdapter.notifyItemInserted(taskList.size() - 1);
-            saveTasks();
+            SINGLETON.addTaskToHead(task);
+            mAdapter.notifyItemInserted(0);
+            mRecyclerView.smoothScrollToPosition(0);
+//            mAdapter.notifyItemInserted(SINGLETON.getTaskList().size() - 1);
+            SINGLETON.saveTasks(this);
             showHiddenText();
         }
         else {
@@ -79,7 +73,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
     }
 
     public void finishTaskActivity(View view) {
-        saveTasks();
+        SINGLETON.saveTasks(this);
         finish();
     }
 
@@ -103,9 +97,8 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId== EditorInfo.IME_ACTION_DONE){
-//                    addTask(mMultiAutoCompleteTextView);
                     //hide soft keyboard
-                    mMultiAutoCompleteTextView.getText().clear();
+                    mMultiAutoCompleteTextView.setText("");
                     InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     mMultiAutoCompleteTextView.clearFocus();
@@ -142,7 +135,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
 
     private boolean initRecyclerView() {
         mRecyclerView = (RecyclerView)findViewById(R.id.task_list);
-        mAdapter = new TasksAdapter(taskList, this);
+        mAdapter = new TasksAdapter(SINGLETON.getTaskList(), this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -150,78 +143,11 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Adap
         return true;
     }
 
-//    private void loadTasks(Context context, String fileName) {
-//        try {
-//            FileInputStream fis = context.openFileInput(fileName);
-//            InputStreamReader isr = new InputStreamReader(fis);
-//            BufferedReader bufferedReader = new BufferedReader(isr);
-//            StringBuilder sb = new StringBuilder();
-//            String line;
-//            while ((line = bufferedReader.readLine()) != null) {
-//                sb.append(line);
-//            }
-//
-//            JSONObject jsonTask = new JSONObject(sb.toString());
-//            JSONArray jsonTasksArray = jsonTask.getJSONArray("tasks");
-//
-//            for (int i = 0; i < jsonTasksArray.length(); i++) {
-//                taskList.add(new Task(jsonTasksArray.getString(i)));
-//            }
-//            mAdapter.notifyDataSetChanged();
-//
-//        }
-//        catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        catch (FileNotFoundException fileNotFound) {
-//            fileNotFound.printStackTrace();
-//        }
-//        catch (IOException ioe) {
-//            ioe.printStackTrace();
-//        }
-//    }
-
-    public boolean saveTasks() {
-        JSONObject jsonTaskListHolder = new JSONObject();
-        JSONArray jsonTaskList = new JSONArray();
-        JSONObject jsonTask;
-        String jsonString;
-
-        try {
-            for (int i = 0; i < taskList.size(); i++) {
-                jsonTask = new JSONObject();
-                jsonTask.put("task", taskList.get(i).getTask());
-                jsonTask.put("complete", taskList.get(i).isComplete());
-                jsonTaskList.put(jsonTask);
-            }
-            jsonTaskListHolder.put("tasks", jsonTaskList);
-            jsonString = jsonTaskListHolder.toString();
-
-            FileOutputStream fos = openFileOutput(tasksFileName, Context.MODE_PRIVATE);
-            if (jsonString != null) {
-                fos.write(jsonString.getBytes());
-            }
-            fos.close();
-            return true;
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            return false;
-        }
-        catch (FileNotFoundException fileNotFound) {
-            return false;
-        }
-        catch (IOException ioe) {
-            ioe.printStackTrace();
-            return false;
-        }
-    }
-
     private void showHiddenText() {
         final Animation in = new AlphaAnimation(0.0f, 1.0f);
         in.setDuration(1100);
 
-        if (taskList.isEmpty()) {
+        if (SINGLETON.getTaskList().isEmpty()) {
             mHiddenText.startAnimation(in);
             mHiddenText.setVisibility(View.VISIBLE);
         }
