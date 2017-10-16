@@ -82,4 +82,10 @@ public class MainActivity extends AppCompatActivity {
             SINGLETON.loadTasks(this);
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //TODO: add method to send to database that the client disconnected...
+    }
 }
