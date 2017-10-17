@@ -1,9 +1,9 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/mainBlue</item>
-        <item name="colorPrimaryDark">@color/mainOrange</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/mainOrange</item>
+        <item name="colorPrimaryDark">@color/darkOrange</item>
         <item name="colorAccent">@color/gray</item>
         <item name="android:textColorHint">@color/gray</item>
     </style>

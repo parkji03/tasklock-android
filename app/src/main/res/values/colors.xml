@@ -4,5 +4,6 @@
     <color name="black">#333333</color>
     <color name="mainBlue">#127DBA</color>
     <color name="mainOrange">#FF6008</color>
+    <color name="darkOrange">#DD5006</color>
     <color name="gray">#D8D8D8</color>
 </resources>

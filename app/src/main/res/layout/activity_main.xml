@@ -74,14 +74,14 @@
         android:layout_marginRight="10dp"
         android:id="@+id/linearLayout2">
 
-        <TextView
-            android:layout_marginTop="20dp"
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="@string/app_name"
-            android:textSize="46dp" />
+        <!--<TextView-->
+            <!--android:layout_marginTop="20dp"-->
+            <!--android:id="@+id/textView"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginBottom="20dp"-->
+            <!--android:text="@string/app_name"-->
+            <!--android:textSize="46dp" />-->
 
         <ImageView
             android:id="@+id/imageView"
