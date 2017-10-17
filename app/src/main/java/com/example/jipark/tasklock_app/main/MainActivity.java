@@ -5,12 +5,16 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
 import com.example.jipark.tasklock_app.app_manager.AppManagerActivity;
+import com.example.jipark.tasklock_app.iris.IrisActivity;
 import com.example.jipark.tasklock_app.lock.LockActivity;
 import com.example.jipark.tasklock_app.task.TaskActivity;
 
@@ -81,5 +85,34 @@ public class MainActivity extends AppCompatActivity {
             SINGLETON.resetTaskList();
             SINGLETON.loadTasks(this);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_eye:
+//                Toast.makeText(this, "Iris Mode", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, IrisActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_about:
+                Toast.makeText(this, "Coming Soon!", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //TODO: add method to send to database that the client disconnected...
     }
 }
