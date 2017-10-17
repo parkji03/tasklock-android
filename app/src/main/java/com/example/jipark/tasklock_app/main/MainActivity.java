@@ -18,6 +18,8 @@ import com.example.jipark.tasklock_app.iris.IrisActivity;
 import com.example.jipark.tasklock_app.lock.LockActivity;
 import com.example.jipark.tasklock_app.task.TaskActivity;
 
+//TODO: lock feature, add more lock screen things like time, phone
+//give app the same id, set up rule for firebase, just to give permission to write to the database
 
 public class MainActivity extends AppCompatActivity {
     private String tasksFileName = "tasks.json";
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             else {
                 alertDialog.setTitle("You have " + SINGLETON.getTaskCount() + " tasks.");
             }
-            alertDialog.setMessage("Are you sure?");
+            alertDialog.setMessage("You're selected apps will be disabled.  Are you sure you want to start?");
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm",
                     new DialogInterface.OnClickListener() {
                         @Override
@@ -98,11 +100,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_eye:
-//                Toast.makeText(this, "Iris Mode", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, IrisActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.action_about:
+                Toast.makeText(this, "Coming Soon!", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_settings:
                 Toast.makeText(this, "Coming Soon!", Toast.LENGTH_SHORT).show();
                 return true;
             default:

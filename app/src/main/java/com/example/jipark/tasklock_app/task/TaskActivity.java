@@ -63,7 +63,6 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Task
             SINGLETON.addTaskToHead(task);
             mAdapter.notifyItemInserted(0);
             mRecyclerView.smoothScrollToPosition(0);
-//            mAdapter.notifyItemInserted(SINGLETON.getTaskList().size() - 1);
             SINGLETON.saveTasks(this);
             showHiddenText();
         }

@@ -64,7 +64,6 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
                         }
                     });
             alertDialog.show();
-
         }
     }
 
