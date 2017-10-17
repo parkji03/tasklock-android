@@ -14,20 +14,22 @@ import java.util.ArrayList;
 import java.util.List;
 import com.example.jipark.tasklock_app.R;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class AppManagerAdapter extends RecyclerView.Adapter<AppManagerAdapter.AppManagerHolder> {
 
     List<String> labelList;
     List<Drawable> iconList;
 
-    public  AppManagerAdapter(List<String> labelList, List<Drawable> iconList) {
+
+    public AppManagerAdapter(List<String> labelList, List<Drawable> iconList) {
         this.labelList = labelList;
         this.iconList = iconList;
     }
 
     @Override
-    public  AppManagerAdapter.AppManagerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.app_manager_row,parent,false);
+    public AppManagerAdapter.AppManagerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.app_manager_row,parent,false);
         AppManagerHolder viewHolder = new  AppManagerHolder(v);
         return viewHolder;
     }
@@ -52,6 +54,12 @@ public class AppManagerAdapter extends RecyclerView.Adapter<AppManagerAdapter.Ap
             super(itemView);
             text = (TextView) itemView.findViewById(R.id.text_id);
             image = (ImageView) itemView.findViewById(R.id.image_id);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(v.getContext(),"You clicked "+ text.getText() , Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }
