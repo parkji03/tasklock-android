@@ -43,7 +43,6 @@ public class AppManagerActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
 
-
         for(ApplicationInfo app : apps) {
             //checks for flags; if flagged, check if updated system app
             if ((app.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {

@@ -13,11 +13,13 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import com.example.jipark.tasklock_app.R;
+
 import android.widget.ImageView;
 import android.widget.Toast;
 
 public class AppManagerAdapter extends RecyclerView.Adapter<AppManagerAdapter.AppManagerHolder> {
 
+    //private List<App> appList;
     List<String> labelList;
     List<Drawable> iconList;
 
@@ -36,6 +38,7 @@ public class AppManagerAdapter extends RecyclerView.Adapter<AppManagerAdapter.Ap
 
     @Override
     public void onBindViewHolder(AppManagerAdapter.AppManagerHolder holder, int position) {
+        //App app = appList.get(position);//breaks here null position:0
         holder.text.setText(labelList.get(position).toString());
         holder.image.setImageDrawable(iconList.get(position));
     }
@@ -58,6 +61,16 @@ public class AppManagerAdapter extends RecyclerView.Adapter<AppManagerAdapter.Ap
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(v.getContext(),"You clicked "+ text.getText() , Toast.LENGTH_SHORT).show();
+
+//                    appList.remove(position);
+//                    notifyItemRemoved(position);
+//                    notifyItemRangeChanged(position, appList.size());
+//                    try {
+//                        mAdapterCallback.onMethodCallback();
+//                    }
+//                    catch (ClassCastException e) {
+//                        e.printStackTrace();
+//                    }
                 }
             });
         }

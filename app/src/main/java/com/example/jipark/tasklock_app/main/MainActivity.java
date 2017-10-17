@@ -21,6 +21,7 @@ import com.example.jipark.tasklock_app.task.TaskActivity;
 
 public class MainActivity extends AppCompatActivity {
     private String tasksFileName = "tasks.json";
+    private String appsFileName = "apps.json";
     private Utils SINGLETON;
 
     @Override
@@ -32,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
         if (SINGLETON.isFilePresent(this, tasksFileName)) {
             SINGLETON.loadTasks(this);
         }
+
+        if (SINGLETON.isFilePresent(this, appsFileName)) {
+            SINGLETON.loadApps(this);
+        }
     }
 
     public void launchTaskActivity(View view) {
@@ -40,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchAppManagerActivity(View view) {
+        //TODO: Do we want more stuff here, like display how many apps they have disabled?
         Intent intent = new Intent(MainActivity.this, AppManagerActivity.class);
         startActivity(intent);
     }
