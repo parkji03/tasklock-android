@@ -3,4 +3,9 @@
     <string name="launch_task_activity">Edit Tasks</string>
     <string name="launch_app_manager_activity">App Manager</string>
     <string name="launch_lock_activity">Start Tasks</string>
+    <string name="launch_iris">Iris Mode</string>
+    <string name="launch_about">About</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

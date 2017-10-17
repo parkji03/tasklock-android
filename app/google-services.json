@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "410392246686",
+    "firebase_url": "https://tasklock-app.firebaseio.com",
+    "project_id": "tasklock-app",
+    "storage_bucket": "tasklock-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:410392246686:android:4c82d2150be88a86",
+        "android_client_info": {
+          "package_name": "com.example.jipark.tasklock_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "410392246686-1dju25j9bir43su7ccspo56uctrc91dq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jipark.tasklock_app",
+            "certificate_hash": "1c3d8df9449bdfc5c4075a5f45d117b278b88273"
+          }
+        },
+        {
+          "client_id": "410392246686-74nddvsk3ud4q72fq1m9v5pmj6qk2ush.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfThz0zvnmrrk96eu01nF4aRMyTxT0YZ8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "410392246686-74nddvsk3ud4q72fq1m9v5pmj6qk2ush.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
