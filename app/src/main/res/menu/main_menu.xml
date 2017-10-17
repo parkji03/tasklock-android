@@ -3,7 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/action_eye"
         android:title="@string/launch_iris"
-        android:icon="@drawable/ic_remove_red_eye_black_24dp"/>
+        android:icon="@drawable/ic_remove_red_eye_black_24dp"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/action_settings"
+        android:title="@string/launch_settings"/>
 
     <item android:id="@+id/action_about"
         android:title="@string/launch_about"/>
