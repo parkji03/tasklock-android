@@ -28,17 +28,18 @@ import java.util.List;
 
 public class Utils {
     private static final Utils ourInstance = new Utils();
-    private boolean owner = false;
-    private boolean joiner = false;
-    private String masterRoomKey;
-
-    private DatabaseReference roomsReference;
-    private List<Task> taskList;
     private final String tasksFileName = "tasks.json";
     private final String AB = "0123456789ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"; //doesn't contain I or l for avoiding ambiguity
-    private SecureRandom rnd;
     private final int roomKeyLength = 6;
     private final int ownerIDLength = 4;
+
+    private List<Task> taskList;
+    private DatabaseReference roomsReference;
+    private String masterRoomKey;
+    private boolean owner;
+    private boolean joiner;
+
+    private SecureRandom rnd;
 
     public static Utils getInstance() {
         return ourInstance;
@@ -49,6 +50,8 @@ public class Utils {
         roomsReference = FirebaseDatabase.getInstance().getReference("Rooms");
         rnd = new SecureRandom();
         masterRoomKey = "";
+        owner = false;
+        joiner = false;
     }
 
     public String generateRandomString(int len){

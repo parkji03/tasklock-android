@@ -18,11 +18,6 @@ import com.example.jipark.tasklock_app.iris.IrisActivity;
 import com.example.jipark.tasklock_app.lock.LockActivity;
 import com.example.jipark.tasklock_app.task.TaskActivity;
 
-//TODO: lock feature, add more lock screen things like time, phone, app manager
-//https://stackoverflow.com/questions/22500959/detect-when-other-application-opened-or-launched
-//".write": "auth != null"
-//give app the same id, set up rule for firebase, just to give permission to write to the database
-
 public class MainActivity extends AppCompatActivity {
     private String tasksFileName = "tasks.json";
     private Utils SINGLETON;
@@ -36,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
         if (SINGLETON.isFilePresent(this, tasksFileName)) {
             SINGLETON.loadTasks(this);
         }
+    }
+
+    public void launchIrisActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, TaskActivity.class);
+        startActivity(intent);
     }
 
     public void launchTaskActivity(View view) {

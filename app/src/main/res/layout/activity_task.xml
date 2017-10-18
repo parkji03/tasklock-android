@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:id="@+id/activity_main">
+    android:id="@+id/activity_task">
 
     <LinearLayout
         android:gravity="center"
@@ -28,11 +28,12 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_height="wrap_content"
-                android:layout_width="fill_parent"
+                android:layout_width="230dp"
                 android:inputType="text"
                 android:hint="Create a new task"/>
 
             <Button
+                android:layout_marginRight="3dp"
                 android:layout_centerInParent="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
@@ -43,24 +44,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:onClick="addTask"/>
-
         </RelativeLayout>
 
         <TextView
             android:textColor="@color/gray"
             android:id="@+id/hidden_text"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="1000dp"
             android:visibility="gone"
             android:text="You have no tasks." />
 
         <android.support.v7.widget.RecyclerView
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_marginTop="16dp"
             android:id="@+id/task_list"
             android:scrollbars="vertical"
             android:layout_width="match_parent"

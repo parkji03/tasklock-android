@@ -30,11 +30,12 @@
         android:orientation="vertical"
         android:layout_marginBottom="10dp"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="2"
+        android:layout_weight="3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <Button
+            android:visibility="gone"
             android:id="@+id/launch_app_manager_button"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
@@ -43,6 +44,16 @@
             android:onClick="launchAppManagerActivity"
             android:text="@string/launch_app_manager_activity"
             android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/lock_button"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:background="@color/mainBlue"
+            android:onClick="launchLockActivity"
+            android:text="@string/launch_lock_activity"
+            android:textColor="@color/white"
+            android:layout_marginBottom="10dp"/>
 
         <Button
             android:id="@+id/launch_task_button"
@@ -55,12 +66,12 @@
             android:textColor="@color/white" />
 
         <Button
-            android:id="@+id/lock_button"
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
+            android:onClick="launchIrisActivity"
+            android:id="@+id/launch_iris_button"
+            android:text="@string/iris_mode"
             android:background="@color/mainBlue"
-            android:onClick="launchLockActivity"
-            android:text="@string/launch_lock_activity"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 </LinearLayout>
