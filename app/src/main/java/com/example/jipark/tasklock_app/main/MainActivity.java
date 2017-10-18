@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchIrisActivity(View view) {
-        Intent intent = new Intent(MainActivity.this, TaskActivity.class);
+        Intent intent = new Intent(MainActivity.this, IrisActivity.class);
         startActivity(intent);
     }
 
@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
             else {
                 alertDialog.setTitle("You have " + SINGLETON.getTaskCount() + " tasks.");
             }
-            alertDialog.setMessage("You're selected apps will be disabled.  Are you sure you want to start?");
+//            alertDialog.setMessage("You're selected apps will be disabled.  Are you sure you want to start?");
+            alertDialog.setMessage("Are you sure?");
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm",
                     new DialogInterface.OnClickListener() {
                         @Override

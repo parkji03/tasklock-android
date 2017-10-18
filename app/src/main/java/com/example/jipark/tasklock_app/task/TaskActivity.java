@@ -147,11 +147,13 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Task
         in.setDuration(1100);
 
         if (SINGLETON.getTaskList().isEmpty()) {
+            mRecyclerView.setVisibility(View.GONE);
             mHiddenText.startAnimation(in);
             mHiddenText.setVisibility(View.VISIBLE);
         }
         else {
             mHiddenText.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
         }
     }
 }

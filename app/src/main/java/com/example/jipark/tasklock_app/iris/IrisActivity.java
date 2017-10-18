@@ -3,6 +3,7 @@ package com.example.jipark.tasklock_app.iris;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jipark.tasklock_app.R;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 public class IrisActivity extends AppCompatActivity {
     private Utils SINGLETON;
+    private TextView mRoomKeyDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +60,12 @@ public class IrisActivity extends AppCompatActivity {
             SINGLETON.setMasterRoomKey(roomKey);
 
             setContentView(R.layout.room_create);
+            mRoomKeyDisplay = (TextView)findViewById(R.id.iris_room_key);
+            mRoomKeyDisplay.setText("Room Key: " + roomKey);
 
-            //show loading
-            //listen on change if value is true
-            //change
+            //listen on change
+            //if joiner value is true, change to connection confirmation page
+            //when joiner presses start tasks, display tasks for room owner and send push notifications on each task completion
         }
     }
 
@@ -87,11 +91,16 @@ public class IrisActivity extends AppCompatActivity {
 //
 //            }
 //        });
-
-
-
     }
 
+    public void cancelRoom(View view) {
+        //cancel room creation, reset local room owner values
+        SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue();
+        SINGLETON.setMasterRoomKey("");
+        SINGLETON.setOwner(false);
+        setContentView(R.layout.activity_iris);
+//        Toast.makeText(this, "room owner = " + SINGLETON.getMasterRoomKey(), Toast.LENGTH_SHORT).show();
+    }
 
     //TODO: for parent
 
