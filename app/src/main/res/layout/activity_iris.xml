@@ -53,48 +53,57 @@
         android:layout_marginRight="8dp"
         android:id="@+id/status_layout">
 
+        <TextView
+            android:id="@+id/iris_room_key"
+            android:textSize="30sp"
+            android:text="Room Key: a3RTVm"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"/>
+
         <ProgressBar
             android:layout_gravity="center"
             android:id="@+id/waiting_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Iris Mode"
-            android:textSize="20sp"
-            android:gravity="center"
-            android:id="@+id/iris_title"/>
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Iris Mode"-->
+            <!--android:textSize="20sp"-->
+            <!--android:gravity="center"-->
+            <!--android:id="@+id/iris_title"/>-->
 
-        <ImageView
-            android:id="@+id/iris_logo"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tint="@color/gray"
-            android:src="@drawable/ic_remove_red_eye_black_24dp"/>
+        <!--<ImageView-->
+            <!--android:id="@+id/iris_logo"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:tint="@color/gray"-->
+            <!--android:src="@drawable/ic_remove_red_eye_black_24dp"/>-->
 
-        <TextView
-            android:textSize="12sp"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="You're device isn't paired."
-            android:id="@+id/iris_flavor"
-            tools:layout_editor_absoluteY="0dp"
-            tools:layout_editor_absoluteX="8dp" />
+        <!--<TextView-->
+            <!--android:textSize="12sp"-->
+            <!--android:gravity="center"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="You're device isn't paired."-->
+            <!--android:id="@+id/iris_flavor"-->
+            <!--tools:layout_editor_absoluteY="0dp"-->
+            <!--tools:layout_editor_absoluteX="8dp" />-->
 
-        <TextView
-            android:id="@+id/iris_guide"
-            android:textSize="12sp"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Create or join a room by selecting an option below."
-            android:layout_marginBottom="200dp"/>
+        <!--<TextView-->
+            <!--android:id="@+id/iris_guide"-->
+            <!--android:textSize="12sp"-->
+            <!--android:gravity="center"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Create or join a room by selecting an option below."-->
+            <!--android:layout_marginBottom="200dp"/>-->
 
         <TextView
             android:id="@+id/waiting_text"
@@ -104,7 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:text="Waiting for someone to join the room..."
-            android:visibility="gone"/>
+            android:visibility="visible"/>
 
         <LinearLayout
             android:layout_gravity="center_horizontal"
@@ -119,9 +128,9 @@
                 android:textColor="@color/white"
                 android:text="@string/cancel"
                 android:id="@+id/waiting_cancel"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:onClick="cancelRoom"
-                android:layout_marginBottom="200dp"/>
+                android:layout_marginBottom="130dp"/>
 
         </LinearLayout>
 

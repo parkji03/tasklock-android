@@ -36,10 +36,10 @@ public class IrisActivity extends AppCompatActivity {
         SINGLETON = Utils.getInstance();
 
         mProgress = (ProgressBar)findViewById(R.id.waiting_progress);
-        mIrisTitle = (TextView)findViewById(R.id.iris_title);
-        mIrisLogo = (ImageView)findViewById(R.id.iris_logo);
-        mIrisFlavor = (TextView)findViewById(R.id.iris_flavor);
-        mIrisGuide = (TextView)findViewById(R.id.iris_guide);
+//        mIrisTitle = (TextView)findViewById(R.id.iris_title);
+//        mIrisLogo = (ImageView)findViewById(R.id.iris_logo);
+//        mIrisFlavor = (TextView)findViewById(R.id.iris_flavor);
+//        mIrisGuide = (TextView)findViewById(R.id.iris_guide);
         mWaiting = (TextView)findViewById(R.id.waiting_text);
         mCancelButton = (Button)findViewById(R.id.waiting_cancel);
     }
@@ -108,12 +108,12 @@ public class IrisActivity extends AppCompatActivity {
         });
     }
 
-    private void hideMainIris() {
-        mIrisTitle.setVisibility(View.GONE);
-        mIrisLogo.setVisibility(View.GONE);
-        mIrisFlavor.setVisibility(View.GONE);
-        mIrisGuide.setVisibility(View.GONE);
-    }
+//    private void hideMainIris() {
+//        mIrisTitle.setVisibility(View.GONE);
+//        mIrisLogo.setVisibility(View.GONE);
+//        mIrisFlavor.setVisibility(View.GONE);
+//        mIrisGuide.setVisibility(View.GONE);
+//    }
 
     private void showCreateRoomLoading() {
         mProgress.setVisibility(View.VISIBLE);
