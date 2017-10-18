@@ -1,5 +1,8 @@
 package com.example.jipark.tasklock_app.iris;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -33,39 +36,48 @@ public class IrisActivity extends AppCompatActivity {
     }
 
     public void createRoom(View view) {
-        if (SINGLETON.isJoiner()) { //only let non-joiners
-            //client is a joiner, don't let him make without confirmation
-        }
-        else if(SINGLETON.isOwner()) {
-            //client is an owner, don't let him make without confirmation
+        //first check if internet is connected
+        if (isInternetConnected()) {
+            if (SINGLETON.isJoiner()) { //only let non-joiners
+                //client is a joiner, don't let him make without confirmation
+            }
+            else if(SINGLETON.isOwner()) {
+                //client is an owner, don't let him make without confirmation
+            }
+            else {
+                Map<String, Object> newRoom = new HashMap<>();
+                Map<String, Object> roomOwner = new HashMap<>();
+                Map<String, Object> roomJoiner = new HashMap<>();
+                String roomKey = SINGLETON.generateRoomKey();
+                String ownerID = SINGLETON.generateOwnerID();
+
+                newRoom.put(roomKey, "");
+                roomOwner.put("owner", ownerID);
+                roomJoiner.put("joiner", false);
+
+                SINGLETON.getRoomsReference().updateChildren(newRoom);
+                DatabaseReference roomRoot = SINGLETON.getRoomsReference().child(roomKey);
+                roomRoot.updateChildren(roomOwner);
+                roomRoot.updateChildren(roomJoiner);
+
+                //set client ownership
+                SINGLETON.setOwner(true);
+                SINGLETON.setMasterRoomKey(roomKey);
+
+                setContentView(R.layout.room_create);
+                mRoomKeyDisplay = (TextView)findViewById(R.id.iris_room_key);
+                String displayKey = "Room Key: " + roomKey;
+                mRoomKeyDisplay.setText(displayKey);
+
+
+
+                //listen on change
+                //if joiner value is true, change to connection confirmation page
+                //when joiner presses start tasks, display tasks for room owner and send push notifications on each task completion
+            }
         }
         else {
-            Map<String, Object> newRoom = new HashMap<>();
-            Map<String, Object> roomOwner = new HashMap<>();
-            Map<String, Object> roomJoiner = new HashMap<>();
-            String roomKey = SINGLETON.generateRoomKey();
-            String ownerID = SINGLETON.generateOwnerID();
-
-            newRoom.put(roomKey, "");
-            roomOwner.put("owner", ownerID);
-            roomJoiner.put("joiner", false);
-
-            SINGLETON.getRoomsReference().updateChildren(newRoom);
-            DatabaseReference roomRoot = SINGLETON.getRoomsReference().child(roomKey);
-            roomRoot.updateChildren(roomOwner);
-            roomRoot.updateChildren(roomJoiner);
-
-            //set client ownership
-            SINGLETON.setOwner(true);
-            SINGLETON.setMasterRoomKey(roomKey);
-
-            setContentView(R.layout.room_create);
-            mRoomKeyDisplay = (TextView)findViewById(R.id.iris_room_key);
-            mRoomKeyDisplay.setText("Room Key: " + roomKey);
-
-            //listen on change
-            //if joiner value is true, change to connection confirmation page
-            //when joiner presses start tasks, display tasks for room owner and send push notifications on each task completion
+            Toast.makeText(this, "Could not establish connection with the server.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -100,6 +112,17 @@ public class IrisActivity extends AppCompatActivity {
         SINGLETON.setOwner(false);
         setContentView(R.layout.activity_iris);
 //        Toast.makeText(this, "room owner = " + SINGLETON.getMasterRoomKey(), Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean isInternetConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            return true;
+        }
+        else
+            return false;
     }
 
     //TODO: for parent

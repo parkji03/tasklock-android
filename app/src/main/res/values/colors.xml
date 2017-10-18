@@ -6,4 +6,5 @@
     <color name="mainOrange">#FF6008</color>
     <color name="darkOrange">#DD5006</color>
     <color name="gray">#D8D8D8</color>
+    <color name="checkMarkGreen">#00EE00</color>
 </resources>
