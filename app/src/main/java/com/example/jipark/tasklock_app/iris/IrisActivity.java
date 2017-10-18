@@ -41,7 +41,7 @@ public class IrisActivity extends AppCompatActivity {
 //        mIrisFlavor = (TextView)findViewById(R.id.iris_flavor);
 //        mIrisGuide = (TextView)findViewById(R.id.iris_guide);
         mWaiting = (TextView)findViewById(R.id.waiting_text);
-        mCancelButton = (Button)findViewById(R.id.waiting_cancel);
+//        mCancelButton = (Button)findViewById(R.id.waiting_cancel);
     }
 
     public void createRoom(View view) {

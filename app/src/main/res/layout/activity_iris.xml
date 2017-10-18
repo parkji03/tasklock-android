@@ -1,171 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.jipark.tasklock_app.iris.IrisActivity"
-    tools:layout_editor_absoluteY="0dp"
-    tools:layout_editor_absoluteX="0dp">
-
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="8dp"
-        tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp">
-
-
-    </RelativeLayout>
-
+<LinearLayout
+    android:layout_marginTop="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginBottom="8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/activity_iris">
 
     <LinearLayout
-        android:gravity="center_vertical"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="0dp"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:gravity="center"
         android:orientation="vertical"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="8dp"
-        tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:id="@+id/status_layout">
+        android:layout_weight="6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/iris_room_key"
-            android:textSize="30sp"
-            android:text="Room Key: a3RTVm"
-            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"/>
+            android:text="@string/iris_mode"
+            android:textSize="30sp"
+            android:gravity="center"
+            android:id="@+id/iris_title"/>
 
-        <ProgressBar
+        <ImageView
+            android:contentDescription="@string/iris_mode"
+            android:id="@+id/iris_logo"
             android:layout_gravity="center"
-            android:id="@+id/waiting_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:visibility="visible"/>
-
-        <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Iris Mode"-->
-            <!--android:textSize="20sp"-->
-            <!--android:gravity="center"-->
-            <!--android:id="@+id/iris_title"/>-->
-
-        <!--<ImageView-->
-            <!--android:id="@+id/iris_logo"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:tint="@color/gray"-->
-            <!--android:src="@drawable/ic_remove_red_eye_black_24dp"/>-->
-
-        <!--<TextView-->
-            <!--android:textSize="12sp"-->
-            <!--android:gravity="center"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="You're device isn't paired."-->
-            <!--android:id="@+id/iris_flavor"-->
-            <!--tools:layout_editor_absoluteY="0dp"-->
-            <!--tools:layout_editor_absoluteX="8dp" />-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/iris_guide"-->
-            <!--android:textSize="12sp"-->
-            <!--android:gravity="center"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Create or join a room by selecting an option below."-->
-            <!--android:layout_marginBottom="200dp"/>-->
+            android:tint="@color/gray"
+            android:src="@drawable/ic_remove_red_eye_black_24dp"/>
 
         <TextView
-            android:id="@+id/waiting_text"
             android:textSize="12sp"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="Waiting for someone to join the room..."
-            android:visibility="visible"/>
+            android:text="You're device isn't paired."
+            android:id="@+id/iris_flavor" />
 
-        <LinearLayout
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:layout_centerInParent="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/gray"
-                android:textColor="@color/white"
-                android:text="@string/cancel"
-                android:id="@+id/waiting_cancel"
-                android:visibility="visible"
-                android:onClick="cancelRoom"
-                android:layout_marginBottom="130dp"/>
-
-        </LinearLayout>
-
+        <TextView
+            android:id="@+id/iris_guide"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create or join a room by selecting an option below."/>
     </LinearLayout>
 
     <LinearLayout
+        android:gravity="center|bottom"
         android:orientation="vertical"
-        android:layout_height="0dp"
-        android:layout_width="240dp"
-        android:id="@+id/linearLayout"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toBottomOf="@+id/status_layout"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="2dp"
-        app:layout_constraintLeft_toLeftOf="parent">
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/launch_task_button"
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@color/mainBlue"
-            android:text="@string/create_room"
-            android:textColor="@color/white"
-            android:onClick="createRoom"/>
+            <Button
+                android:id="@+id/create_room_button"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:layout_marginBottom="10dp"
+                android:background="@color/mainBlue"
+                android:onClick="createRoom"
+                android:text="@string/create_room"
+                android:textColor="@color/white" />
 
-        <Button
-            android:id="@+id/lock_button"
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            android:background="@color/mainBlue"
-            android:text="@string/join_room"
-            android:textColor="@color/white"
-            android:onClick="joinRoom"/>
+            <Button
+                android:layout_gravity="center|bottom"
+                android:id="@+id/join_room_button"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:background="@color/mainBlue"
+                android:text="@string/join_room"
+                android:textColor="@color/white"
+                android:onClick="joinRoom"/>
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

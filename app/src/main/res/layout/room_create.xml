@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/room_create_linear">
+    
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_weight="6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/iris_room_key"
+            android:textSize="30sp"
+            android:text="Room Key: a3RTVm"
+            android:gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:textSize="13sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Share this room key with another person."
+            android:layout_marginBottom="35dp"/>
+
+        <ProgressBar
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center"
+            android:id="@+id/waiting_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/waiting_text"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Waiting for someone to join the room..." />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginBottom="10dp"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center|bottom"
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_gravity="center|bottom"
+            android:id="@+id/lock_button"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:background="@color/gray"
+            android:onClick="cancelRoom"
+            android:text="@string/cancel"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</LinearLayout>
+

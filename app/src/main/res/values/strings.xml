@@ -9,4 +9,5 @@
     <string name="create_room">Create A Room</string>
     <string name="join_room">Join A Room</string>
     <string name="cancel">Cancel</string>
+    <string name="iris_mode">Iris Mode</string>
 </resources>
