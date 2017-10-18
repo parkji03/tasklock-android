@@ -2,10 +2,10 @@ package com.example.jipark.tasklock_app;
 
 import android.app.Activity;
 import android.content.Context;
-import android.view.View;
-import android.widget.Toast;
 
 import com.example.jipark.tasklock_app.task.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +28,17 @@ import java.util.List;
 
 public class Utils {
     private static final Utils ourInstance = new Utils();
+    private boolean owner = false;
+    private boolean joiner = false;
+    private String masterRoomKey;
+
+    private DatabaseReference roomsReference;
     private List<Task> taskList;
-    private String tasksFileName;
+    private final String tasksFileName = "tasks.json";
+    private final String AB = "0123456789ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"; //doesn't contain I or l for avoiding ambiguity
+    private SecureRandom rnd;
+    private final int roomKeyLength = 6;
+    private final int ownerIDLength = 4;
 
     public static Utils getInstance() {
         return ourInstance;
@@ -36,7 +46,16 @@ public class Utils {
 
     private Utils() {
         taskList = new ArrayList<>();
-        tasksFileName = "tasks.json";
+        roomsReference = FirebaseDatabase.getInstance().getReference("Rooms");
+        rnd = new SecureRandom();
+        masterRoomKey = "";
+    }
+
+    public String generateRandomString(int len){
+        StringBuilder sb = new StringBuilder(len);
+        for(int i = 0; i < len; i++)
+            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+        return sb.toString();
     }
 
     public void loadTasks(Context context) {
@@ -149,5 +168,41 @@ public class Utils {
         String path = context.getFilesDir().getAbsolutePath() + "/" + fileName;
         File file = new File(path);
         return file.exists();
+    }
+
+    public DatabaseReference getRoomsReference() {
+        return roomsReference;
+    }
+
+    public String generateRoomKey() {
+        return generateRandomString(roomKeyLength);
+    }
+
+    public String generateOwnerID() {
+        return "owner-" + generateRandomString(ownerIDLength);
+    }
+
+    public boolean isOwner() {
+        return owner;
+    }
+
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+    }
+
+    public boolean isJoiner() {
+        return joiner;
+    }
+
+    public void setJoiner(boolean joiner) {
+        this.joiner = joiner;
+    }
+
+    public String getMasterRoomKey() {
+        return masterRoomKey;
+    }
+
+    public void setMasterRoomKey(String masterRoomKey) {
+        this.masterRoomKey = masterRoomKey;
     }
 }
