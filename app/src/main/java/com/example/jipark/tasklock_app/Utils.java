@@ -38,6 +38,7 @@ public class Utils {
     private String masterRoomKey;
     private boolean owner;
     private boolean joiner;
+    private boolean paired;
 
     private SecureRandom rnd;
 
@@ -52,6 +53,7 @@ public class Utils {
         masterRoomKey = "";
         owner = false;
         joiner = false;
+        paired = false;
     }
 
     public String generateRandomString(int len){
@@ -207,5 +209,13 @@ public class Utils {
 
     public void setMasterRoomKey(String masterRoomKey) {
         this.masterRoomKey = masterRoomKey;
+    }
+
+    public boolean isPaired() {
+        return paired;
+    }
+
+    public void setPaired(boolean paired) {
+        this.paired = paired;
     }
 }

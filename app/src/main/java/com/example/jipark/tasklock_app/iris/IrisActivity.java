@@ -1,9 +1,11 @@
 package com.example.jipark.tasklock_app.iris;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -47,8 +49,22 @@ public class IrisActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_iris);
         SINGLETON = Utils.getInstance();
+
+        if (SINGLETON.isJoiner()) {
+            setContentView(R.layout.room_join_success);
+        }
+        else if(SINGLETON.isOwner()) {
+            if(SINGLETON.isPaired()) {
+                setContentView(R.layout.room_create_success);
+            }
+            else {
+                setContentView(R.layout.room_create);
+            }
+        }
+        else {
+            setContentView(R.layout.activity_iris);
+        }
     }
 
     //activity_iris.xml
@@ -88,6 +104,20 @@ public class IrisActivity extends AppCompatActivity {
                 mRoomCreateKeyDisplay.setText(displayKey);
 
                 //listen on change
+                final DatabaseReference joinerRoot = SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner");
+                joinerRoot.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if((Boolean)dataSnapshot.getValue()) {
+                            slideContentIn(R.layout.room_create_success);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 //                slideContentIn(R.layout.room_create_success);
                 //if joiner value is true, change to connection confirmation page
                 //when joiner presses start tasks, display tasks for room owner and send push notifications on each task completion
@@ -127,14 +157,18 @@ public class IrisActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChild(inputRoomKey)) {
-                    SINGLETON.setJoiner(true);
-                    SINGLETON.setMasterRoomKey(inputRoomKey);
-                    rooms.child(inputRoomKey).child("joiner").setValue(true);
+                    if(!((Boolean)dataSnapshot.child(inputRoomKey).child("joiner").getValue())) {
+                        SINGLETON.setJoiner(true);
+                        SINGLETON.setMasterRoomKey(inputRoomKey);
+                        rooms.child(inputRoomKey).child("joiner").setValue(true);
 
-                    //change layout to success
-                    slideContentIn(R.layout.room_join_success);
-
-                    //TODO: begin heartbeat poll
+                        //change layout to success
+                        slideContentIn(R.layout.room_join_success);
+                        //TODO: begin heartbeat poll
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "This room is full!", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Invalid room key!", Toast.LENGTH_SHORT).show();
@@ -148,13 +182,49 @@ public class IrisActivity extends AppCompatActivity {
     }
 
     //room_create_success.xml
-    public void closeRoom(View view) {
-        //show alert dialog confirmation... are you sure you want to close the room? the connection will be lost.
-
+    public void closeRoom(View view) { //for room owners only
+        AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
+        alertDialog.setTitle("Confirm");
+        alertDialog.setMessage("All connected devices will lose their connection to this room.\nAre you sure you want to close the room?");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //TODO: notify database that we're deleting the room, notify room joiner
+                SINGLETON.setMasterRoomKey("");
+                SINGLETON.setOwner(false);
+                slideContentIn(R.layout.activity_iris);
+            }
+        });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        alertDialog.show();
     }
 
-    public void closeConnection(View view) {
-        //show alert dialog confirmation... are you sure you want to close the connection?
+    public void closeConnection(View view) { //for room joiners only
+        AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
+        alertDialog.setTitle("Confirm");
+        alertDialog.setMessage("Disconnecting will notify the room owner.\nAre you sure?");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //TODO: notify database that joiner left the room, and notify room owner
+                SINGLETON.setMasterRoomKey("");
+                SINGLETON.setJoiner(false);
+                slideContentIn(R.layout.activity_iris);
+            }
+        });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        alertDialog.show();
+
     }
 
     //room_join_success.xml
