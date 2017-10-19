@@ -19,7 +19,7 @@
 
         <TextView
             android:textSize="30sp"
-            android:text="Success!"
+            android:text="@string/success_title"
             android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -34,12 +34,12 @@
             android:textSize="13sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Your devices are now paired."
+            android:text="@string/paired_notification"
             android:layout_marginBottom="8dp"/>
 
         <TextView
             android:textSize="14sp"
-            android:text="Waiting to receive tasks..."
+            android:text="@string/waiting_to_receive"
             android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -60,16 +60,6 @@
         android:layout_weight="2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <!--<Button-->
-            <!--android:layout_gravity="center|bottom"-->
-            <!--android:layout_width="240dp"-->
-            <!--android:layout_marginBottom="10dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@color/mainBlue"-->
-            <!--android:text="Home"-->
-            <!--android:textColor="@color/white"-->
-            <!--android:onClick="returnToHome"/>-->
 
         <Button
             android:layout_gravity="center|bottom"

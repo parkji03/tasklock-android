@@ -17,39 +17,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!--<TextView-->
-            <!--android:textSize="30sp"-->
-            <!--android:text="Success!"-->
-            <!--android:gravity="center_horizontal"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"/>-->
+        <TextView
+            android:textSize="24sp"
+            android:text="Viewing received tasks:"
+            android:gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-        <!--<ImageView-->
-            <!--android:tint="@color/checkMarkGreen"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/ic_check_black_24dp"/>-->
-
-        <!--<TextView-->
-            <!--android:textSize="13sp"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Your devices are now paired."-->
-            <!--android:layout_marginBottom="8dp"/>-->
-
-        <!--<TextView-->
-            <!--android:textSize="14sp"-->
-            <!--android:text="Waiting to receive tasks..."-->
-            <!--android:gravity="center_horizontal"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content" />-->
-
-        <!--<ProgressBar-->
-            <!--android:indeterminate="true"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
-            <!--android:layout_marginBottom="35dp"/>-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/received_task_list"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:isScrollContainer="false"/>
     </LinearLayout>
 
     <LinearLayout

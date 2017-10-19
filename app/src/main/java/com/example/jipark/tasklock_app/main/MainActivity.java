@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 DatabaseReference tasksRoot = SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("tasks");
 
-                                int iter = 1;
+                                int iter = 0;
                                 for (Task taskIter : SINGLETON.getTaskList()) {
                                     String iterString = String.valueOf(iter); //id for tasks
 

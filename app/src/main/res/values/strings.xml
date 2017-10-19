@@ -15,6 +15,9 @@
     <string name="room_key">Room Key</string>
     <string name="enter_room">Enter Room</string>
     <string name="caps_sensitive">Room keys are caps sensitive.</string>
+    <string name="success_title">Success!</string>
+    <string name="waiting_to_receive">Waiting to receive tasks...</string>
+    <string name="paired_notification">Your devices are now paired.</string>
 
 
     <item name="visible" type="id"/>
