@@ -191,17 +191,17 @@ public class Utils {
         return owner;
     }
 
-    public void setOwner(boolean owner) {
-        this.owner = owner;
-    }
+//    public void setOwner(boolean owner) {
+//        this.owner = owner;
+//    }
 
     public boolean isJoiner() {
         return joiner;
     }
-
-    public void setJoiner(boolean joiner) {
-        this.joiner = joiner;
-    }
+//
+//    public void setJoiner(boolean joiner) {
+//        this.joiner = joiner;
+//    }
 
     public String getMasterRoomKey() {
         return masterRoomKey;
@@ -217,5 +217,33 @@ public class Utils {
 
     public void setPaired(boolean paired) {
         this.paired = paired;
+    }
+
+    public void setLocalJoinerValues(String key, boolean b) {
+        if(b) {
+            this.paired = true;
+        }
+        this.joiner = true;
+        this.masterRoomKey = key;
+    }
+
+    public void setLocalOwnerValues(String key, boolean b) {
+        if(b) {
+            this.paired = true;
+        }
+        this.owner = true;
+        this.masterRoomKey = key;
+    }
+
+    public void resetLocalJoinerValues() {
+        this.paired = false;
+        this.joiner = false;
+        this.masterRoomKey = "";
+    }
+
+    public void resetLocalOwnerValues() {
+        this.paired = false;
+        this.owner = false;
+        this.masterRoomKey = "";
     }
 }

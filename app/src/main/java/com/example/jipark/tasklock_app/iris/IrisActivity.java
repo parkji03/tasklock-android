@@ -54,7 +54,7 @@ public class IrisActivity extends AppCompatActivity {
         if (SINGLETON.isJoiner()) {
             setContentView(R.layout.room_join_success);
         }
-        else if(SINGLETON.isOwner()) {
+        else if (SINGLETON.isOwner()) {
             if(SINGLETON.isPaired()) {
                 setContentView(R.layout.room_create_success);
             }
@@ -94,8 +94,7 @@ public class IrisActivity extends AppCompatActivity {
                 roomRoot.updateChildren(roomJoiner);
 
                 //set client ownership
-                SINGLETON.setOwner(true);
-                SINGLETON.setMasterRoomKey(roomKey);
+                SINGLETON.setLocalOwnerValues(roomKey, false);
 
                 //change layout
                 slideContentIn(R.layout.room_create);
@@ -109,6 +108,7 @@ public class IrisActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if((Boolean)dataSnapshot.getValue()) {
+                            SINGLETON.setPaired(true);
                             slideContentIn(R.layout.room_create_success);
                         }
                     }
@@ -132,8 +132,9 @@ public class IrisActivity extends AppCompatActivity {
     public void cancelRoomCreate(View view) {
         //cancel room creation, reset local room owner values
         SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue();
-        SINGLETON.setMasterRoomKey("");
-        SINGLETON.setOwner(false);
+        SINGLETON.resetLocalOwnerValues();
+//        SINGLETON.setMasterRoomKey("");
+//        SINGLETON.setOwner(false);
 
         //change layout
         slideContentIn(R.layout.activity_iris);
@@ -158,10 +159,12 @@ public class IrisActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChild(inputRoomKey)) {
                     if(!((Boolean)dataSnapshot.child(inputRoomKey).child("joiner").getValue())) {
-                        SINGLETON.setJoiner(true);
-                        SINGLETON.setMasterRoomKey(inputRoomKey);
-                        rooms.child(inputRoomKey).child("joiner").setValue(true);
+                        SINGLETON.setLocalJoinerValues(inputRoomKey, true);
+//                        SINGLETON.setJoiner(true);
+//                        SINGLETON.setMasterRoomKey(inputRoomKey);
+//                        SINGLETON.setPaired(true);
 
+                        rooms.child(inputRoomKey).child("joiner").setValue(true); //change database
                         //change layout to success
                         slideContentIn(R.layout.room_join_success);
                         //TODO: begin heartbeat poll
@@ -184,14 +187,15 @@ public class IrisActivity extends AppCompatActivity {
     //room_create_success.xml
     public void closeRoom(View view) { //for room owners only
         AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
-        alertDialog.setTitle("Confirm");
-        alertDialog.setMessage("All connected devices will lose their connection to this room.\nAre you sure you want to close the room?");
+//        alertDialog.setTitle("Confirm");
+        alertDialog.setMessage("All devices will lose their connection to this room.\nAre you sure?");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //TODO: notify database that we're deleting the room, notify room joiner
-                SINGLETON.setMasterRoomKey("");
-                SINGLETON.setOwner(false);
+                SINGLETON.resetLocalOwnerValues();
+//                SINGLETON.setMasterRoomKey("");
+//                SINGLETON.setOwner(false);
                 slideContentIn(R.layout.activity_iris);
             }
         });
@@ -206,14 +210,15 @@ public class IrisActivity extends AppCompatActivity {
 
     public void closeConnection(View view) { //for room joiners only
         AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
-        alertDialog.setTitle("Confirm");
+//        alertDialog.setTitle("Confirm");
         alertDialog.setMessage("Disconnecting will notify the room owner.\nAre you sure?");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //TODO: notify database that joiner left the room, and notify room owner
-                SINGLETON.setMasterRoomKey("");
-                SINGLETON.setJoiner(false);
+                SINGLETON.resetLocalJoinerValues();
+//                SINGLETON.setMasterRoomKey("");
+//                SINGLETON.setJoiner(false);
                 slideContentIn(R.layout.activity_iris);
             }
         });
