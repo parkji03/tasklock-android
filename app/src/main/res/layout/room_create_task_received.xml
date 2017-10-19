@@ -37,9 +37,9 @@
         android:orientation="vertical"
         android:layout_marginBottom="10dp"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="170dp">
 
         <Button
             android:layout_gravity="center|bottom"
@@ -47,7 +47,7 @@
             android:layout_marginBottom="10dp"
             android:layout_height="wrap_content"
             android:background="@color/mainBlue"
-            android:text="Return Home"
+            android:text="@string/return_home_button_label"
             android:textColor="@color/white"
             android:onClick="returnToHome"/>
 

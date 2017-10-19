@@ -51,7 +51,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:visibility="gone"
-            android:text="You have no tasks." />
+            android:text="@string/no_task_notification" />
 
         <android.support.v7.widget.RecyclerView
             android:layout_marginTop="16dp"
