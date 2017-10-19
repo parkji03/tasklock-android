@@ -13,6 +13,9 @@ import java.util.List;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.app.ActivityManager;
+import java.util.Iterator;
+import android.util.Log;
 
 public class AppManagerActivity extends AppCompatActivity {
     private PackageManager pm;
@@ -54,6 +57,21 @@ public class AppManagerActivity extends AppCompatActivity {
             } else {
                 userApps.add(app);
             }
+
+//            ActivityManager am = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
+//            List l = am.getRecentTasks(1, ActivityManager.RECENT_WITH_EXCLUDED);
+//            Iterator i = l.iterator();
+//            //PackageManager pm = this.getPackageManager();
+//            while (i.hasNext()) {
+//                ActivityManager.RunningAppProcessInfo info = (ActivityManager.RunningAppProcessInfo)(i.next());
+//                try {
+//                    CharSequence c = pm.getApplicationLabel(pm.getApplicationInfo(
+//                            info.processName, PackageManager.GET_META_DATA));
+//                    Log.w("LABEL", c.toString());
+//                } catch (Exception e) {
+//                    // Name Not Found Exception
+//                }
+//            }
 
             String label = (String) pm.getApplicationLabel(app);
             Drawable icon = pm.getApplicationIcon(app);

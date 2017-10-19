@@ -3,7 +3,9 @@ package com.example.jipark.tasklock_app.app_manager;
 /**
  * Created by Scott on 10/13/2017.
  */
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +24,13 @@ public class AppManagerAdapter extends RecyclerView.Adapter<AppManagerAdapter.Ap
     //private List<App> appList;
     List<String> labelList;
     List<Drawable> iconList;
+    static boolean clicked;
 
 
     public AppManagerAdapter(List<String> labelList, List<Drawable> iconList) {
         this.labelList = labelList;
         this.iconList = iconList;
+        clicked = false;
     }
 
     @Override
@@ -60,17 +64,20 @@ public class AppManagerAdapter extends RecyclerView.Adapter<AppManagerAdapter.Ap
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(),"You clicked "+ text.getText() , Toast.LENGTH_SHORT).show();
+                    if(text.getText().equals("YouTube")) {
+                        if(clicked) {
+                            v.setBackgroundColor(0x00000000);
+                            clicked = !clicked;
+                        }
+                        else {
+                            v.setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.gray));
+                            clicked = !clicked;
+                        }
+                    }
+                    else {
+                        Toast.makeText(v.getContext(),"You clicked "+ text.getText() , Toast.LENGTH_SHORT).show();
+                    }
 
-//                    appList.remove(position);
-//                    notifyItemRemoved(position);
-//                    notifyItemRangeChanged(position, appList.size());
-//                    try {
-//                        mAdapterCallback.onMethodCallback();
-//                    }
-//                    catch (ClassCastException e) {
-//                        e.printStackTrace();
-//                    }
                 }
             });
         }
