@@ -40,7 +40,7 @@
                     android:id="@+id/join_room_key_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Room Key" />
+                    android:hint="@string/room_key" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -49,7 +49,7 @@
             android:textColor="@color/gray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Room keys are caps sensitive."
+            android:text="@string/caps_sensitive"
             android:layout_marginBottom="8dp"/>
     </LinearLayout>
 
@@ -70,7 +70,7 @@
             android:layout_gravity="center|bottom"
             android:layout_marginBottom="10dp"
             android:background="@color/mainBlue"
-            android:text="Enter Room"
+            android:text="@string/enter_room"
             android:textColor="@color/white"
             android:onClick="enterRoomJoin"/>
 

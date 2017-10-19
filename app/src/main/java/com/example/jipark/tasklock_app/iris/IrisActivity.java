@@ -21,7 +21,10 @@ import android.widget.Toast;
 
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -108,74 +111,7 @@ public class IrisActivity extends AppCompatActivity {
 
     //activity_iris.xml
     public void joinRoom(View view) {
-        slideContentIn(R.layout.room_join);
-
-        TextInputLayout inputLayout = (TextInputLayout)findViewById(R.id.input_key_layout);
-        inputLayout.setCounterEnabled(true);
-        inputLayout.setCounterMaxLength(6);
-
-
-        mRoomJoinButton = (Button)findViewById(R.id.join_room_enter_button);
-        mRoomJoinEditText = (EditText)findViewById(R.id.join_room_key_input);
-
-        mRoomJoinEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if(i == EditorInfo.IME_ACTION_DONE) {
-                    InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                    mRoomJoinEditText.clearFocus();
-                }
-                return false;
-            }
-        });
-
-        mRoomJoinEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.toString().trim().length() == 0) {
-                    mRoomJoinButton.setVisibility(View.INVISIBLE);
-                }
-                else {
-                    mRoomJoinButton.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
-
-
-
-
-
-//        final DatabaseReference rooms = SINGLETON.getRoomsReference();
-//        rooms.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.hasChild("rK2HJv")) {
-//                    Toast.makeText(getApplicationContext(), "room exists", Toast.LENGTH_SHORT).show();
-//                    rooms.child("rK2HJv").child("joiner").setValue(true);
-//                    //TODO: begin heartbeat poll
-//                }
-//                else {
-//                    Toast.makeText(getApplicationContext(), "room doesn't exist", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
+        initRoomJoinLayout(); //load room_join.xml
     }
 
     //room_join.xml
@@ -185,14 +121,45 @@ public class IrisActivity extends AppCompatActivity {
 
     //room_join.xml
     public void enterRoomJoin(View view) {
-        Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
+        final String inputRoomKey = mRoomJoinEditText.getText().toString(); //grab the user input key from editText
+        final DatabaseReference rooms = SINGLETON.getRoomsReference();
+        rooms.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(inputRoomKey)) {
+                    SINGLETON.setJoiner(true);
+                    SINGLETON.setMasterRoomKey(inputRoomKey);
+                    rooms.child(inputRoomKey).child("joiner").setValue(true);
 
+                    //change layout to success
+                    slideContentIn(R.layout.room_join_success);
+
+                    //TODO: begin heartbeat poll
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Invalid room key!", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     //room_create_success.xml
     public void closeRoom(View view) {
         //show alert dialog confirmation... are you sure you want to close the room? the connection will be lost.
 
+    }
+
+    public void closeConnection(View view) {
+        //show alert dialog confirmation... are you sure you want to close the connection?
+    }
+
+    //room_join_success.xml
+    public void returnToMain(View view) {
+        //go back to main activity with info saved
     }
 
     private void slideContentIn(int layout) {
@@ -211,6 +178,48 @@ public class IrisActivity extends AppCompatActivity {
         }
         else
             return false;
+    }
+
+    private boolean initRoomJoinLayout() {
+        slideContentIn(R.layout.room_join);
+        TextInputLayout inputLayout = (TextInputLayout)findViewById(R.id.input_key_layout);
+        inputLayout.setCounterEnabled(true);
+        inputLayout.setCounterMaxLength(6);
+
+        mRoomJoinButton = (Button)findViewById(R.id.join_room_enter_button);
+        mRoomJoinEditText = (EditText)findViewById(R.id.join_room_key_input);
+        mRoomJoinEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if(i == EditorInfo.IME_ACTION_DONE) {
+                    InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    mRoomJoinEditText.clearFocus();
+                }
+                return false;
+            }
+        });
+
+        mRoomJoinEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.toString().trim().length() == 0) {
+                    mRoomJoinButton.setVisibility(View.INVISIBLE);
+                }
+                else {
+                    mRoomJoinButton.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        return true;
     }
 
     //TODO: for parent
