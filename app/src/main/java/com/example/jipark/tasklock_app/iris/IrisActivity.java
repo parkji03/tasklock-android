@@ -55,10 +55,10 @@ public class IrisActivity extends AppCompatActivity {
             setContentView(R.layout.room_join_success);
         }
         else if (SINGLETON.isOwner()) {
-            if (SINGLETON.isConnected() && SINGLETON.isPaired()) {
+            if (SINGLETON.hasReceivedTasks() && SINGLETON.isPaired()) {
                 setContentView(R.layout.room_create_task_received);
             }
-            else if (!SINGLETON.isConnected() && SINGLETON.isPaired()) {
+            else if (!SINGLETON.hasReceivedTasks() && SINGLETON.isPaired()) {
                 setContentView(R.layout.room_create_success);
             }
             else {
@@ -223,8 +223,6 @@ public class IrisActivity extends AppCompatActivity {
     public void returnToHome(View view) {
         finish();
     }
-
-
 
     private void slideContentIn(int layout) {
         LayoutInflater inflater = getLayoutInflater();

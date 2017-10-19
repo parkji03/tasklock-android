@@ -16,7 +16,12 @@ import com.example.jipark.tasklock_app.Utils;
 import com.example.jipark.tasklock_app.app_manager.AppManagerActivity;
 import com.example.jipark.tasklock_app.iris.IrisActivity;
 import com.example.jipark.tasklock_app.lock.LockActivity;
+import com.example.jipark.tasklock_app.task.Task;
 import com.example.jipark.tasklock_app.task.TaskActivity;
+import com.google.firebase.database.DatabaseReference;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private String tasksFileName = "tasks.json";
@@ -67,6 +72,41 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             dialogInterface.dismiss();
+                            if (SINGLETON.isJoiner() && SINGLETON.isPaired()) { //make sure we're connected to database...
+                                SINGLETON.setSentTasks(true);
+
+                                //add tasks holder to database
+                                Map<String, Object> tasks = new HashMap<>();
+                                tasks.put("tasks", "");
+                                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).updateChildren(tasks);
+
+                                DatabaseReference tasksRoot = SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("tasks");
+
+                                int iter = 1;
+                                for (Task taskIter : SINGLETON.getTaskList()) {
+                                    String iterString = String.valueOf(iter); //id for tasks
+
+                                    //create objects to put into database
+                                    Map<String, Object> tasksID = new HashMap<>();
+                                    Map<String, Object> taskString = new HashMap<>();
+                                    Map<String, Object> taskDone = new HashMap<>();
+
+                                    tasksID.put(iterString, "");
+                                    taskString.put("task", taskIter.getTask());
+                                    taskDone.put("complete", taskIter.isComplete());
+
+                                    //update database
+                                    tasksRoot.updateChildren(tasksID);
+                                    tasksRoot.child(iterString).updateChildren(taskString);
+                                    tasksRoot.child(iterString).updateChildren(taskDone);
+
+                                    iter++;
+                                }
+                                //TODO: send list to database
+                            }
+                            else {
+                                //didn't send tasks...
+                            }
                             Intent intent = new Intent(MainActivity.this, LockActivity.class);
                             startActivity(intent);
                         }

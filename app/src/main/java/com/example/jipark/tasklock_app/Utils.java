@@ -39,7 +39,8 @@ public class Utils {
     private boolean owner;
     private boolean joiner;
     private boolean paired;
-    private boolean connected;
+    private boolean receivedTasks;
+    private boolean sentTasks;
 
     private SecureRandom rnd;
 
@@ -55,7 +56,8 @@ public class Utils {
         owner = false;
         joiner = false;
         paired = false;
-        connected = false;
+        receivedTasks = false;
+        sentTasks = false;
     }
 
     public String generateRandomString(int len){
@@ -201,8 +203,20 @@ public class Utils {
         return masterRoomKey;
     }
 
-    public boolean isConnected() {
-        return connected;
+    public boolean hasReceivedTasks() {
+        return receivedTasks;
+    }
+
+    public boolean hasSentTasks(){
+        return sentTasks;
+    }
+
+    public void setReceivedTasks(boolean receivedTasks) {
+        this.receivedTasks = receivedTasks;
+    }
+
+    public void setSentTasks(boolean sentTasks) {
+        this.sentTasks = sentTasks;
     }
 
     public boolean isPaired() {
@@ -213,16 +227,16 @@ public class Utils {
         this.paired = paired;
     }
 
-    public void setLocalJoinerValues(String key, boolean paired, boolean connected) {
+    public void setLocalJoinerValues(String key, boolean paired, boolean sentTasks) {
         this.paired = paired;
-        this.connected = connected;
+        this.sentTasks = sentTasks;
         this.joiner = true;
         this.masterRoomKey = key;
     }
 
-    public void setLocalOwnerValues(String key, boolean paired, boolean connected) {
+    public void setLocalOwnerValues(String key, boolean paired, boolean receivedTasks) {
         this.paired = paired;
-        this.connected = connected;
+        this.receivedTasks = receivedTasks;
         this.owner = true;
         this.masterRoomKey = key;
     }
@@ -230,14 +244,16 @@ public class Utils {
     public void resetLocalJoinerValues() {
         this.paired = false;
         this.joiner = false;
+        this.sentTasks = false;
         this.masterRoomKey = "";
-        this.connected = false;
+        this.receivedTasks = false;
     }
 
     public void resetLocalOwnerValues() {
         this.paired = false;
         this.owner = false;
+        this.receivedTasks = false;
         this.masterRoomKey = "";
-        this.connected = false;
+        this.receivedTasks = false;
     }
 }
