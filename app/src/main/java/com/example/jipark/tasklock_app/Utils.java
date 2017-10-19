@@ -6,6 +6,7 @@ import android.content.Context;
 import com.example.jipark.tasklock_app.task.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +42,10 @@ public class Utils {
     private boolean paired;
     private boolean receivedTasks;
     private boolean sentTasks;
+
+    //TODO: add all listeners here...
+//    private ValueEventListener joinerListener;
+//    private ValueEventListener
 
     private SecureRandom rnd;
 

@@ -46,6 +46,9 @@ public class IrisActivity extends AppCompatActivity {
     private EditText mRoomJoinEditText;
     private Button mRoomJoinButton;
 
+    //listener //TODO: remove this and get it from SINGLETON
+    private ValueEventListener listener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,12 +103,16 @@ public class IrisActivity extends AppCompatActivity {
 
             //listen on change
             final DatabaseReference joinerRoot = SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner");
-            joinerRoot.addValueEventListener(new ValueEventListener() {
+            joinerRoot.addValueEventListener(listener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if((Boolean)dataSnapshot.getValue()) {
                         SINGLETON.setPaired(true);
                         slideContentIn(R.layout.room_create_success);
+                    }
+                    else {
+                        //TODO: joiner value changed to false... we lost connection!
+                        SINGLETON.setPaired(false);
                     }
                 }
 
@@ -123,7 +130,8 @@ public class IrisActivity extends AppCompatActivity {
     //room_create.xml
     public void cancelRoomCreate(View view) {
         //cancel room creation, reset local room owner values
-        SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue();
+        SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(listener);
+        SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue(); //need to remove listener when removing values...
         SINGLETON.resetLocalOwnerValues();
 
         //change layout
