@@ -60,11 +60,11 @@
 
         <Button
             android:layout_gravity="center|bottom"
-            android:id="@+id/room_cancel"
+            android:id="@+id/room_create_cancel"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:background="@color/gray"
-            android:onClick="cancelRoom"
+            android:onClick="cancelRoomCreate"
             android:text="@string/cancel"
             android:textColor="@color/white" />
     </LinearLayout>

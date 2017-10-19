@@ -3,18 +3,25 @@ package com.example.jipark.tasklock_app.iris;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +33,13 @@ import java.util.Map;
 
 public class IrisActivity extends AppCompatActivity {
     private Utils SINGLETON;
-    private TextView mRoomKeyDisplay;
+
+    //room_create.xml
+    private TextView mRoomCreateKeyDisplay;
+
+    //room_join.xml
+    private EditText mRoomJoinEditText;
+    private Button mRoomJoinButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +48,7 @@ public class IrisActivity extends AppCompatActivity {
         SINGLETON = Utils.getInstance();
     }
 
+    //activity_iris.xml
     public void createRoom(View view) {
         //first check if internet is connected
         if (isInternetConnected()) {
@@ -64,14 +78,14 @@ public class IrisActivity extends AppCompatActivity {
                 SINGLETON.setOwner(true);
                 SINGLETON.setMasterRoomKey(roomKey);
 
-                setContentView(R.layout.room_create);
-                mRoomKeyDisplay = (TextView)findViewById(R.id.iris_room_key);
+                //change layout
+                slideContentIn(R.layout.room_create);
+                mRoomCreateKeyDisplay = (TextView)findViewById(R.id.iris_room_key);
                 String displayKey = "Room Key: " + roomKey;
-                mRoomKeyDisplay.setText(displayKey);
-
-
+                mRoomCreateKeyDisplay.setText(displayKey);
 
                 //listen on change
+//                slideContentIn(R.layout.room_create_success);
                 //if joiner value is true, change to connection confirmation page
                 //when joiner presses start tasks, display tasks for room owner and send push notifications on each task completion
             }
@@ -81,8 +95,67 @@ public class IrisActivity extends AppCompatActivity {
         }
     }
 
+    //room_create.xml
+    public void cancelRoomCreate(View view) {
+        //cancel room creation, reset local room owner values
+        SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue();
+        SINGLETON.setMasterRoomKey("");
+        SINGLETON.setOwner(false);
+
+        //change layout
+        slideContentIn(R.layout.activity_iris);
+    }
+
+    //activity_iris.xml
     public void joinRoom(View view) {
-        Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show();
+        slideContentIn(R.layout.room_join);
+
+        TextInputLayout inputLayout = (TextInputLayout)findViewById(R.id.input_key_layout);
+        inputLayout.setCounterEnabled(true);
+        inputLayout.setCounterMaxLength(6);
+
+
+        mRoomJoinButton = (Button)findViewById(R.id.join_room_enter_button);
+        mRoomJoinEditText = (EditText)findViewById(R.id.join_room_key_input);
+
+        mRoomJoinEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if(i == EditorInfo.IME_ACTION_DONE) {
+                    InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    mRoomJoinEditText.clearFocus();
+                }
+                return false;
+            }
+        });
+
+        mRoomJoinEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.toString().trim().length() == 0) {
+                    mRoomJoinButton.setVisibility(View.INVISIBLE);
+                }
+                else {
+                    mRoomJoinButton.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+
+
+
+
 
 //        final DatabaseReference rooms = SINGLETON.getRoomsReference();
 //        rooms.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -105,13 +178,28 @@ public class IrisActivity extends AppCompatActivity {
 //        });
     }
 
-    public void cancelRoom(View view) {
-        //cancel room creation, reset local room owner values
-        SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue();
-        SINGLETON.setMasterRoomKey("");
-        SINGLETON.setOwner(false);
-        setContentView(R.layout.activity_iris);
-//        Toast.makeText(this, "room owner = " + SINGLETON.getMasterRoomKey(), Toast.LENGTH_SHORT).show();
+    //room_join.xml
+    public void cancelRoomJoin(View view) {
+        slideContentIn(R.layout.activity_iris);
+    }
+
+    //room_join.xml
+    public void enterRoomJoin(View view) {
+        Toast.makeText(this, "Enabled", Toast.LENGTH_SHORT).show();
+
+    }
+
+    //room_create_success.xml
+    public void closeRoom(View view) {
+        //show alert dialog confirmation... are you sure you want to close the room? the connection will be lost.
+
+    }
+
+    private void slideContentIn(int layout) {
+        LayoutInflater inflater = getLayoutInflater();
+        View view2 = inflater.inflate(layout, null, false);
+        view2.startAnimation(AnimationUtils.loadAnimation(IrisActivity.this, android.R.anim.slide_in_left));
+        setContentView(view2);
     }
 
     private boolean isInternetConnected() {

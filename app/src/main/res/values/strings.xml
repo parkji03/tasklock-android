@@ -12,4 +12,8 @@
     <string name="iris_mode">Iris Mode</string>
     <string name="return_button">Return</string>
     <string name="close_room_button">Close Room</string>
+    <string name="room_key">Room Key</string>
+
+    <item name="visible" type="id"/>
+    <item name="masked" type="id"/>
 </resources>

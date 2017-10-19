@@ -95,7 +95,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Task
         mMultiAutoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId== EditorInfo.IME_ACTION_DONE){
+                if(actionId == EditorInfo.IME_ACTION_DONE){
                     //hide soft keyboard
                     mMultiAutoCompleteTextView.setText("");
                     InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
