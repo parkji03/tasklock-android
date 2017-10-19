@@ -17,34 +17,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <MultiAutoCompleteTextView
-                android:id="@+id/task_edit_text"
-                android:nextFocusUp="@id/task_edit_text"
-                android:nextFocusLeft="@id/task_edit_text"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_height="wrap_content"
-                android:layout_width="230dp"
-                android:inputType="text"
-                android:hint="Create a new task"/>
+                <MultiAutoCompleteTextView
+                    android:id="@+id/task_edit_text"
+                    android:nextFocusUp="@id/task_edit_text"
+                    android:nextFocusLeft="@id/task_edit_text"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:inputType="text"
+                    android:hint="@string/add_task_hint"/>
 
-            <Button
-                android:layout_marginRight="3dp"
-                android:layout_centerInParent="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:textColor="@color/white"
-                android:background="@color/mainBlue"
-                android:id="@+id/add_task_button"
-                android:text="Add Task"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:onClick="addTask"/>
-        </RelativeLayout>
+                <Button
+                    android:layout_marginEnd="3dp"
+                    android:layout_marginRight="3dp"
+                    android:textColor="@color/white"
+                    android:background="@color/mainBlue"
+                    android:id="@+id/add_task_button"
+                    android:text="@string/add_task_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:onClick="addTask"/>
+
+            </LinearLayout>
 
         <TextView
             android:textColor="@color/gray"
@@ -80,7 +78,7 @@
             android:layout_height="wrap_content"
             android:background="@color/mainBlue"
             android:onClick="finishTaskActivity"
-            android:text="Done"
+            android:text="@string/done"
             android:textColor="@color/white" />
     </LinearLayout>
 </LinearLayout>
