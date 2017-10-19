@@ -39,6 +39,7 @@ public class Utils {
     private boolean owner;
     private boolean joiner;
     private boolean paired;
+    private boolean connected;
 
     private SecureRandom rnd;
 
@@ -54,6 +55,7 @@ public class Utils {
         owner = false;
         joiner = false;
         paired = false;
+        connected = false;
     }
 
     public String generateRandomString(int len){
@@ -191,24 +193,16 @@ public class Utils {
         return owner;
     }
 
-//    public void setOwner(boolean owner) {
-//        this.owner = owner;
-//    }
-
     public boolean isJoiner() {
         return joiner;
     }
-//
-//    public void setJoiner(boolean joiner) {
-//        this.joiner = joiner;
-//    }
 
     public String getMasterRoomKey() {
         return masterRoomKey;
     }
 
-    public void setMasterRoomKey(String masterRoomKey) {
-        this.masterRoomKey = masterRoomKey;
+    public boolean isConnected() {
+        return connected;
     }
 
     public boolean isPaired() {
@@ -219,18 +213,16 @@ public class Utils {
         this.paired = paired;
     }
 
-    public void setLocalJoinerValues(String key, boolean b) {
-        if(b) {
-            this.paired = true;
-        }
+    public void setLocalJoinerValues(String key, boolean paired, boolean connected) {
+        this.paired = paired;
+        this.connected = connected;
         this.joiner = true;
         this.masterRoomKey = key;
     }
 
-    public void setLocalOwnerValues(String key, boolean b) {
-        if(b) {
-            this.paired = true;
-        }
+    public void setLocalOwnerValues(String key, boolean paired, boolean connected) {
+        this.paired = paired;
+        this.connected = connected;
         this.owner = true;
         this.masterRoomKey = key;
     }
@@ -239,11 +231,13 @@ public class Utils {
         this.paired = false;
         this.joiner = false;
         this.masterRoomKey = "";
+        this.connected = false;
     }
 
     public void resetLocalOwnerValues() {
         this.paired = false;
         this.owner = false;
         this.masterRoomKey = "";
+        this.connected = false;
     }
 }

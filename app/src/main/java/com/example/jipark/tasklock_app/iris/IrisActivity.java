@@ -55,7 +55,10 @@ public class IrisActivity extends AppCompatActivity {
             setContentView(R.layout.room_join_success);
         }
         else if (SINGLETON.isOwner()) {
-            if(SINGLETON.isPaired()) {
+            if (SINGLETON.isConnected() && SINGLETON.isPaired()) {
+                setContentView(R.layout.room_create_task_received);
+            }
+            else if (!SINGLETON.isConnected() && SINGLETON.isPaired()) {
                 setContentView(R.layout.room_create_success);
             }
             else {
@@ -71,57 +74,46 @@ public class IrisActivity extends AppCompatActivity {
     public void createRoom(View view) {
         //first check if internet is connected
         if (isInternetConnected()) {
-            if (SINGLETON.isJoiner()) { //only let non-joiners
-                //client is a joiner, don't let him make without confirmation
-            }
-            else if(SINGLETON.isOwner()) {
-                //client is an owner, don't let him make without confirmation
-            }
-            else {
-                Map<String, Object> newRoom = new HashMap<>();
-                Map<String, Object> roomOwner = new HashMap<>();
-                Map<String, Object> roomJoiner = new HashMap<>();
-                String roomKey = SINGLETON.generateRoomKey();
-                String ownerID = SINGLETON.generateOwnerID();
+            Map<String, Object> newRoom = new HashMap<>();
+            Map<String, Object> roomOwner = new HashMap<>();
+            Map<String, Object> roomJoiner = new HashMap<>();
+            String roomKey = SINGLETON.generateRoomKey();
+            String ownerID = SINGLETON.generateOwnerID();
 
-                newRoom.put(roomKey, "");
-                roomOwner.put("owner", ownerID);
-                roomJoiner.put("joiner", false);
+            newRoom.put(roomKey, "");
+            roomOwner.put("owner", ownerID);
+            roomJoiner.put("joiner", false);
 
-                SINGLETON.getRoomsReference().updateChildren(newRoom);
-                DatabaseReference roomRoot = SINGLETON.getRoomsReference().child(roomKey);
-                roomRoot.updateChildren(roomOwner);
-                roomRoot.updateChildren(roomJoiner);
+            SINGLETON.getRoomsReference().updateChildren(newRoom);
+            DatabaseReference roomRoot = SINGLETON.getRoomsReference().child(roomKey);
+            roomRoot.updateChildren(roomOwner);
+            roomRoot.updateChildren(roomJoiner);
 
-                //set client ownership
-                SINGLETON.setLocalOwnerValues(roomKey, false);
+            //set client ownership
+            SINGLETON.setLocalOwnerValues(roomKey, false, false);
 
-                //change layout
-                slideContentIn(R.layout.room_create);
-                mRoomCreateKeyDisplay = (TextView)findViewById(R.id.iris_room_key);
-                String displayKey = "Room Key: " + roomKey;
-                mRoomCreateKeyDisplay.setText(displayKey);
+            //change layout
+            slideContentIn(R.layout.room_create);
+            mRoomCreateKeyDisplay = (TextView)findViewById(R.id.iris_room_key);
+            String displayKey = "Room Key: " + roomKey;
+            mRoomCreateKeyDisplay.setText(displayKey);
 
-                //listen on change
-                final DatabaseReference joinerRoot = SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner");
-                joinerRoot.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if((Boolean)dataSnapshot.getValue()) {
-                            SINGLETON.setPaired(true);
-                            slideContentIn(R.layout.room_create_success);
-                        }
+            //listen on change
+            final DatabaseReference joinerRoot = SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner");
+            joinerRoot.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if((Boolean)dataSnapshot.getValue()) {
+                        SINGLETON.setPaired(true);
+                        slideContentIn(R.layout.room_create_success);
                     }
+                }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
-//                slideContentIn(R.layout.room_create_success);
-                //if joiner value is true, change to connection confirmation page
-                //when joiner presses start tasks, display tasks for room owner and send push notifications on each task completion
-            }
+                }
+            });
         }
         else {
             Toast.makeText(this, "Could not establish connection with the server.", Toast.LENGTH_SHORT).show();
@@ -133,8 +125,6 @@ public class IrisActivity extends AppCompatActivity {
         //cancel room creation, reset local room owner values
         SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue();
         SINGLETON.resetLocalOwnerValues();
-//        SINGLETON.setMasterRoomKey("");
-//        SINGLETON.setOwner(false);
 
         //change layout
         slideContentIn(R.layout.activity_iris);
@@ -159,10 +149,7 @@ public class IrisActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChild(inputRoomKey)) {
                     if(!((Boolean)dataSnapshot.child(inputRoomKey).child("joiner").getValue())) {
-                        SINGLETON.setLocalJoinerValues(inputRoomKey, true);
-//                        SINGLETON.setJoiner(true);
-//                        SINGLETON.setMasterRoomKey(inputRoomKey);
-//                        SINGLETON.setPaired(true);
+                        SINGLETON.setLocalJoinerValues(inputRoomKey, true, false);
 
                         rooms.child(inputRoomKey).child("joiner").setValue(true); //change database
                         //change layout to success
@@ -187,15 +174,12 @@ public class IrisActivity extends AppCompatActivity {
     //room_create_success.xml
     public void closeRoom(View view) { //for room owners only
         AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
-//        alertDialog.setTitle("Confirm");
         alertDialog.setMessage("All devices will lose their connection to this room.\nAre you sure?");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //TODO: notify database that we're deleting the room, notify room joiner
                 SINGLETON.resetLocalOwnerValues();
-//                SINGLETON.setMasterRoomKey("");
-//                SINGLETON.setOwner(false);
                 slideContentIn(R.layout.activity_iris);
             }
         });
@@ -208,17 +192,15 @@ public class IrisActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    //room_join_success.xml
     public void closeConnection(View view) { //for room joiners only
         AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
-//        alertDialog.setTitle("Confirm");
         alertDialog.setMessage("Disconnecting will notify the room owner.\nAre you sure?");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //TODO: notify database that joiner left the room, and notify room owner
                 SINGLETON.resetLocalJoinerValues();
-//                SINGLETON.setMasterRoomKey("");
-//                SINGLETON.setJoiner(false);
                 slideContentIn(R.layout.activity_iris);
             }
         });
@@ -234,8 +216,15 @@ public class IrisActivity extends AppCompatActivity {
 
     //room_join_success.xml
     public void returnToMain(View view) {
-        //go back to main activity with info saved
+        finish();
     }
+
+    //room_create_success.xml
+    public void returnToHome(View view) {
+        finish();
+    }
+
+
 
     private void slideContentIn(int layout) {
         LayoutInflater inflater = getLayoutInflater();
@@ -296,23 +285,4 @@ public class IrisActivity extends AppCompatActivity {
         });
         return true;
     }
-
-    //TODO: for parent
-
-    //create modal and say you are waiting for child to connect
-    //hitting cancel on modal will delete the room in the database
-    //confirm will show if child connects
-    //the parent will now receive push notifications when the child finishes a task.
-
-    //TODO: for child
-
-
-    //if room exists, save it and we're good to go... a green check mark represent it
-        //we are now connected, we can't make a room...
-    //if not, notify child that room doesn't exist, and double check the pass code
-
-    //if we're connected and we start our tasks
-    //send to database the list of all tasks I have
-
-
 }
