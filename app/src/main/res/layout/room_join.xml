@@ -69,7 +69,7 @@
             android:layout_gravity="center|bottom"
             android:layout_marginBottom="10dp"
             android:background="@color/mainBlue"
-            android:text="@string/enter_room"
+            android:text="@string/button_enter_room"
             android:textColor="@color/white"
             android:onClick="enterRoomJoin"/>
 

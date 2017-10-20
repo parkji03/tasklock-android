@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:background="@color/gray"
             android:onClick="closeRoom"
-            android:text="@string/close_room_button"
+            android:text="@string/button_close_room"
             android:textColor="@color/white" />
     </LinearLayout>
 </LinearLayout>

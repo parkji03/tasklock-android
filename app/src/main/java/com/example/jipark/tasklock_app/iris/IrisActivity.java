@@ -12,6 +12,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -75,8 +76,6 @@ public class IrisActivity extends AppCompatActivity {
         }
     }
 
-    //activity_iris.xml
-
     /**
      * activity_iris.xml ----> room_create.xml
      * Button Listener in activity_iris.xml
@@ -123,7 +122,7 @@ public class IrisActivity extends AppCompatActivity {
                         slideContentIn(R.layout.room_create_success);
                     }
                     else {
-                        //TODO: joiner value changed to false...
+                        //TODO: joiner value changed to false... notify this client with push notification
                         SINGLETON.setPaired(false);
                     }
                 }
@@ -288,6 +287,8 @@ public class IrisActivity extends AppCompatActivity {
      * Button Listener in room_join_success.xml
      *
      * Show warning message.  On confirm, reset local joiner values and notify database that joiner disconnected.
+     *
+     * Status: incomplete... notify database that joiner left...
      */
     public void closeConnection(View view) { //for room joiners only
         AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
@@ -322,8 +323,6 @@ public class IrisActivity extends AppCompatActivity {
         finish();
     }
 
-    //room_create_success.xml
-
     /**
      * room_create_task_received.xml ----> activity_main.xml
      * Button Listener in room_create_task_received.xml
@@ -338,8 +337,9 @@ public class IrisActivity extends AppCompatActivity {
 
     /**
      * Inflates layout given in @param with an animation.
-     *
      * @param layout id of layout.xml to switch view to.
+     *
+     * Status: done
      */
     private void slideContentIn(int layout) {
         LayoutInflater inflater = getLayoutInflater();
@@ -351,6 +351,8 @@ public class IrisActivity extends AppCompatActivity {
     /**
      * Checks if internet is connected.
      * @return boolean value of internet connection status.
+     *
+     * Status: done
      */
     private boolean isInternetConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);

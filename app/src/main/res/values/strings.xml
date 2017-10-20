@@ -1,24 +1,42 @@
 <resources>
     <string name="app_name">TaskLock</string>
+
+    <!--Global Button Labels-->
+    <string name="cancel">Cancel</string>
+
+    <!--Action Bar Labels-->
+    <string name="launch_about">About</string>
+    <string name="launch_settings">Settings</string>
+
+    <!--Main Activity Labels-->
     <string name="launch_task_activity">Edit Tasks</string>
     <string name="launch_app_manager_activity">App Manager</string>
     <string name="launch_lock_activity">Start Tasks</string>
-    <string name="launch_iris">Iris Mode</string>
-    <string name="launch_about">About</string>
-    <string name="launch_settings">Settings</string>
-    <string name="create_room">Create A Room</string>
-    <string name="join_room">Join A Room</string>
-    <string name="cancel">Cancel</string>
-    <string name="iris_mode">Iris Mode</string>
-    <string name="return_home_button_label">Return Home</string>
-    <string name="close_room_button">Close Room</string>
+    <string name="launch_iris">Monitor Mode</string>
+
+    <!--Iris Activity Labels-->
+    <string name="button_monitor_child">Monitor A Child</string>
+    <string name="button_link_parent">Link With Parent</string>
+    <string name="button_return_home">Return Home</string>
+    <string name="button_close_room">Close Room</string>
+    <string name="button_enter_room">Enter Room</string>
+
+    <!--Text-->
+    <string name="iris_mode">Monitor Mode</string>
+
+    <!--<string name="return_home_button_label">Return Home</string>-->
+    <!--<string name="close_room_button">Close Room</string>-->
     <string name="room_key">Room Key</string>
-    <string name="enter_room">Enter Room</string>
+    <!--<string name="enter_room">Enter Room</string>-->
     <string name="caps_sensitive">Room keys are caps sensitive.</string>
     <string name="success_title">Success!</string>
     <string name="waiting_to_receive">Waiting to receive tasks...</string>
     <string name="paired_notification">Your devices are now paired.</string>
     <string name="done">Done</string>
+
+
+
+
     <string name="add_task_label">Add Task</string>
     <string name="add_task_hint">Create a new task</string>
     <string name="no_task_notification">You have no tasks.</string>

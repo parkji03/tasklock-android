@@ -22,12 +22,10 @@
             android:layout_height="wrap_content"
             android:text="@string/iris_mode"
             android:textSize="30sp"
-            android:gravity="center"
-            android:id="@+id/iris_title"/>
+            android:gravity="center"/>
 
         <ImageView
             android:contentDescription="@string/iris_mode"
-            android:id="@+id/iris_logo"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,16 +37,15 @@
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Your device isn't paired."
-            android:id="@+id/iris_flavor" />
+            android:layout_marginBottom="5dp"
+            android:text="Your device isn't connected to another device yet."/>
 
         <TextView
-            android:id="@+id/iris_guide"
-            android:textSize="12sp"
+            android:textSize="15sp"
             android:gravity="center"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:text="Create or join a room by selecting an option below."/>
+            android:text="Start monitoring a child's tasks or connect with a parent by selecting an option below."/>
     </LinearLayout>
 
     <LinearLayout
@@ -68,7 +65,7 @@
                 android:layout_marginBottom="10dp"
                 android:background="@color/mainBlue"
                 android:onClick="createRoom"
-                android:text="@string/create_room"
+                android:text="@string/button_monitor_child"
                 android:textColor="@color/white" />
 
             <Button
@@ -77,7 +74,7 @@
                 android:layout_width="240dp"
                 android:layout_height="wrap_content"
                 android:background="@color/mainBlue"
-                android:text="@string/join_room"
+                android:text="@string/button_link_parent"
                 android:textColor="@color/white"
                 android:onClick="joinRoom"/>
     </LinearLayout>
