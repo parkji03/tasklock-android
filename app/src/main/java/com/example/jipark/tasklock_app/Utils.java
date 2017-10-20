@@ -273,11 +273,17 @@ public class Utils {
 
     public void disconnectOwnerFromRoom() {
         roomsReference.child(masterRoomKey).child("owner").setValue("disconnected");
+//        roomsReference.child(masterRoomKey).removeEventListener();
+//        roomsReference.child(masterRoomKey).removeEventListener();
+
         resetLocalOwnerValues();
     }
 
     public void disconnectJoinerFromRoom() {
         roomsReference.child(masterRoomKey).child("joiner").setValue("disconnected");
+//        roomsReference.child(masterRoomKey).removeEventListener();
+//        roomsReference.child(masterRoomKey).removeEventListener();
+
         resetLocalJoinerValues();
     }
 

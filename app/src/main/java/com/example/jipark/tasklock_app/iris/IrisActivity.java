@@ -132,6 +132,27 @@ public class IrisActivity extends AppCompatActivity {
                     if ((dataSnapshot.getValue()).equals("connected")) {
                         SINGLETON.setPaired(true);
                         slideContentIn(R.layout.room_create_success);
+
+
+                        SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).addValueEventListener(SINGLETON.waitForTasksListener = new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.hasChild("tasks")) {
+                                    SINGLETON.setReceivedTasks(true);
+                                    Toast.makeText(getApplicationContext(), "Received tasks from child.", Toast.LENGTH_SHORT).show();
+                                    slideContentIn(R.layout.room_create_task_received);
+                                }
+//                                Toast.makeText(getApplicationContext(), "Received tasks from child.", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
                     }
                     else if ((dataSnapshot.getValue()).equals("disconnected")) {
                         SINGLETON.setPaired(false);
@@ -259,6 +280,12 @@ public class IrisActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if((dataSnapshot.getValue()).equals("disconnected")) {
+                                    //TODO: delete event listeners
+//                                    SINGLETON.setPaired(false);
+                                    SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("owner").removeEventListener(SINGLETON.checkOwnerDisconnectedListener);
+                                    SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
+                                    SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue();
+                                    SINGLETON.resetLocalJoinerValues();
                                     Toast.makeText(getApplicationContext(), "Monitor disconnected!", Toast.LENGTH_SHORT).show();
                                     if (active) {
                                         slideContentIn(R.layout.activity_iris);
@@ -302,11 +329,11 @@ public class IrisActivity extends AppCompatActivity {
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                //TODO: notify database that we're deleting the room, notify room joiner
                 SINGLETON.disconnectOwnerFromRoom();
+                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeEventListener(SINGLETON.waitForTasksListener);
+                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
                 //TODO: delete owner listeners... delete room node FROM JOINER CLIENT!!!
-//                SINGLETON.resetLocalOwnerValues();
-
+                SINGLETON.resetLocalOwnerValues();
                 slideContentIn(R.layout.activity_iris);
             }
         });
@@ -334,10 +361,11 @@ public class IrisActivity extends AppCompatActivity {
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                //TODO: notify database that joiner left the room, and notify room owner
                 SINGLETON.disconnectJoinerFromRoom();
-                //TODO: delete joiner listeners...
-//                SINGLETON.resetLocalJoinerValues();
+
+                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("owner").removeEventListener(SINGLETON.checkOwnerDisconnectedListener);
+                SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
+                SINGLETON.resetLocalJoinerValues();
                 slideContentIn(R.layout.activity_iris);
             }
         });
