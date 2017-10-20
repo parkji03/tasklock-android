@@ -2,7 +2,7 @@
     <string name="app_name">TaskLock</string>
 
     <!--Global Button Labels-->
-    <string name="cancel">Cancel</string>
+    <string name="button_cancel">Cancel</string>
 
     <!--Action Bar Labels-->
     <string name="launch_about">About</string>
@@ -15,13 +15,32 @@
     <string name="launch_iris">Monitor Mode</string>
 
     <!--Iris Activity Labels-->
-    <string name="button_monitor_child">Monitor A Child</string>
-    <string name="button_link_parent">Link With Parent</string>
+    <string name="button_monitor_child">Become a Monitor</string>
+    <string name="button_link_parent">Link With A Monitor</string>
+    <string name="button_link">Link With Your Monitor</string>
+
+    <!--Texts-->
+    <string name="iris_subtext">Your device isn\'t connected to another device yet.</string>
+    <string name="iris_direction">Start monitoring another person\'s tasks or connect with a monitor by selecting an option below.</string>
+    <string name="room_join_direction">You can obtain a room key from your monitor.</string>
+
+    <!--EditText Hints-->
+    <string name="room_join_edit_text_hint">Room Key</string>
+    <string name="room_join_subtext">Room keys are lowercase alphanumeric.</string>
+
+
+
+
+
     <string name="button_return_home">Return Home</string>
     <string name="button_close_room">Close Room</string>
     <string name="button_enter_room">Enter Room</string>
 
-    <!--Text-->
+
+
+
+
+
     <string name="iris_mode">Monitor Mode</string>
 
     <!--<string name="return_home_button_label">Return Home</string>-->

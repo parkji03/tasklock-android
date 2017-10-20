@@ -39,7 +39,7 @@
                     android:id="@+id/join_room_key_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/room_key" />
+                    android:hint="@string/room_join_edit_text_hint" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -48,8 +48,15 @@
             android:textColor="@color/gray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/caps_sensitive"
+            android:text="@string/room_join_subtext"
             android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:text="@string/room_join_direction"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -63,13 +70,13 @@
 
         <Button
             android:visibility="invisible"
-            android:id="@+id/join_room_enter_button"
+            android:id="@+id/room_join_link"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:layout_marginBottom="10dp"
             android:background="@color/mainBlue"
-            android:text="@string/button_enter_room"
+            android:text="@string/button_link"
             android:textColor="@color/white"
             android:onClick="enterRoomJoin"/>
 
@@ -80,7 +87,7 @@
             android:layout_height="wrap_content"
             android:background="@color/gray"
             android:onClick="cancelRoomJoin"
-            android:text="@string/cancel"
+            android:text="@string/button_cancel"
             android:textColor="@color/white" />
     </LinearLayout>
 </LinearLayout>

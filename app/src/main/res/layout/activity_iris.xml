@@ -38,14 +38,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:text="Your device isn't connected to another device yet."/>
+            android:text="@string/iris_subtext"/>
 
         <TextView
             android:textSize="15sp"
             android:gravity="center"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:text="Start monitoring a child's tasks or connect with a parent by selecting an option below."/>
+            android:text="@string/iris_direction"/>
     </LinearLayout>
 
     <LinearLayout

@@ -69,7 +69,7 @@
             android:onClick="launchIrisActivity"
             android:id="@+id/launch_iris_button"
             android:text="@string/iris_mode"
-            android:background="@color/mainBlue"
+            android:background="@color/mainOrange"
             android:textColor="@color/white"
             android:layout_width="240dp"
             android:layout_height="wrap_content"/>
