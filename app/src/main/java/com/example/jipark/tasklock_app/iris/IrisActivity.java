@@ -119,7 +119,6 @@ public class IrisActivity extends AppCompatActivity {
             SINGLETON.setLocalOwnerValues(roomKey, false, false);
 
             //change layout
-            currentLayout = R.layout.room_create;
             slideContentIn(R.layout.room_create);
             mRoomCreateKeyDisplay = (TextView)findViewById(R.id.iris_room_key);
             String displayKey = "Room Key: " + roomKey;
@@ -132,14 +131,12 @@ public class IrisActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if ((dataSnapshot.getValue()).equals("connected")) {
                         SINGLETON.setPaired(true);
-                        currentLayout = R.layout.room_create_success;
                         slideContentIn(R.layout.room_create_success);
                     }
                     else if ((dataSnapshot.getValue()).equals("disconnected")) {
                         SINGLETON.setPaired(false);
                         Toast.makeText(getApplicationContext(), "Joiner disconnected!", Toast.LENGTH_SHORT).show();
                         if (active) {
-                            currentLayout = R.layout.room_create;
                             slideContentIn(R.layout.room_create);
                             mRoomCreateKeyDisplay = (TextView)findViewById(R.id.iris_room_key);
                             String displayKey = "Room Key: " + SINGLETON.getMasterRoomKey();
@@ -171,7 +168,6 @@ public class IrisActivity extends AppCompatActivity {
         SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
         SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue(); //need to remove listener when removing values...
         SINGLETON.resetLocalOwnerValues();
-        currentLayout = R.layout.activity_iris;
         slideContentIn(R.layout.activity_iris);
     }
 
@@ -185,7 +181,6 @@ public class IrisActivity extends AppCompatActivity {
      * Status: done
      */
     public void joinRoom(View view) {
-        currentLayout = R.layout.room_join;
         slideContentIn(R.layout.room_join);
         TextInputLayout inputLayout = (TextInputLayout)findViewById(R.id.input_key_layout);
         inputLayout.setCounterEnabled(true);
@@ -235,7 +230,6 @@ public class IrisActivity extends AppCompatActivity {
      * Status: done
      */
     public void cancelRoomJoin(View view) {
-        currentLayout = R.layout.activity_iris;
         slideContentIn(R.layout.activity_iris);
     }
 
@@ -258,7 +252,6 @@ public class IrisActivity extends AppCompatActivity {
                     if((dataSnapshot.child(inputRoomKey).child("joiner").getValue()).equals("none") || (dataSnapshot.child(inputRoomKey).child("joiner").getValue()).equals("disconnected")) {
                         SINGLETON.setLocalJoinerValues(inputRoomKey, true, false);
                         SINGLETON.getRoomsReference().child(inputRoomKey).child("joiner").setValue("connected"); //change database
-                        currentLayout = R.layout.room_join_success;
                         slideContentIn(R.layout.room_join_success);
 
                         //we're the joiner so listen for owner boolean value change...
@@ -268,7 +261,6 @@ public class IrisActivity extends AppCompatActivity {
                                 if((dataSnapshot.getValue()).equals("disconnected")) {
                                     Toast.makeText(getApplicationContext(), "Monitor disconnected!", Toast.LENGTH_SHORT).show();
                                     if (active) {
-                                        currentLayout = R.layout.activity_iris;
                                         slideContentIn(R.layout.activity_iris);
                                     }
                                 }
@@ -306,16 +298,15 @@ public class IrisActivity extends AppCompatActivity {
     public void closeRoom(View view) { //for room owners only
         AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
         alertDialog.setTitle("Warning!");
-        alertDialog.setMessage("All paired devices will lose their connection.\nAre you sure?");
+        alertDialog.setMessage("The joiner hasn't started their tasks yet.\nAre you sure?");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //TODO: notify database that we're deleting the room, notify room joiner
                 SINGLETON.disconnectOwnerFromRoom();
-                //TODO: delete owner listeners...
+                //TODO: delete owner listeners... delete room node FROM JOINER CLIENT!!!
 //                SINGLETON.resetLocalOwnerValues();
 
-                currentLayout = R.layout.activity_iris;
                 slideContentIn(R.layout.activity_iris);
             }
         });
@@ -346,8 +337,7 @@ public class IrisActivity extends AppCompatActivity {
                 //TODO: notify database that joiner left the room, and notify room owner
                 SINGLETON.disconnectJoinerFromRoom();
                 //TODO: delete joiner listeners...
-                SINGLETON.resetLocalJoinerValues();
-                currentLayout = R.layout.activity_iris;
+//                SINGLETON.resetLocalJoinerValues();
                 slideContentIn(R.layout.activity_iris);
             }
         });
@@ -391,6 +381,7 @@ public class IrisActivity extends AppCompatActivity {
      * Status: done
      */
     private void slideContentIn(int layout) {
+        currentLayout = layout;
         LayoutInflater inflater = getLayoutInflater();
         View view2 = inflater.inflate(layout, null, false);
         view2.startAnimation(AnimationUtils.loadAnimation(IrisActivity.this, android.R.anim.slide_in_left));
@@ -429,11 +420,13 @@ public class IrisActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (currentLayout == R.layout.room_create) {
-            //TODO: call close room
+            cancelRoomCreate(null);
         }
         else if (currentLayout == R.layout.room_create_success) {
-            //TODO: call close room
+            closeRoom(null);
         }
+//        else if (currentLayout == R.layout.room_create_task_received) {
+//        }
         else {
             super.onBackPressed();
         }

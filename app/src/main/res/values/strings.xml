@@ -49,6 +49,6 @@
     <string name="add_task_hint">Create a new task</string>
     <string name="no_task_notification">You have no tasks.</string>
 
-    <item name="visible" type="id"/>
-    <item name="masked" type="id"/>
+    <item name="visible" type="id" />
+    <item name="masked" type="id" />
 </resources>

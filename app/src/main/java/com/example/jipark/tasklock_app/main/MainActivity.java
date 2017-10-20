@@ -58,67 +58,102 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "No tasks are available to start!", Toast.LENGTH_SHORT).show();
         }
         else {
-            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-            if(SINGLETON.getTaskCount() == 1) {
-                alertDialog.setTitle("You have " + SINGLETON.getTaskCount() + " task.");
+            if (SINGLETON.isJoiner() && SINGLETON.isPaired()) { //make sure we're connected to database...
+                SINGLETON.setSentTasks(true);
+
+                //add tasks holder to database
+                Map<String, Object> tasks = new HashMap<>();
+                tasks.put("tasks", "");
+                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).updateChildren(tasks);
+
+                DatabaseReference tasksRoot = SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("tasks");
+
+                int iter = 0;
+                for (Task taskIter : SINGLETON.getTaskList()) {
+                    String iterString = String.valueOf(iter); //id for tasks
+
+                    //create objects to put into database
+                    Map<String, Object> tasksID = new HashMap<>();
+                    Map<String, Object> taskString = new HashMap<>();
+                    Map<String, Object> taskDone = new HashMap<>();
+
+                    tasksID.put(iterString, "");
+                    taskString.put("task", taskIter.getTask());
+                    taskDone.put("complete", taskIter.isComplete());
+
+                    //update database
+                    tasksRoot.updateChildren(tasksID);
+                    tasksRoot.child(iterString).updateChildren(taskString);
+                    tasksRoot.child(iterString).updateChildren(taskDone);
+
+                    iter++;
+                }
             }
             else {
-                alertDialog.setTitle("You have " + SINGLETON.getTaskCount() + " tasks.");
+                //didn't send tasks...
             }
-//            alertDialog.setMessage("You're selected apps will be disabled.  Are you sure you want to start?");
-            alertDialog.setMessage("Are you sure?");
-            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                            if (SINGLETON.isJoiner() && SINGLETON.isPaired()) { //make sure we're connected to database...
-                                SINGLETON.setSentTasks(true);
-
-                                //add tasks holder to database
-                                Map<String, Object> tasks = new HashMap<>();
-                                tasks.put("tasks", "");
-                                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).updateChildren(tasks);
-
-                                DatabaseReference tasksRoot = SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("tasks");
-
-                                int iter = 0;
-                                for (Task taskIter : SINGLETON.getTaskList()) {
-                                    String iterString = String.valueOf(iter); //id for tasks
-
-                                    //create objects to put into database
-                                    Map<String, Object> tasksID = new HashMap<>();
-                                    Map<String, Object> taskString = new HashMap<>();
-                                    Map<String, Object> taskDone = new HashMap<>();
-
-                                    tasksID.put(iterString, "");
-                                    taskString.put("task", taskIter.getTask());
-                                    taskDone.put("complete", taskIter.isComplete());
-
-                                    //update database
-                                    tasksRoot.updateChildren(tasksID);
-                                    tasksRoot.child(iterString).updateChildren(taskString);
-                                    tasksRoot.child(iterString).updateChildren(taskDone);
-
-                                    iter++;
-                                }
-                                //TODO: send list to database
-                            }
-                            else {
-                                //didn't send tasks...
-                            }
-                            Intent intent = new Intent(MainActivity.this, LockActivity.class);
-                            startActivity(intent);
-                        }
-                    });
-            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-            alertDialog.show();
+            Intent intent = new Intent(MainActivity.this, LockActivity.class);
+            startActivity(intent);
+//            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+//            if(SINGLETON.getTaskCount() == 1) {
+//                alertDialog.setTitle("You have " + SINGLETON.getTaskCount() + " task.");
+//            }
+//            else {
+//                alertDialog.setTitle("You have " + SINGLETON.getTaskCount() + " tasks.");
+//            }
+//            alertDialog.setMessage("Are you sure?");
+//            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm",
+//                    new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            dialogInterface.dismiss();
+//                            if (SINGLETON.isJoiner() && SINGLETON.isPaired()) { //make sure we're connected to database...
+//                                SINGLETON.setSentTasks(true);
+//
+//                                //add tasks holder to database
+//                                Map<String, Object> tasks = new HashMap<>();
+//                                tasks.put("tasks", "");
+//                                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).updateChildren(tasks);
+//
+//                                DatabaseReference tasksRoot = SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("tasks");
+//
+//                                int iter = 0;
+//                                for (Task taskIter : SINGLETON.getTaskList()) {
+//                                    String iterString = String.valueOf(iter); //id for tasks
+//
+//                                    //create objects to put into database
+//                                    Map<String, Object> tasksID = new HashMap<>();
+//                                    Map<String, Object> taskString = new HashMap<>();
+//                                    Map<String, Object> taskDone = new HashMap<>();
+//
+//                                    tasksID.put(iterString, "");
+//                                    taskString.put("task", taskIter.getTask());
+//                                    taskDone.put("complete", taskIter.isComplete());
+//
+//                                    //update database
+//                                    tasksRoot.updateChildren(tasksID);
+//                                    tasksRoot.child(iterString).updateChildren(taskString);
+//                                    tasksRoot.child(iterString).updateChildren(taskDone);
+//
+//                                    iter++;
+//                                }
+//                                //TODO: send list to database
+//                            }
+//                            else {
+//                                //didn't send tasks...
+//                            }
+//                            Intent intent = new Intent(MainActivity.this, LockActivity.class);
+//                            startActivity(intent);
+//                        }
+//                    });
+//            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+//                    new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            dialogInterface.dismiss();
+//                        }
+//                    });
+//            alertDialog.show();
         }
     }
 
