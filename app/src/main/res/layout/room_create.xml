@@ -30,7 +30,7 @@
             android:textSize="13sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Share this room key with another person."
+            android:text="Share this room key with a person you want to monitor."
             android:layout_marginBottom="35dp"/>
 
         <ProgressBar
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:background="@color/gray"
             android:onClick="cancelRoomCreate"
-            android:text="@string/cancel"
+            android:text="@string/button_cancel"
             android:textColor="@color/white" />
     </LinearLayout>
 </LinearLayout>

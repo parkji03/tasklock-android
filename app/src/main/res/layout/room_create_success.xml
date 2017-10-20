@@ -34,12 +34,12 @@
             android:textSize="13sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/paired_notification"
+            android:text="You're now connected!"
             android:layout_marginBottom="8dp"/>
-
+<!--You will now receive update notifications!-->
         <TextView
             android:textSize="14sp"
-            android:text="@string/waiting_to_receive"
+            android:text="Waiting for child to start their task..."
             android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

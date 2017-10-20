@@ -168,7 +168,7 @@ public class IrisActivity extends AppCompatActivity {
         inputLayout.setCounterEnabled(true);
         inputLayout.setCounterMaxLength(6);
 
-        mRoomJoinButton = (Button)findViewById(R.id.join_room_enter_button);
+        mRoomJoinButton = (Button)findViewById(R.id.room_join_link);
         mRoomJoinEditText = (EditText)findViewById(R.id.join_room_key_input);
         mRoomJoinEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

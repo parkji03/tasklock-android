@@ -34,14 +34,14 @@
             android:textSize="13sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Your devices are now paired."
+            android:text="You're now connected with your Monitor."
             android:layout_marginBottom="10dp"/>
 
         <TextView
             android:textSize="18sp"
-            android:text="Start your tasks to send notifications!"
+            android:text="Your Monitor will be notified once you start your tasks."
             android:gravity="center_horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"/>
     </LinearLayout>
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:background="@color/mainBlue"
             android:onClick="returnToMain"
-            android:text="Begin Tasks"
+            android:text="Return Home"
             android:textColor="@color/white"
             android:layout_marginBottom="10dp"/>
 
