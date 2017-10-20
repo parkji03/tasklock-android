@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:background="@color/mainBlue"
             android:onClick="finishTaskActivity"
-            android:text="@string/done"
+            android:text="@string/button_done"
             android:textColor="@color/white" />
     </LinearLayout>
 </LinearLayout>

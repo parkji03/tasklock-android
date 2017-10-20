@@ -19,7 +19,7 @@
 
         <TextView
             android:textSize="30sp"
-            android:text="@string/success_title"
+            android:text="@string/title_success"
             android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -34,12 +34,21 @@
             android:textSize="13sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="You're now connected!"
-            android:layout_marginBottom="8dp"/>
-<!--You will now receive update notifications!-->
+            android:text="@string/room_create_subtitle"
+            android:layout_marginBottom="12dp"/>
+
         <TextView
-            android:textSize="14sp"
-            android:text="Waiting for child to start their task..."
+            android:textSize="18sp"
+            android:gravity="center_horizontal"
+            android:text="@string/room_create_direction"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:textColor="@color/darkGray"
+            android:textSize="13sp"
+            android:text="@string/room_create_loading"
             android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

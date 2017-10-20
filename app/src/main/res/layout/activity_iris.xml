@@ -33,15 +33,16 @@
             android:src="@drawable/ic_remove_red_eye_black_24dp"/>
 
         <TextView
+            android:textColor="@color/gray"
             android:textSize="12sp"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="18dp"
             android:text="@string/iris_subtext"/>
 
         <TextView
-            android:textSize="15sp"
+            android:textSize="17sp"
             android:gravity="center"
             android:layout_width="300dp"
             android:layout_height="wrap_content"

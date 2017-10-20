@@ -2,6 +2,7 @@ package com.example.jipark.tasklock_app;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.LayoutInflater;
 
 import com.example.jipark.tasklock_app.task.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -54,7 +55,6 @@ public class Utils {
     //for joiners
     public ValueEventListener checkRoomExistsBeforeJoinListener;
     public ValueEventListener checkOwnerDisconnectedListener;
-
 
     public static Utils getInstance() {
         return ourInstance;
@@ -270,12 +270,12 @@ public class Utils {
     }
 
     public void disconnectOwnerFromRoom() {
-        roomsReference.child(masterRoomKey).child("owner").setValue(false);
+        roomsReference.child(masterRoomKey).child("owner").setValue("disconnected");
         resetLocalOwnerValues();
     }
 
     public void disconnectJoinerFromRoom() {
-        roomsReference.child(masterRoomKey).child("joiner").setValue(false);
+        roomsReference.child(masterRoomKey).child("joiner").setValue("disconnected");
         resetLocalJoinerValues();
     }
 }

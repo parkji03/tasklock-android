@@ -19,7 +19,7 @@
 
         <TextView
             android:textSize="30sp"
-            android:text="@string/success_title"
+            android:text="@string/title_success"
             android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -34,16 +34,15 @@
             android:textSize="13sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="You're now connected with your Monitor."
-            android:layout_marginBottom="10dp"/>
+            android:text="@string/room_join_success_subtext"
+            android:layout_marginBottom="12dp"/>
 
         <TextView
             android:textSize="18sp"
-            android:text="Your Monitor will be notified once you start your tasks."
+            android:text="@string/room_join_success_direction"
             android:gravity="center_horizontal"
             android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"/>
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <LinearLayout
@@ -62,7 +61,7 @@
             android:layout_height="wrap_content"
             android:background="@color/mainBlue"
             android:onClick="returnToMain"
-            android:text="Return Home"
+            android:text="@string/button_return_home"
             android:textColor="@color/white"
             android:layout_marginBottom="10dp"/>
 
@@ -72,7 +71,7 @@
             android:layout_gravity="center|bottom"
             android:background="@color/gray"
             android:onClick="closeConnection"
-            android:text="Close Connection"
+            android:text="@string/button_close_connection"
             android:textColor="@color/white" />
     </LinearLayout>
 </LinearLayout>

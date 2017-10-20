@@ -19,7 +19,7 @@
 
         <TextView
             android:textSize="24sp"
-            android:text="Viewing received tasks:"
+            android:text="@string/received_task_title"
             android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
