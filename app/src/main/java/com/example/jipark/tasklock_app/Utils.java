@@ -24,7 +24,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jipark on 10/13/17.
@@ -277,5 +279,39 @@ public class Utils {
     public void disconnectJoinerFromRoom() {
         roomsReference.child(masterRoomKey).child("joiner").setValue("disconnected");
         resetLocalJoinerValues();
+    }
+
+    public void sendTasksToDatabase() {
+        if (isJoiner() && isPaired()) { //make sure we're connected to database...
+            setSentTasks(true);
+
+            //add tasks holder to database
+            Map<String, Object> tasks = new HashMap<>();
+            tasks.put("tasks", "");
+            getRoomsReference().child(getMasterRoomKey()).updateChildren(tasks);
+
+            DatabaseReference tasksRoot = getRoomsReference().child(getMasterRoomKey()).child("tasks");
+
+            int iter = 0;
+            for (Task taskIter : getTaskList()) {
+                String iterString = String.valueOf(iter); //id for tasks
+
+                //create objects to put into database
+                Map<String, Object> tasksID = new HashMap<>();
+                Map<String, Object> taskString = new HashMap<>();
+                Map<String, Object> taskDone = new HashMap<>();
+
+                tasksID.put(iterString, "");
+                taskString.put("task", taskIter.getTask());
+                taskDone.put("complete", taskIter.isComplete());
+
+                //update database
+                tasksRoot.updateChildren(tasksID);
+                tasksRoot.child(iterString).updateChildren(taskString);
+                tasksRoot.child(iterString).updateChildren(taskDone);
+
+                iter++;
+            }
+        }
     }
 }

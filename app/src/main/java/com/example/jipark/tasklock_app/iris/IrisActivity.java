@@ -96,7 +96,7 @@ public class IrisActivity extends AppCompatActivity {
      * Create a listener for a person to join the room, change layout if they join.
      * If the joiner leaves after joining, send a push notification and wait for a person to join again.
      *
-     * Status: incomplete
+     * Status: done
      */
     public void createRoom(View view) {
         //first check if internet is connected
