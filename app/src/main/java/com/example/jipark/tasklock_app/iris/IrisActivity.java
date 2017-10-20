@@ -46,9 +46,11 @@ public class IrisActivity extends AppCompatActivity {
     private EditText mRoomJoinEditText;
     private Button mRoomJoinButton;
 
-    //listener //TODO: remove this and get it from SINGLETON
-    private ValueEventListener listener;
-
+    /**
+     * Display specific layout depending on the SINGLETON role (owner vs joiner).
+     *
+     * Status: done
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +76,17 @@ public class IrisActivity extends AppCompatActivity {
     }
 
     //activity_iris.xml
+
+    /**
+     * activity_iris.xml ----> room_create.xml
+     * Button Listener in activity_iris.xml
+     *
+     * First check if internet is connected, then create new room in database.
+     * Create a listener for a person to join the room, change layout if they join.
+     * If the joiner leaves after joining, send a push notification and wait for a person to join again.
+     *
+     * Status: incomplete
+     */
     public void createRoom(View view) {
         //first check if internet is connected
         if (isInternetConnected()) {
@@ -81,10 +94,9 @@ public class IrisActivity extends AppCompatActivity {
             Map<String, Object> roomOwner = new HashMap<>();
             Map<String, Object> roomJoiner = new HashMap<>();
             String roomKey = SINGLETON.generateRoomKey();
-            String ownerID = SINGLETON.generateOwnerID();
 
             newRoom.put(roomKey, "");
-            roomOwner.put("owner", ownerID);
+            roomOwner.put("owner", true);
             roomJoiner.put("joiner", false);
 
             SINGLETON.getRoomsReference().updateChildren(newRoom);
@@ -103,7 +115,7 @@ public class IrisActivity extends AppCompatActivity {
 
             //listen on change
             final DatabaseReference joinerRoot = SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner");
-            joinerRoot.addValueEventListener(listener = new ValueEventListener() {
+            joinerRoot.addValueEventListener(SINGLETON.waitForJoinerListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if((Boolean)dataSnapshot.getValue()) {
@@ -111,14 +123,13 @@ public class IrisActivity extends AppCompatActivity {
                         slideContentIn(R.layout.room_create_success);
                     }
                     else {
-                        //TODO: joiner value changed to false... we lost connection!
+                        //TODO: joiner value changed to false...
                         SINGLETON.setPaired(false);
                     }
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
                 }
             });
         }
@@ -127,130 +138,32 @@ public class IrisActivity extends AppCompatActivity {
         }
     }
 
-    //room_create.xml
+    /**
+     * room_create.xml ----> activity_iris.xml
+     * Button Listener in room_create.xml
+     *
+     * Remove the listener, then remove the room created in the database.
+     * Reset local values in SINGLETON.
+     *
+     * Status: done
+     */
     public void cancelRoomCreate(View view) {
-        //cancel room creation, reset local room owner values
-        SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(listener);
+        SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
         SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue(); //need to remove listener when removing values...
         SINGLETON.resetLocalOwnerValues();
-
-        //change layout
         slideContentIn(R.layout.activity_iris);
     }
 
-    //activity_iris.xml
+    /**
+     * activity_iris.xml ----> room_join.xml
+     * Button Listener in activity_iris.xml
+     *
+     * EditText counter enabled, and soft keyboard closes on clicking IME_ACTION_DONE.
+     * TextChangedListener for EditText to make RoomJoin Button visible/invisible.
+     *
+     * Status: done
+     */
     public void joinRoom(View view) {
-        initRoomJoinLayout(); //load room_join.xml
-    }
-
-    //room_join.xml
-    public void cancelRoomJoin(View view) {
-        slideContentIn(R.layout.activity_iris);
-    }
-
-    //room_join.xml
-    public void enterRoomJoin(View view) {
-        final String inputRoomKey = mRoomJoinEditText.getText().toString(); //grab the user input key from editText
-        final DatabaseReference rooms = SINGLETON.getRoomsReference();
-        rooms.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild(inputRoomKey)) {
-                    if(!((Boolean)dataSnapshot.child(inputRoomKey).child("joiner").getValue())) {
-                        SINGLETON.setLocalJoinerValues(inputRoomKey, true, false);
-
-                        rooms.child(inputRoomKey).child("joiner").setValue(true); //change database
-                        //change layout to success
-                        slideContentIn(R.layout.room_join_success);
-                        //TODO: begin heartbeat poll
-                    }
-                    else {
-                        Toast.makeText(getApplicationContext(), "This room is full!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "Invalid room key!", Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    //room_create_success.xml
-    public void closeRoom(View view) { //for room owners only
-        AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
-        alertDialog.setMessage("All devices will lose their connection to this room.\nAre you sure?");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //TODO: notify database that we're deleting the room, notify room joiner
-                SINGLETON.resetLocalOwnerValues();
-                slideContentIn(R.layout.activity_iris);
-            }
-        });
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        alertDialog.show();
-    }
-
-    //room_join_success.xml
-    public void closeConnection(View view) { //for room joiners only
-        AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
-        alertDialog.setMessage("Disconnecting will notify the room owner.\nAre you sure?");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //TODO: notify database that joiner left the room, and notify room owner
-                SINGLETON.resetLocalJoinerValues();
-                slideContentIn(R.layout.activity_iris);
-            }
-        });
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        alertDialog.show();
-
-    }
-
-    //room_join_success.xml
-    public void returnToMain(View view) {
-        finish();
-    }
-
-    //room_create_success.xml
-    public void returnToHome(View view) {
-        finish();
-    }
-
-    private void slideContentIn(int layout) {
-        LayoutInflater inflater = getLayoutInflater();
-        View view2 = inflater.inflate(layout, null, false);
-        view2.startAnimation(AnimationUtils.loadAnimation(IrisActivity.this, android.R.anim.slide_in_left));
-        setContentView(view2);
-    }
-
-    private boolean isInternetConnected() {
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-            //we are connected to a network
-            return true;
-        }
-        else
-            return false;
-    }
-
-    private boolean initRoomJoinLayout() {
         slideContentIn(R.layout.room_join);
         TextInputLayout inputLayout = (TextInputLayout)findViewById(R.id.input_key_layout);
         inputLayout.setCounterEnabled(true);
@@ -289,6 +202,164 @@ public class IrisActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
             }
         });
-        return true;
+    }
+
+    /**
+     * room_join.xml ----> activity_iris.xml
+     * Button Listener in room_join.xml
+     *
+     * Simple cancel button to return to previous menu.
+     *
+     * Status: done
+     */
+    public void cancelRoomJoin(View view) {
+        slideContentIn(R.layout.activity_iris);
+    }
+
+    /**
+     * room_join.xml ----> room_join_success.xml
+     * Button Listener in room_join.xml
+     *
+     * Grab joiner's room key and check if room exists in the database.
+     * If room exists, check if it's full.
+     * If it's not full, set local joiner values and change layout, and update database node "joiner" to true.
+     *
+     * Status: done
+     */
+    public void enterRoomJoin(View view) {
+        final String inputRoomKey = mRoomJoinEditText.getText().toString(); //grab the user input key from editText
+        final DatabaseReference rooms = SINGLETON.getRoomsReference();
+        rooms.addListenerForSingleValueEvent(SINGLETON.checkRoomExistsBeforeJoinListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(inputRoomKey)) {
+                    if(!((Boolean)dataSnapshot.child(inputRoomKey).child("joiner").getValue())) {
+                        SINGLETON.setLocalJoinerValues(inputRoomKey, true, false);
+
+                        rooms.child(inputRoomKey).child("joiner").setValue(true); //change database
+                        slideContentIn(R.layout.room_join_success);
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "This room is full!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Invalid room key!", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    /**
+     * room_create_success.xml ----> activity_iris.xml
+     * Button Listener in room_create_success.xml
+     *
+     * Show warning message.  On confirm, reset local owner values and notify database that owner disconnected.
+     *
+     * Status: incomplete... notify database to inform joiner's client
+     */
+    public void closeRoom(View view) { //for room owners only
+        AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
+        alertDialog.setTitle("Warning!");
+        alertDialog.setMessage("All paired devices will lose their connection.\nAre you sure?");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //TODO: notify database that we're deleting the room, notify room joiner
+                SINGLETON.resetLocalOwnerValues();
+                slideContentIn(R.layout.activity_iris);
+            }
+        });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+    /**
+     * room_join_success.xml ----> activity_iris.xml
+     * Button Listener in room_join_success.xml
+     *
+     * Show warning message.  On confirm, reset local joiner values and notify database that joiner disconnected.
+     */
+    public void closeConnection(View view) { //for room joiners only
+        AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
+        alertDialog.setTitle("Warning!");
+        alertDialog.setMessage("Disconnecting will notify the room owner.\nAre you sure?");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //TODO: notify database that joiner left the room, and notify room owner
+                SINGLETON.resetLocalJoinerValues();
+                slideContentIn(R.layout.activity_iris);
+            }
+        });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+    /**
+     * room_join_success.xml ----> activity_main.xml
+     * Button Listener in room_join_success.xml
+     *
+     * Return to main activity.
+     *
+     * Status: done
+     */
+    public void returnToMain(View view) {
+        finish();
+    }
+
+    //room_create_success.xml
+
+    /**
+     * room_create_task_received.xml ----> activity_main.xml
+     * Button Listener in room_create_task_received.xml
+     *
+     * Return to main activity.
+     *
+     * Status: done
+     */
+    public void returnToHome(View view) {
+        finish();
+    }
+
+    /**
+     * Inflates layout given in @param with an animation.
+     *
+     * @param layout id of layout.xml to switch view to.
+     */
+    private void slideContentIn(int layout) {
+        LayoutInflater inflater = getLayoutInflater();
+        View view2 = inflater.inflate(layout, null, false);
+        view2.startAnimation(AnimationUtils.loadAnimation(IrisActivity.this, android.R.anim.slide_in_left));
+        setContentView(view2);
+    }
+
+    /**
+     * Checks if internet is connected.
+     * @return boolean value of internet connection status.
+     */
+    private boolean isInternetConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            return true;
+        }
+        else
+            return false;
     }
 }

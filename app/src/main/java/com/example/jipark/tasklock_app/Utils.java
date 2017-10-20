@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.example.jipark.tasklock_app.task.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -30,7 +32,8 @@ import java.util.List;
 public class Utils {
     private static final Utils ourInstance = new Utils();
     private final String tasksFileName = "tasks.json";
-    private final String AB = "0123456789ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"; //doesn't contain I or l for avoiding ambiguity
+//    private final String AB = "0123456789ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"; //doesn't contain I or l for avoiding ambiguity
+    private final String AB = "0123456789abcdefghijklmnopqrstuvwxyz"; //got rid of capital letters for ease of use
     private final int roomKeyLength = 6;
     private final int ownerIDLength = 4;
 
@@ -42,12 +45,16 @@ public class Utils {
     private boolean paired;
     private boolean receivedTasks;
     private boolean sentTasks;
-
-    //TODO: add all listeners here...
-//    private ValueEventListener joinerListener;
-//    private ValueEventListener
-
     private SecureRandom rnd;
+
+    //for owners
+    public ValueEventListener waitForJoinerListener;
+    public ValueEventListener waitForTasksListener;
+
+    //for joiners
+    public ValueEventListener checkRoomExistsBeforeJoinListener;
+    public ValueEventListener checkOwnerDisconnectedListener;
+
 
     public static Utils getInstance() {
         return ourInstance;
@@ -65,7 +72,7 @@ public class Utils {
         sentTasks = false;
     }
 
-    public String generateRandomString(int len){
+    private String generateRandomString(int len){
         StringBuilder sb = new StringBuilder(len);
         for(int i = 0; i < len; i++)
             sb.append(AB.charAt(rnd.nextInt(AB.length())));
@@ -260,5 +267,15 @@ public class Utils {
         this.receivedTasks = false;
         this.masterRoomKey = "";
         this.receivedTasks = false;
+    }
+
+    public void disconnectOwnerFromRoom() {
+        roomsReference.child(masterRoomKey).child("owner").setValue(false);
+        resetLocalOwnerValues();
+    }
+
+    public void disconnectJoinerFromRoom() {
+        roomsReference.child(masterRoomKey).child("joiner").setValue(false);
+        resetLocalJoinerValues();
     }
 }
