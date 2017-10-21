@@ -17,12 +17,26 @@ import com.example.jipark.tasklock_app.app_manager.AppManagerActivity;
 import com.example.jipark.tasklock_app.iris.IrisActivity;
 import com.example.jipark.tasklock_app.lock.LockActivity;
 import com.example.jipark.tasklock_app.task.TaskActivity;
+import com.example.jipark.tasklock_app.MyTestService;
 
 
 public class MainActivity extends AppCompatActivity {
     private String tasksFileName = "tasks.json";
     private String appsFileName = "apps.json";
     private Utils SINGLETON;
+
+    // Call `launchTestService()` in the activity
+    // to startup the service
+    public void launchTestService() {
+        // Construct our Intent specifying the Service
+        //Intent i = new Intent(this, MyTestService.class);
+        // Add extras to the bundle
+        //i.putExtra("foo", "bar");
+        // Start the service
+        //startService(i);
+        startService(new Intent(this, MyTestService.class));
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         if (SINGLETON.isFilePresent(this, appsFileName)) {
             SINGLETON.loadApps(this);
         }
+        launchTestService();
     }
 
     public void launchTaskActivity(View view) {

@@ -28,6 +28,10 @@
             android:name=".lock.LockActivity"
             android:label="@string/app_name"></activity>
         <activity android:name=".iris.IrisActivity"></activity>
+
+        <service
+            android:name=".MyTestService"
+            android:exported="false"/>
     </application>
 
 </manifest>
