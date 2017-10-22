@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
 import com.example.jipark.tasklock_app.task.Task;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -147,25 +148,21 @@ public class IrisActivity extends AppCompatActivity {
                     if ((dataSnapshot.getValue()).equals("connected")) {
                         SINGLETON.setPaired(true);
                         slideContentIn(R.layout.room_create_success);
+
                         SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).addValueEventListener(SINGLETON.waitForTasksListener = new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.hasChild("tasks")) {
                                     SINGLETON.setReceivedTasks(true);
-                                    if (currentLayout != R.layout.room_create_task_received) {
-                                        slideContentIn(R.layout.room_create_task_received);
-                                    }
-                                    else {
-//                                        slideContentIn(R.layout.room_create_task_received);
-                                        setContentView(R.layout.room_create_task_received);
-                                    }
+                                    slideContentIn(R.layout.room_create_task_received);
+
                                     initRecyclerView();
-                                    if (dataSnapshot.child("tasks").hasChildren()) {
-                                        SINGLETON.setReceivedTaskList(new ArrayList<Task>());
-                                    }
+//                                    if (dataSnapshot.child("tasks").hasChildren()) {
+                                    SINGLETON.getReceivedTaskList().clear();
+//                                    }
                                     for (DataSnapshot tasksIterator: dataSnapshot.child("tasks").getChildren()) {
                                         String taskText = (String)tasksIterator.child("task").getValue();
-                                        boolean taskCompleted = true;
+                                        boolean taskCompleted = false;
                                         if(tasksIterator.hasChild("complete")) {
                                             taskCompleted = (Boolean)tasksIterator.child("complete").getValue();
                                         }
@@ -176,6 +173,8 @@ public class IrisActivity extends AppCompatActivity {
                                     mAdapter.notifyDataSetChanged();
                                 }
                             }
+
+
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {

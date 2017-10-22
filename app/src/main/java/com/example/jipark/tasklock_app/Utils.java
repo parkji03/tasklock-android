@@ -280,28 +280,48 @@ public class Utils {
     }
 
     public void sendTasksToDatabase() {
-        if (isJoiner() && isPaired()) { //make sure we're connected to database...
+        if (isJoiner() && isPaired()) { //make sure we're connected to database... 
             setSentTasks(true);
-
-            //add tasks holder to database
-            Map<String, Object> tasksHolder = new HashMap<>();
-            tasksHolder.put("tasks", "");
-            getRoomsReference().child(getMasterRoomKey()).updateChildren(tasksHolder);
-
+            //add tasks holder to database 
             Map<String, Object> tasks = new HashMap<>();
-            int i = 0;
-            for (Task iterator : getTaskList()) {
-                String iString = String.valueOf(i);
-
-                tasks.put(iString, iterator);
-
-                i++;
+            tasks.put("tasks", "");
+            getRoomsReference().child(getMasterRoomKey()).updateChildren(tasks);
+            DatabaseReference tasksRoot = getRoomsReference().child(getMasterRoomKey()).child("tasks");
+            int iter = 0;
+            for (Task taskIter : getTaskList()) {
+                String iterString = String.valueOf(iter); //id for tasks  
+                // create objects to put into database 
+                Map<String, Object> tasksID = new HashMap<>();
+                Map<String, Object> taskString = new HashMap<>();
+                Map<String, Object> taskDone = new HashMap<>();
+                tasksID.put(iterString, "");
+                taskString.put("task", taskIter.getTask());
+                taskDone.put("complete", taskIter.isComplete());       //update database 
+                tasksRoot.updateChildren(tasksID);
+                tasksRoot.child(iterString).updateChildren(taskString);
+                tasksRoot.child(iterString).updateChildren(taskDone);
+                iter++;
             }
-            getRoomsReference().child(getMasterRoomKey()).child("tasks").updateChildren(tasks);
-//            getRoomsReference().child(getMasterRoomKey()).child("tasks").updateChildren(tasks);
-//            getRoomsReference().child(getMasterRoomKey()).child("tasks").updateChildren(tasks);
-//            getRoomsReference().child(getMasterRoomKey()).child("tasks").updateChildren(tasks);
         }
+//        if (isJoiner() && isPaired()) { //make sure we're connected to database...
+//            setSentTasks(true);
+//
+//            //add tasks holder to database
+//            Map<String, Object> tasksHolder = new HashMap<>();
+//            tasksHolder.put("tasks", "");
+//            getRoomsReference().child(getMasterRoomKey()).updateChildren(tasksHolder);
+//
+//            Map<String, Object> tasks = new HashMap<>();
+//            int i = 0;
+//            for (Task iterator : getTaskList()) {
+//                String iString = String.valueOf(i);
+//
+//                tasks.put(iString, iterator);
+//
+//                i++;
+//            }
+//            getRoomsReference().child(getMasterRoomKey()).child("tasks").updateChildren(tasks);
+//        }
     }
 
     public List<Task> getReceivedTaskList() {
