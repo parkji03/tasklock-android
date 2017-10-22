@@ -97,7 +97,7 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
             mAdapter.notifyItemInserted(SINGLETON.getTaskList().size() - 1);
             SINGLETON.saveTasks(this);
 
-            //TODO: add to database just like in MainActivity
+            SINGLETON.sendTasksToDatabase();
 
             return true;
         }

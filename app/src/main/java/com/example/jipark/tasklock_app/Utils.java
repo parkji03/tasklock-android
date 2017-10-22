@@ -53,6 +53,7 @@ public class Utils {
     //for owners
     public ValueEventListener waitForJoinerListener;
     public ValueEventListener waitForTasksListener;
+    private List<Task> receivedTaskList;
 
     //for joiners
     public ValueEventListener checkRoomExistsBeforeJoinListener;
@@ -72,6 +73,7 @@ public class Utils {
         paired = false;
         receivedTasks = false;
         sentTasks = false;
+        receivedTaskList = new ArrayList<>();
     }
 
     private String generateRandomString(int len){
@@ -201,10 +203,6 @@ public class Utils {
         return generateRandomString(roomKeyLength);
     }
 
-    public String generateOwnerID() {
-        return "owner-" + generateRandomString(ownerIDLength);
-    }
-
     public boolean isOwner() {
         return owner;
     }
@@ -319,5 +317,13 @@ public class Utils {
                 iter++;
             }
         }
+    }
+
+    public List<Task> getReceivedTaskList() {
+        return receivedTaskList;
+    }
+
+    public void setReceivedTaskList(List<Task> receivedTaskList) {
+        this.receivedTaskList = receivedTaskList;
     }
 }

@@ -80,7 +80,6 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Task
     private boolean initAutoCompleteTextView() {
         mMultiAutoCompleteTextView = (MultiAutoCompleteTextView)findViewById(R.id.task_edit_text);
 
-        //TODO: add animations for focus change, redo add task button to look better
         mMultiAutoCompleteTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {

@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
 //
 //                                    iter++;
 //                                }
-//                                //TODO: send list to database
 //                            }
 //                            else {
 //                                //didn't send tasks...
@@ -162,6 +161,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //TODO: add method to send to database that the client disconnected...
+        if (SINGLETON.isOwner()) {
+            SINGLETON.disconnectOwnerFromRoom();
+        }
+        else if (SINGLETON.isJoiner()) {
+            SINGLETON.disconnectJoinerFromRoom();
+        }
     }
 }

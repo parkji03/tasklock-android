@@ -8,6 +8,9 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
+import com.example.jipark.tasklock_app.task.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,12 +52,17 @@ public class IrisActivity extends AppCompatActivity {
     private EditText mRoomJoinEditText;
     private Button mRoomJoinButton;
 
+    //room_create_task_received
+    private RoomOwnerAdapter mAdapter;
+    private RecyclerView mRecyclerView;
+
+
     private int currentLayout;
 
 
     /**
      * Display specific layout depending on the SINGLETON role (owner vs joiner).
-     *
+     * <p>
      * Status: done
      */
     @Override
@@ -64,25 +73,23 @@ public class IrisActivity extends AppCompatActivity {
         if (SINGLETON.isJoiner()) {
             currentLayout = R.layout.room_join_success;
             setContentView(R.layout.room_join_success);
-        }
-        else if (SINGLETON.isOwner()) {
+        } else if (SINGLETON.isOwner()) {
             if (SINGLETON.hasReceivedTasks() && SINGLETON.isPaired()) {
                 currentLayout = R.layout.room_create_task_received;
                 setContentView(R.layout.room_create_task_received);
-            }
-            else if (!SINGLETON.hasReceivedTasks() && SINGLETON.isPaired()) {
+                initRecyclerView();
+
+            } else if (!SINGLETON.hasReceivedTasks() && SINGLETON.isPaired()) {
                 currentLayout = R.layout.room_create_success;
                 setContentView(R.layout.room_create_success);
-            }
-            else {
+            } else {
                 currentLayout = R.layout.room_create;
                 setContentView(R.layout.room_create);
-                mRoomCreateKeyDisplay = (TextView)findViewById(R.id.iris_room_key);
+                mRoomCreateKeyDisplay = (TextView) findViewById(R.id.iris_room_key);
                 String displayKey = "Room Key: " + SINGLETON.getMasterRoomKey();
                 mRoomCreateKeyDisplay.setText(displayKey);
             }
-        }
-        else {
+        } else {
             currentLayout = R.layout.activity_iris;
             setContentView(R.layout.activity_iris);
         }
@@ -91,11 +98,11 @@ public class IrisActivity extends AppCompatActivity {
     /**
      * activity_iris.xml ----> room_create.xml
      * Button Listener in activity_iris.xml
-     *
+     * <p>
      * First check if internet is connected, then create new room in database.
      * Create a listener for a person to join the room, change layout if they join.
      * If the joiner leaves after joining, send a push notification and wait for a person to join again.
-     *
+     * <p>
      * Status: done
      */
     public void createRoom(View view) {
@@ -120,7 +127,7 @@ public class IrisActivity extends AppCompatActivity {
 
             //change layout
             slideContentIn(R.layout.room_create);
-            mRoomCreateKeyDisplay = (TextView)findViewById(R.id.iris_room_key);
+            mRoomCreateKeyDisplay = (TextView) findViewById(R.id.iris_room_key);
             String displayKey = "Room Key: " + roomKey;
             mRoomCreateKeyDisplay.setText(displayKey);
 
@@ -132,18 +139,25 @@ public class IrisActivity extends AppCompatActivity {
                     if ((dataSnapshot.getValue()).equals("connected")) {
                         SINGLETON.setPaired(true);
                         slideContentIn(R.layout.room_create_success);
-
-
                         SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).addValueEventListener(SINGLETON.waitForTasksListener = new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.hasChild("tasks")) {
                                     SINGLETON.setReceivedTasks(true);
-                                    Toast.makeText(getApplicationContext(), "Received tasks from child.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Tasks started by the joiner.", Toast.LENGTH_SHORT).show();
                                     slideContentIn(R.layout.room_create_task_received);
-                                }
-//                                Toast.makeText(getApplicationContext(), "Received tasks from child.", Toast.LENGTH_SHORT).show();
+                                    initRecyclerView();
 
+                                    for (DataSnapshot tasksIterator: dataSnapshot.child("tasks").getChildren()) {
+                                        String taskText = (String)tasksIterator.child("task").getValue();
+                                        boolean taskCompleted = (Boolean)tasksIterator.child("complete").getValue();
+
+                                        Task task = new Task(taskText, taskCompleted);
+                                        SINGLETON.getReceivedTaskList().add(task);
+                                    }
+                                    //parse through data, set SINGLETON.setReceivedTaskList(List);
+                                    mAdapter.notifyItemInserted(SINGLETON.getReceivedTaskList().size() - 1);
+                                }
                             }
 
                             @Override
@@ -153,13 +167,12 @@ public class IrisActivity extends AppCompatActivity {
                         });
 
 
-                    }
-                    else if ((dataSnapshot.getValue()).equals("disconnected")) {
+                    } else if ((dataSnapshot.getValue()).equals("disconnected")) {
                         SINGLETON.setPaired(false);
                         Toast.makeText(getApplicationContext(), "Joiner disconnected!", Toast.LENGTH_SHORT).show();
                         if (active) {
                             slideContentIn(R.layout.room_create);
-                            mRoomCreateKeyDisplay = (TextView)findViewById(R.id.iris_room_key);
+                            mRoomCreateKeyDisplay = (TextView) findViewById(R.id.iris_room_key);
                             String displayKey = "Room Key: " + SINGLETON.getMasterRoomKey();
                             mRoomCreateKeyDisplay.setText(displayKey);
                         }
@@ -170,8 +183,7 @@ public class IrisActivity extends AppCompatActivity {
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
-        }
-        else {
+        } else {
             Toast.makeText(this, "Could not establish connection with the server.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -179,10 +191,10 @@ public class IrisActivity extends AppCompatActivity {
     /**
      * room_create.xml ----> activity_iris.xml
      * Button Listener in room_create.xml
-     *
+     * <p>
      * Remove the listener, then remove the room created in the database.
      * Reset local values in SINGLETON.
-     *
+     * <p>
      * Status: done
      */
     public void cancelRoomCreate(View view) {
@@ -195,25 +207,25 @@ public class IrisActivity extends AppCompatActivity {
     /**
      * activity_iris.xml ----> room_join.xml
      * Button Listener in activity_iris.xml
-     *
+     * <p>
      * EditText counter enabled, and soft keyboard closes on clicking IME_ACTION_DONE.
      * TextChangedListener for EditText to make RoomJoin Button visible/invisible.
-     *
+     * <p>
      * Status: done
      */
     public void joinRoom(View view) {
         slideContentIn(R.layout.room_join);
-        TextInputLayout inputLayout = (TextInputLayout)findViewById(R.id.input_key_layout);
+        TextInputLayout inputLayout = (TextInputLayout) findViewById(R.id.input_key_layout);
         inputLayout.setCounterEnabled(true);
         inputLayout.setCounterMaxLength(6);
 
-        mRoomJoinButton = (Button)findViewById(R.id.room_join_link);
-        mRoomJoinEditText = (EditText)findViewById(R.id.join_room_key_input);
+        mRoomJoinButton = (Button) findViewById(R.id.room_join_link);
+        mRoomJoinEditText = (EditText) findViewById(R.id.join_room_key_input);
         mRoomJoinEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if(i == EditorInfo.IME_ACTION_DONE) {
-                    InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     mRoomJoinEditText.clearFocus();
                 }
@@ -228,10 +240,9 @@ public class IrisActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.toString().trim().length() == 0) {
+                if (charSequence.toString().trim().length() == 0) {
                     mRoomJoinButton.setVisibility(View.INVISIBLE);
-                }
-                else {
+                } else {
                     mRoomJoinButton.setVisibility(View.VISIBLE);
                 }
             }
@@ -245,9 +256,9 @@ public class IrisActivity extends AppCompatActivity {
     /**
      * room_join.xml ----> activity_iris.xml
      * Button Listener in room_join.xml
-     *
+     * <p>
      * Simple cancel button to return to previous menu.
-     *
+     * <p>
      * Status: done
      */
     public void cancelRoomJoin(View view) {
@@ -257,11 +268,11 @@ public class IrisActivity extends AppCompatActivity {
     /**
      * room_join.xml ----> room_join_success.xml
      * Button Listener in room_join.xml
-     *
+     * <p>
      * Grab joiner's room key and check if room exists in the database.
      * If room exists, check if it's full.
      * If it's not full, set local joiner values and change layout, and update database node "joiner" to true.
-     *
+     * <p>
      * Status: done
      */
     public void enterRoomJoin(View view) {
@@ -270,7 +281,7 @@ public class IrisActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChild(inputRoomKey)) {
-                    if((dataSnapshot.child(inputRoomKey).child("joiner").getValue()).equals("none") || (dataSnapshot.child(inputRoomKey).child("joiner").getValue()).equals("disconnected")) {
+                    if ((dataSnapshot.child(inputRoomKey).child("joiner").getValue()).equals("none") || (dataSnapshot.child(inputRoomKey).child("joiner").getValue()).equals("disconnected")) {
                         SINGLETON.setLocalJoinerValues(inputRoomKey, true, false);
                         SINGLETON.getRoomsReference().child(inputRoomKey).child("joiner").setValue("connected"); //change database
                         slideContentIn(R.layout.room_join_success);
@@ -279,9 +290,7 @@ public class IrisActivity extends AppCompatActivity {
                         SINGLETON.getRoomsReference().child(inputRoomKey).child("owner").addValueEventListener(SINGLETON.checkOwnerDisconnectedListener = new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                if((dataSnapshot.getValue()).equals("disconnected")) {
-                                    //TODO: delete event listeners
-//                                    SINGLETON.setPaired(false);
+                                if ((dataSnapshot.getValue()).equals("disconnected")) {
                                     SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("owner").removeEventListener(SINGLETON.checkOwnerDisconnectedListener);
                                     SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
                                     SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue();
@@ -298,15 +307,14 @@ public class IrisActivity extends AppCompatActivity {
 
                             }
                         });
-                    }
-                    else {
+                    } else {
                         Toast.makeText(getApplicationContext(), "This room is full!", Toast.LENGTH_SHORT).show();
                     }
-                }
-                else {
+                } else {
                     Toast.makeText(getApplicationContext(), "Invalid room key!", Toast.LENGTH_SHORT).show();
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -317,10 +325,10 @@ public class IrisActivity extends AppCompatActivity {
     /**
      * room_create_success.xml ----> activity_iris.xml
      * Button Listener in room_create_success.xml
-     *
+     * <p>
      * Show warning message.  On confirm, reset local owner values and notify database that owner disconnected.
-     *
-     * Status: incomplete... notify database to inform joiner's client
+     * <p>
+     * Status: done
      */
     public void closeRoom(View view) { //for room owners only
         AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
@@ -332,7 +340,6 @@ public class IrisActivity extends AppCompatActivity {
                 SINGLETON.disconnectOwnerFromRoom();
                 SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeEventListener(SINGLETON.waitForTasksListener);
                 SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
-                //TODO: delete owner listeners... delete room node FROM JOINER CLIENT!!!
                 SINGLETON.resetLocalOwnerValues();
                 slideContentIn(R.layout.activity_iris);
             }
@@ -349,10 +356,10 @@ public class IrisActivity extends AppCompatActivity {
     /**
      * room_join_success.xml ----> activity_iris.xml
      * Button Listener in room_join_success.xml
-     *
+     * <p>
      * Show warning message.  On confirm, reset local joiner values and notify database that joiner disconnected.
-     *
-     * Status: incomplete... notify database that joiner left...
+     * <p>
+     * Status: done
      */
     public void closeConnection(View view) { //for room joiners only
         AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
@@ -381,9 +388,9 @@ public class IrisActivity extends AppCompatActivity {
     /**
      * room_join_success.xml ----> activity_main.xml
      * Button Listener in room_join_success.xml
-     *
+     * <p>
      * Return to main activity.
-     *
+     * <p>
      * Status: done
      */
     public void returnToMain(View view) {
@@ -393,9 +400,9 @@ public class IrisActivity extends AppCompatActivity {
     /**
      * room_create_task_received.xml ----> activity_main.xml
      * Button Listener in room_create_task_received.xml
-     *
+     * <p>
      * Return to main activity.
-     *
+     * <p>
      * Status: done
      */
     public void returnToHome(View view) {
@@ -404,9 +411,10 @@ public class IrisActivity extends AppCompatActivity {
 
     /**
      * Inflates layout given in @param with an animation.
-     * @param layout id of layout.xml to switch view to.
      *
-     * Status: done
+     * @param layout id of layout.xml to switch view to.
+     *               <p>
+     *               Status: done
      */
     private void slideContentIn(int layout) {
         currentLayout = layout;
@@ -418,18 +426,18 @@ public class IrisActivity extends AppCompatActivity {
 
     /**
      * Checks if internet is connected.
-     * @return boolean value of internet connection status.
      *
+     * @return boolean value of internet connection status.
+     * <p>
      * Status: done
      */
     private boolean isInternetConnected() {
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
             //we are connected to a network
             return true;
-        }
-        else
+        } else
             return false;
     }
 
@@ -449,14 +457,20 @@ public class IrisActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (currentLayout == R.layout.room_create) {
             cancelRoomCreate(null);
-        }
-        else if (currentLayout == R.layout.room_create_success) {
+        } else if (currentLayout == R.layout.room_create_success) {
             closeRoom(null);
-        }
-//        else if (currentLayout == R.layout.room_create_task_received) {
-//        }
-        else {
+        } else {
             super.onBackPressed();
         }
+    }
+
+    private boolean initRecyclerView() {
+        mRecyclerView = (RecyclerView)findViewById(R.id.received_task_list);
+        mAdapter = new RoomOwnerAdapter(SINGLETON.getReceivedTaskList());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setAdapter(mAdapter);
+        return true;
     }
 }
