@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -36,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -113,16 +115,20 @@ public class IrisActivity extends AppCompatActivity {
             Map<String, Object> newRoom = new HashMap<>();
             Map<String, Object> roomOwner = new HashMap<>();
             Map<String, Object> roomJoiner = new HashMap<>();
+            Map<String, Object> allTasksComplete = new HashMap<>();
+
             String roomKey = SINGLETON.generateRoomKey();
 
             newRoom.put(roomKey, "");
             roomOwner.put("owner", "connected");
             roomJoiner.put("joiner", "none");
+            allTasksComplete.put("done", false);
 
             SINGLETON.getRoomsReference().updateChildren(newRoom);
             DatabaseReference roomRoot = SINGLETON.getRoomsReference().child(roomKey);
             roomRoot.updateChildren(roomOwner);
             roomRoot.updateChildren(roomJoiner);
+            roomRoot.updateChildren(allTasksComplete);
 
             //set client ownership
             SINGLETON.setLocalOwnerValues(roomKey, false, false);
@@ -149,18 +155,25 @@ public class IrisActivity extends AppCompatActivity {
                                     if (currentLayout != R.layout.room_create_task_received) {
                                         slideContentIn(R.layout.room_create_task_received);
                                     }
+                                    else {
+//                                        slideContentIn(R.layout.room_create_task_received);
+                                        setContentView(R.layout.room_create_task_received);
+                                    }
                                     initRecyclerView();
-                                    SINGLETON.setReceivedTaskList(new ArrayList<Task>());
+                                    if (dataSnapshot.child("tasks").hasChildren()) {
+                                        SINGLETON.setReceivedTaskList(new ArrayList<Task>());
+                                    }
                                     for (DataSnapshot tasksIterator: dataSnapshot.child("tasks").getChildren()) {
                                         String taskText = (String)tasksIterator.child("task").getValue();
-                                        boolean taskCompleted = false;
+                                        boolean taskCompleted = true;
                                         if(tasksIterator.hasChild("complete")) {
                                             taskCompleted = (Boolean)tasksIterator.child("complete").getValue();
                                         }
                                         Task task = new Task(taskText, taskCompleted);
                                         SINGLETON.getReceivedTaskList().add(task);
                                     }
-                                    mAdapter.notifyItemInserted(SINGLETON.getReceivedTaskList().size() - 1);
+//                                    mAdapter.notifyItemInserted(SINGLETON.getReceivedTaskList().size() - 1);
+                                    mAdapter.notifyDataSetChanged();
                                 }
                             }
 

@@ -10,9 +10,12 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.jipark.tasklock_app.R;
+import com.example.jipark.tasklock_app.Utils;
 import com.example.jipark.tasklock_app.task.Task;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jipark on 10/11/17.
@@ -62,6 +65,12 @@ public class LockAdapter extends RecyclerView.Adapter<com.example.jipark.taskloc
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 taskList.get(position).setComplete(b);
+
+                if (Utils.getInstance().isJoiner() && Utils.getInstance().isPaired()) {
+                    Map<String, Object> userUpdates = new HashMap<>();
+                    userUpdates.put("complete", taskList.get(position).isComplete());
+                    Utils.getInstance().getRoomsReference().child(Utils.getInstance().getMasterRoomKey()).child("tasks").child(Integer.toString(position)).updateChildren(userUpdates);
+                }
                 try {
                     mAdapterCallback.onMethodCallback();
                 }

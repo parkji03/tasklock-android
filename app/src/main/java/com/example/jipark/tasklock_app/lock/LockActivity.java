@@ -45,6 +45,7 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
     @Override
     public void onMethodCallback() {
         SINGLETON.saveTasks(this);
+
         if (SINGLETON.checkTasksAllTrue()) {
             int completedTaskCount = SINGLETON.getTaskCount();
             SINGLETON.getTaskList().clear();

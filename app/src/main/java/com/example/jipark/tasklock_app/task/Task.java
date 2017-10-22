@@ -7,12 +7,12 @@ import java.io.Serializable;
  */
 
 public class Task implements Serializable{
-    private String task;
-    private boolean isComplete;
+    public String task;
+    public boolean complete;
 
     public Task(String task, boolean isComplete) {
         this.task = task;
-        this.isComplete = isComplete;
+        this.complete = isComplete;
     }
 
     // getters and setters
@@ -25,10 +25,10 @@ public class Task implements Serializable{
     }
 
     public boolean isComplete() {
-        return isComplete;
+        return complete;
     }
 
     public void setComplete(boolean complete) {
-        isComplete = complete;
+        this.complete = complete;
     }
 }
