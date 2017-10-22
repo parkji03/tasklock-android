@@ -13,11 +13,17 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
 import com.example.jipark.tasklock_app.task.Task;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class LockActivity extends AppCompatActivity implements LockAdapter.LockAdapterCallback {
     private Utils SINGLETON;
@@ -33,6 +39,7 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
         initRecyclerView();
         initQuickAddEditView();
         initFloatingActionButton();
+        initDateTime();
     }
 
     @Override
@@ -65,6 +72,19 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
                     });
             alertDialog.show();
         }
+    }
+
+    private boolean initDateTime() {
+        TextView dateTextView = (TextView)findViewById(R.id.lock_date);
+        DateFormat df = new SimpleDateFormat("EEEE, MMM d", Locale.getDefault());
+        String date = df.format(Calendar.getInstance().getTime());
+//        Calendar calendar = Calendar.getInstance();
+//        String weekDay = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+//        String month = "";
+//        String day = "";
+//        String fullDate = weekDay + ", " + month + day;
+        dateTextView.setText(date);
+        return true;
     }
 
     private boolean initRecyclerView() {

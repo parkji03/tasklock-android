@@ -146,18 +146,13 @@ public class IrisActivity extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.hasChild("tasks")) {
                                     SINGLETON.setReceivedTasks(true);
-//                                    Toast.makeText(getApplicationContext(), "Tasks started by the joiner.", Toast.LENGTH_SHORT).show();
-                                    slideContentIn(R.layout.room_create_task_received);
+                                    if (currentLayout != R.layout.room_create_task_received) {
+                                        slideContentIn(R.layout.room_create_task_received);
+                                    }
                                     initRecyclerView();
                                     SINGLETON.setReceivedTaskList(new ArrayList<Task>());
                                     for (DataSnapshot tasksIterator: dataSnapshot.child("tasks").getChildren()) {
                                         String taskText = (String)tasksIterator.child("task").getValue();
-//                                        System.out.println(taskText);
-//                                        System.out.println(dataSnapshot);
-//                                        System.out.println("in here");
-//                                        System.out.println("in here");
-//                                        System.out.println("in here GO OVER");
-
                                         boolean taskCompleted = false;
                                         if(tasksIterator.hasChild("complete")) {
                                             taskCompleted = (Boolean)tasksIterator.child("complete").getValue();
@@ -165,7 +160,6 @@ public class IrisActivity extends AppCompatActivity {
                                         Task task = new Task(taskText, taskCompleted);
                                         SINGLETON.getReceivedTaskList().add(task);
                                     }
-                                    //parse through data, set SINGLETON.setReceivedTaskList(List);
                                     mAdapter.notifyItemInserted(SINGLETON.getReceivedTaskList().size() - 1);
                                 }
                             }
