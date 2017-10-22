@@ -13,6 +13,7 @@
     android:weightSum="1">
 
     <CheckBox
+        android:clickable="false"
         android:scaleX="1.5"
         android:scaleY="1.5"
         android:gravity="center_vertical"

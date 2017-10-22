@@ -138,6 +138,7 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
+                        //TODO: send notification to server that we stopped doing our tasks
                         finish();
                     }
                 });

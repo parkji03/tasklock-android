@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -144,14 +146,22 @@ public class IrisActivity extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.hasChild("tasks")) {
                                     SINGLETON.setReceivedTasks(true);
-                                    Toast.makeText(getApplicationContext(), "Tasks started by the joiner.", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(getApplicationContext(), "Tasks started by the joiner.", Toast.LENGTH_SHORT).show();
                                     slideContentIn(R.layout.room_create_task_received);
                                     initRecyclerView();
-
+                                    SINGLETON.setReceivedTaskList(new ArrayList<Task>());
                                     for (DataSnapshot tasksIterator: dataSnapshot.child("tasks").getChildren()) {
                                         String taskText = (String)tasksIterator.child("task").getValue();
-                                        boolean taskCompleted = (Boolean)tasksIterator.child("complete").getValue();
+//                                        System.out.println(taskText);
+//                                        System.out.println(dataSnapshot);
+//                                        System.out.println("in here");
+//                                        System.out.println("in here");
+//                                        System.out.println("in here GO OVER");
 
+                                        boolean taskCompleted = false;
+                                        if(tasksIterator.hasChild("complete")) {
+                                            taskCompleted = (Boolean)tasksIterator.child("complete").getValue();
+                                        }
                                         Task task = new Task(taskText, taskCompleted);
                                         SINGLETON.getReceivedTaskList().add(task);
                                     }
@@ -333,13 +343,13 @@ public class IrisActivity extends AppCompatActivity {
     public void closeRoom(View view) { //for room owners only
         AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
         alertDialog.setTitle("Warning!");
-        alertDialog.setMessage("The joiner hasn't started their tasks yet.\nAre you sure?");
+        alertDialog.setMessage("The joiner will lose their connection.\nAre you sure?");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                SINGLETON.disconnectOwnerFromRoom();
                 SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeEventListener(SINGLETON.waitForTasksListener);
                 SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
+                SINGLETON.disconnectOwnerFromRoom();
                 SINGLETON.resetLocalOwnerValues();
                 slideContentIn(R.layout.activity_iris);
             }
@@ -368,10 +378,9 @@ public class IrisActivity extends AppCompatActivity {
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                SINGLETON.disconnectJoinerFromRoom();
-
                 SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("owner").removeEventListener(SINGLETON.checkOwnerDisconnectedListener);
                 SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
+                SINGLETON.disconnectJoinerFromRoom();
                 SINGLETON.resetLocalJoinerValues();
                 slideContentIn(R.layout.activity_iris);
             }
@@ -474,3 +483,6 @@ public class IrisActivity extends AppCompatActivity {
         return true;
     }
 }
+
+
+//app breaks if i close the room... why

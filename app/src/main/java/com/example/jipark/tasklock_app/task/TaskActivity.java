@@ -53,6 +53,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Task
     @Override
     public void onMethodCallback() {
         SINGLETON.saveTasks(this);
+        //TODO: send database that we completed a task...
         showHiddenText();
     }
 
@@ -64,6 +65,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Task
             SINGLETON.addTaskToHead(task);
             mAdapter.notifyItemInserted(0);
             mRecyclerView.smoothScrollToPosition(0);
+            mAdapter.notifyDataSetChanged();
             SINGLETON.saveTasks(this);
             showHiddenText();
         }

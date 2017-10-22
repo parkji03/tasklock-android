@@ -17,6 +17,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!--Turning off your phone screen will display TaskLock in front of your lock screen.-->
+
+        <!--Press the home button to get to your phone's lock screen after turning your display off.-->
         <android.support.v7.widget.RecyclerView
             android:id="@+id/lock_task_list"
             android:scrollbars="vertical"
