@@ -78,11 +78,6 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
         TextView dateTextView = (TextView)findViewById(R.id.lock_date);
         DateFormat df = new SimpleDateFormat("EEEE, MMM d", Locale.getDefault());
         String date = df.format(Calendar.getInstance().getTime());
-//        Calendar calendar = Calendar.getInstance();
-//        String weekDay = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
-//        String month = "";
-//        String day = "";
-//        String fullDate = weekDay + ", " + month + day;
         dateTextView.setText(date);
         return true;
     }

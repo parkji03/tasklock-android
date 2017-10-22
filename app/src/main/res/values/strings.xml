@@ -39,7 +39,9 @@
     <string name="room_create_direction">You\'ll receive a notification once the joiner starts their task.</string>
     <string name="room_create_loading">Waiting for participant to start their task...</string>
     <string name="received_task_title">Viewing received tasks:</string>
-    <string name="lock_title">Turning off your phone screen will display TaskLock in front of your lock screen.</string>
+    <string name="lock_title">Turn your phone display off with this screen on and get started on your tasks!</string>
+    <!--<string name="lock_notice">Turning off your phone screen will display TaskLock in front of your lock screen.</string>-->
+    <string name="lock_notice">TaskLock will display in front of your lock screen.</string>
     <string name="lock_direction">Press the home button to get back to your phone\'s lock screen after turning your display off.</string>
     <string name="lock_date">Saturday, September 30</string>
 

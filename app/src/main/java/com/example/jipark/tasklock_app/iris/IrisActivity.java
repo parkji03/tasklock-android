@@ -477,6 +477,3 @@ public class IrisActivity extends AppCompatActivity {
         return true;
     }
 }
-
-
-//app breaks if i close the room... why
