@@ -23,7 +23,9 @@ import com.example.jipark.tasklock_app.task.Task;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class LockActivity extends AppCompatActivity implements LockAdapter.LockAdapterCallback {
     private Utils SINGLETON;
@@ -40,13 +42,24 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
         initQuickAddEditView();
         initFloatingActionButton();
         initDateTime();
+
+        if (SINGLETON.isJoiner() && SINGLETON.isPaired()) {
+            //status: active
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").setValue(true);
+        }
     }
 
     @Override
-    public void onMethodCallback() {
+    public void onMethodCallback(Task lastTaskCompleted) {
         SINGLETON.saveTasks(this);
 
         if (SINGLETON.checkTasksAllTrue()) {
+
+            Map<String, Object> lastCompletedMap = new HashMap<>();
+            lastCompletedMap.put("last_completed", "all_done");
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").updateChildren(lastCompletedMap);
+
+
             int completedTaskCount = SINGLETON.getTaskCount();
             SINGLETON.getTaskList().clear();
             SINGLETON.saveTasks(LockActivity.this);
@@ -72,6 +85,13 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
                         }
                     });
             alertDialog.show();
+        }
+        else {
+            if (lastTaskCompleted.isComplete()) {
+                Map<String, Object> lastCompletedMap = new HashMap<>();
+                lastCompletedMap.put("last_completed", lastTaskCompleted.getTask());
+                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").updateChildren(lastCompletedMap);
+            }
         }
     }
 
@@ -155,6 +175,10 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
                         //TODO: send notification to server that we stopped doing our tasks
+                        if (SINGLETON.isJoiner() && SINGLETON.isPaired()) {
+                            //status: active
+                            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").setValue(false);
+                        }
                         finish();
                     }
                 });

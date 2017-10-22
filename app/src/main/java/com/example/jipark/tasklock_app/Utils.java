@@ -3,7 +3,11 @@ package com.example.jipark.tasklock_app;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 
+import com.example.jipark.tasklock_app.iris.IrisActivity;
 import com.example.jipark.tasklock_app.task.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,11 +57,16 @@ public class Utils {
     //for owners
     public ValueEventListener waitForJoinerListener;
     public ValueEventListener waitForTasksListener;
+    public ValueEventListener waitForJoinerActiveListener;
+    public ValueEventListener lastTaskCompletedListener;
     private List<Task> receivedTaskList;
 
     //for joiners
     public ValueEventListener checkRoomExistsBeforeJoinListener;
     public ValueEventListener checkOwnerDisconnectedListener;
+
+    public int currentLayoutNum = 0;
+    public boolean first = true;
 
     public static Utils getInstance() {
         return ourInstance;
@@ -280,48 +289,48 @@ public class Utils {
     }
 
     public void sendTasksToDatabase() {
-        if (isJoiner() && isPaired()) { //make sure we're connected to database... 
-            setSentTasks(true);
-            //add tasks holder to database 
-            Map<String, Object> tasks = new HashMap<>();
-            tasks.put("tasks", "");
-            getRoomsReference().child(getMasterRoomKey()).updateChildren(tasks);
-            DatabaseReference tasksRoot = getRoomsReference().child(getMasterRoomKey()).child("tasks");
-            int iter = 0;
-            for (Task taskIter : getTaskList()) {
-                String iterString = String.valueOf(iter); //id for tasks  
-                // create objects to put into database 
-                Map<String, Object> tasksID = new HashMap<>();
-                Map<String, Object> taskString = new HashMap<>();
-                Map<String, Object> taskDone = new HashMap<>();
-                tasksID.put(iterString, "");
-                taskString.put("task", taskIter.getTask());
-                taskDone.put("complete", taskIter.isComplete());       //update database 
-                tasksRoot.updateChildren(tasksID);
-                tasksRoot.child(iterString).updateChildren(taskString);
-                tasksRoot.child(iterString).updateChildren(taskDone);
-                iter++;
-            }
-        }
-//        if (isJoiner() && isPaired()) { //make sure we're connected to database...
+//        if (isJoiner() && isPaired()) { //make sure we're connected to database... 
 //            setSentTasks(true);
-//
-//            //add tasks holder to database
-//            Map<String, Object> tasksHolder = new HashMap<>();
-//            tasksHolder.put("tasks", "");
-//            getRoomsReference().child(getMasterRoomKey()).updateChildren(tasksHolder);
-//
+//            //add tasks holder to database 
 //            Map<String, Object> tasks = new HashMap<>();
-//            int i = 0;
-//            for (Task iterator : getTaskList()) {
-//                String iString = String.valueOf(i);
-//
-//                tasks.put(iString, iterator);
-//
-//                i++;
+//            tasks.put("tasks", "");
+//            getRoomsReference().child(getMasterRoomKey()).updateChildren(tasks);
+//            DatabaseReference tasksRoot = getRoomsReference().child(getMasterRoomKey()).child("tasks");
+//            int iter = 0;
+//            for (Task taskIter : getTaskList()) {
+//                String iterString = String.valueOf(iter); //id for tasks  
+//                // create objects to put into database 
+//                Map<String, Object> tasksID = new HashMap<>();
+//                Map<String, Object> taskString = new HashMap<>();
+//                Map<String, Object> taskDone = new HashMap<>();
+//                tasksID.put(iterString, "");
+//                taskString.put("task", taskIter.getTask());
+//                taskDone.put("complete", taskIter.isComplete());       //update database 
+//                tasksRoot.updateChildren(tasksID);
+//                tasksRoot.child(iterString).updateChildren(taskString);
+//                tasksRoot.child(iterString).updateChildren(taskDone);
+//                iter++;
 //            }
-//            getRoomsReference().child(getMasterRoomKey()).child("tasks").updateChildren(tasks);
 //        }
+        if (isJoiner() && isPaired()) { //make sure we're connected to database...
+            setSentTasks(true);
+
+            //add tasks holder to database
+            Map<String, Object> tasksHolder = new HashMap<>();
+            tasksHolder.put("tasks", "");
+            getRoomsReference().child(getMasterRoomKey()).updateChildren(tasksHolder);
+
+            Map<String, Object> tasks = new HashMap<>();
+            int i = 0;
+            for (Task iterator : getTaskList()) {
+                String iString = String.valueOf(i);
+
+                tasks.put(iString, iterator);
+
+                i++;
+            }
+            getRoomsReference().child(getMasterRoomKey()).child("tasks").updateChildren(tasks);
+        }
     }
 
     public List<Task> getReceivedTaskList() {
@@ -331,4 +340,15 @@ public class Utils {
     public void setReceivedTaskList(List<Task> receivedTaskList) {
         this.receivedTaskList = receivedTaskList;
     }
+
+//    public void slideContentInUtils(LayoutInflater inflater, int layout, Context context, Activity act) {
+////        LayoutInflater inflater = getLayoutInflater();
+//        View view2 = inflater.inflate(layout, null, false);
+//        view2.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left));
+//        act.setContentView(view2);
+//
+//        TextView mRoomCreateKeyDisplay = (TextView)act.findViewById(R.id.iris_room_key);
+//        String displayKey = "Room Key: " + getMasterRoomKey();
+//        mRoomCreateKeyDisplay.setText(displayKey);
+//    }
 }

@@ -69,10 +69,11 @@ public class LockAdapter extends RecyclerView.Adapter<com.example.jipark.taskloc
                 if (Utils.getInstance().isJoiner() && Utils.getInstance().isPaired()) {
                     Map<String, Object> userUpdates = new HashMap<>();
                     userUpdates.put("complete", taskList.get(position).isComplete());
+
                     Utils.getInstance().getRoomsReference().child(Utils.getInstance().getMasterRoomKey()).child("tasks").child(Integer.toString(position)).updateChildren(userUpdates);
                 }
                 try {
-                    mAdapterCallback.onMethodCallback();
+                    mAdapterCallback.onMethodCallback(taskList.get(position));
                 }
                 catch (ClassCastException e) {
                     e.printStackTrace();
@@ -87,7 +88,7 @@ public class LockAdapter extends RecyclerView.Adapter<com.example.jipark.taskloc
     }
 
     public static interface LockAdapterCallback {
-        void onMethodCallback();
+        void onMethodCallback(Task lastTaskCompleted);
     }
 }
 

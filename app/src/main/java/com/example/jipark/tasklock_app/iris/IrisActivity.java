@@ -13,12 +13,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -30,15 +27,12 @@ import android.widget.Toast;
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
 import com.example.jipark.tasklock_app.task.Task;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -64,7 +58,6 @@ public class IrisActivity extends AppCompatActivity {
 
     private int currentLayout;
 
-
     /**
      * Display specific layout depending on the SINGLETON role (owner vs joiner).
      * <p>
@@ -80,9 +73,44 @@ public class IrisActivity extends AppCompatActivity {
             setContentView(R.layout.room_join_success);
         } else if (SINGLETON.isOwner()) {
             if (SINGLETON.hasReceivedTasks() && SINGLETON.isPaired()) {
+                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeEventListener(SINGLETON.waitForTasksListener);
+
                 currentLayout = R.layout.room_create_task_received;
                 setContentView(R.layout.room_create_task_received);
                 initRecyclerView();
+
+                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).addValueEventListener(SINGLETON.waitForTasksListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChild("tasks")) {
+                            SINGLETON.setReceivedTasks(true);
+
+                            currentLayout = R.layout.room_create_task_received;
+                            setContentView(R.layout.room_create_task_received);
+                            initRecyclerView();
+
+                            SINGLETON.getReceivedTaskList().clear();
+                            for (DataSnapshot tasksIterator: dataSnapshot.child("tasks").getChildren()) {
+                                String taskText = (String)tasksIterator.child("task").getValue();
+                                boolean taskCompleted = false;
+                                if(tasksIterator.hasChild("complete")) {
+                                    taskCompleted = (Boolean)tasksIterator.child("complete").getValue();
+                                }
+                                Task task = new Task(taskText, taskCompleted);
+                                SINGLETON.getReceivedTaskList().add(task);
+                            }
+                            mAdapter.notifyItemInserted(SINGLETON.getReceivedTaskList().size() - 1);
+                            mRecyclerView.invalidate();
+                        }
+                    }
+
+
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
             } else if (!SINGLETON.hasReceivedTasks() && SINGLETON.isPaired()) {
                 currentLayout = R.layout.room_create_success;
@@ -114,22 +142,20 @@ public class IrisActivity extends AppCompatActivity {
         //first check if internet is connected
         if (isInternetConnected()) {
             Map<String, Object> newRoom = new HashMap<>();
-            Map<String, Object> roomOwner = new HashMap<>();
-            Map<String, Object> roomJoiner = new HashMap<>();
-            Map<String, Object> allTasksComplete = new HashMap<>();
+            Map<String, Object> newRoomVar = new HashMap<>();
 
             String roomKey = SINGLETON.generateRoomKey();
 
             newRoom.put(roomKey, "");
-            roomOwner.put("owner", "connected");
-            roomJoiner.put("joiner", "none");
-            allTasksComplete.put("done", false);
+            newRoomVar.put("owner", "connected");
+            newRoomVar.put("joiner", "none");
+            newRoomVar.put("done", false);
+            newRoomVar.put("active", false);
+            newRoomVar.put("last_completed", "none");
 
             SINGLETON.getRoomsReference().updateChildren(newRoom);
             DatabaseReference roomRoot = SINGLETON.getRoomsReference().child(roomKey);
-            roomRoot.updateChildren(roomOwner);
-            roomRoot.updateChildren(roomJoiner);
-            roomRoot.updateChildren(allTasksComplete);
+            roomRoot.updateChildren(newRoomVar);
 
             //set client ownership
             SINGLETON.setLocalOwnerValues(roomKey, false, false);
@@ -142,6 +168,40 @@ public class IrisActivity extends AppCompatActivity {
 
             //listen on change
             final DatabaseReference joinerRoot = SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner");
+
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").addValueEventListener(SINGLETON.lastTaskCompletedListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (!SINGLETON.first) {
+                        String completedTask = "Child completed: " + dataSnapshot.child("last_completed").getValue();
+                        Toast.makeText(getApplicationContext(), completedTask, Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").addValueEventListener(SINGLETON.waitForJoinerActiveListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if ((Boolean)dataSnapshot.getValue() && !SINGLETON.first) {
+//                        Toast.makeText(getApplicationContext(), "Child started their tasks..", Toast.LENGTH_SHORT).show();
+                    }
+                    else if (!(Boolean)dataSnapshot.getValue() && !SINGLETON.first){
+//                        Toast.makeText(getApplicationContext(), "Child stopped their tasks..", Toast.LENGTH_SHORT).show();
+                    }
+                    SINGLETON.first = false;
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
             joinerRoot.addValueEventListener(SINGLETON.waitForJoinerListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -152,14 +212,16 @@ public class IrisActivity extends AppCompatActivity {
                         SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).addValueEventListener(SINGLETON.waitForTasksListener = new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
+
+
                                 if (dataSnapshot.hasChild("tasks")) {
                                     SINGLETON.setReceivedTasks(true);
-                                    slideContentIn(R.layout.room_create_task_received);
 
+                                    currentLayout = R.layout.room_create_task_received;
+                                    setContentView(R.layout.room_create_task_received);
                                     initRecyclerView();
-//                                    if (dataSnapshot.child("tasks").hasChildren()) {
+
                                     SINGLETON.getReceivedTaskList().clear();
-//                                    }
                                     for (DataSnapshot tasksIterator: dataSnapshot.child("tasks").getChildren()) {
                                         String taskText = (String)tasksIterator.child("task").getValue();
                                         boolean taskCompleted = false;
@@ -169,12 +231,10 @@ public class IrisActivity extends AppCompatActivity {
                                         Task task = new Task(taskText, taskCompleted);
                                         SINGLETON.getReceivedTaskList().add(task);
                                     }
-//                                    mAdapter.notifyItemInserted(SINGLETON.getReceivedTaskList().size() - 1);
-                                    mAdapter.notifyDataSetChanged();
+                                    mAdapter.notifyItemInserted(SINGLETON.getReceivedTaskList().size() - 1);
+                                    mRecyclerView.invalidate();
                                 }
                             }
-
-
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
@@ -214,6 +274,8 @@ public class IrisActivity extends AppCompatActivity {
      * Status: done
      */
     public void cancelRoomCreate(View view) {
+        SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").removeEventListener(SINGLETON.lastTaskCompletedListener);
+        SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").removeEventListener(SINGLETON.waitForJoinerActiveListener);
         SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
         SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue(); //need to remove listener when removing values...
         SINGLETON.resetLocalOwnerValues();
@@ -354,6 +416,8 @@ public class IrisActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeEventListener(SINGLETON.waitForTasksListener);
+                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").removeEventListener(SINGLETON.lastTaskCompletedListener);
+                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").removeEventListener(SINGLETON.waitForJoinerActiveListener);
                 SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
                 SINGLETON.disconnectOwnerFromRoom();
                 SINGLETON.resetLocalOwnerValues();
@@ -433,6 +497,7 @@ public class IrisActivity extends AppCompatActivity {
      */
     private void slideContentIn(int layout) {
         currentLayout = layout;
+        SINGLETON.currentLayoutNum = layout;
         LayoutInflater inflater = getLayoutInflater();
         View view2 = inflater.inflate(layout, null, false);
         view2.startAnimation(AnimationUtils.loadAnimation(IrisActivity.this, android.R.anim.slide_in_left));
