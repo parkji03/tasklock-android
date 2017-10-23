@@ -1,13 +1,20 @@
 package com.example.jipark.tasklock_app.iris;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -104,8 +111,6 @@ public class IrisActivity extends AppCompatActivity {
                         }
                     }
 
-
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
@@ -149,7 +154,6 @@ public class IrisActivity extends AppCompatActivity {
             newRoom.put(roomKey, "");
             newRoomVar.put("owner", "connected");
             newRoomVar.put("joiner", "none");
-            newRoomVar.put("done", false);
             newRoomVar.put("active", false);
             newRoomVar.put("last_completed", "none");
 
@@ -173,8 +177,39 @@ public class IrisActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (!SINGLETON.first) {
-                        String completedTask = "Child completed: " + dataSnapshot.child("last_completed").getValue();
-                        Toast.makeText(getApplicationContext(), completedTask, Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), IrisActivity.class);
+                        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
+
+                        if (dataSnapshot.getValue().equals("done")) {
+                            b.setAutoCancel(true)
+                                    .setDefaults(Notification.DEFAULT_ALL)
+                                    .setWhen(System.currentTimeMillis())
+                                    .setSmallIcon(R.drawable.ic_stat_name)
+                                    .setTicker("TL Ticker")
+                                    .setContentTitle("Task complete!")
+                                    .setContentText("The joiner has completed all of their tasks.")
+                                    .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
+                                    .setContentIntent(contentIntent)
+                                    .setContentInfo("Info");
+                        }
+                        else {
+                            String completedTask = "Joiner last completed: " + dataSnapshot.getValue();
+
+                            b.setAutoCancel(true)
+                                    .setDefaults(Notification.DEFAULT_ALL)
+                                    .setWhen(System.currentTimeMillis())
+                                    .setSmallIcon(R.drawable.ic_stat_name)
+                                    .setTicker("TL Ticker")
+                                    .setContentTitle("Task complete!")
+                                    .setContentText(completedTask)
+                                    .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
+                                    .setContentIntent(contentIntent)
+                                    .setContentInfo("Info");
+                        }
+
+                        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.notify(1, b.build());
                     }
                 }
 
@@ -188,10 +223,42 @@ public class IrisActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if ((Boolean)dataSnapshot.getValue() && !SINGLETON.first) {
-//                        Toast.makeText(getApplicationContext(), "Child started their tasks..", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), IrisActivity.class);
+                        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
+
+                        b.setAutoCancel(true)
+                                .setDefaults(Notification.DEFAULT_ALL)
+                                .setWhen(System.currentTimeMillis())
+                                .setSmallIcon(R.drawable.ic_stat_name)
+                                .setTicker("TL Ticker")
+                                .setContentTitle("Notice")
+                                .setContentText("The joiner has started their tasks.")
+                                .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
+                                .setContentIntent(contentIntent)
+                                .setContentInfo("Info");
+
+                        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.notify(1, b.build());
                     }
                     else if (!(Boolean)dataSnapshot.getValue() && !SINGLETON.first){
-//                        Toast.makeText(getApplicationContext(), "Child stopped their tasks..", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), IrisActivity.class);
+                        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
+
+                        b.setAutoCancel(true)
+                                .setDefaults(Notification.DEFAULT_ALL)
+                                .setWhen(System.currentTimeMillis())
+                                .setSmallIcon(R.drawable.ic_stat_name)
+                                .setTicker("TL Ticker")
+                                .setContentTitle("Notice")
+                                .setContentText("The joiner has stopped doing their tasks.")
+                                .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
+                                .setContentIntent(contentIntent)
+                                .setContentInfo("Info");
+
+                        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.notify(1, b.build());
                     }
                     SINGLETON.first = false;
                 }
@@ -245,7 +312,25 @@ public class IrisActivity extends AppCompatActivity {
 
                     } else if ((dataSnapshot.getValue()).equals("disconnected")) {
                         SINGLETON.setPaired(false);
-                        Toast.makeText(getApplicationContext(), "Joiner disconnected!", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(getApplicationContext(), IrisActivity.class);
+                        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
+
+                        b.setAutoCancel(true)
+                                .setDefaults(Notification.DEFAULT_ALL)
+                                .setWhen(System.currentTimeMillis())
+                                .setSmallIcon(R.drawable.ic_stat_name)
+                                .setTicker("TL Ticker")
+                                .setContentTitle("Notice")
+                                .setContentText("The joiner has disconnected.")
+                                .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
+                                .setContentIntent(contentIntent)
+                                .setContentInfo("Info");
+
+                        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.notify(1, b.build());
+
                         if (active) {
                             slideContentIn(R.layout.room_create);
                             mRoomCreateKeyDisplay = (TextView) findViewById(R.id.iris_room_key);
@@ -373,7 +458,25 @@ public class IrisActivity extends AppCompatActivity {
                                     SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
                                     SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue();
                                     SINGLETON.resetLocalJoinerValues();
-                                    Toast.makeText(getApplicationContext(), "Monitor disconnected!", Toast.LENGTH_SHORT).show();
+
+                                    Intent intent = new Intent(getApplicationContext(), IrisActivity.class);
+                                    PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
+
+                                    b.setAutoCancel(true)
+                                            .setDefaults(Notification.DEFAULT_ALL)
+                                            .setWhen(System.currentTimeMillis())
+                                            .setSmallIcon(R.drawable.ic_stat_name)
+                                            .setTicker("TL Ticker")
+                                            .setContentTitle("Notice")
+                                            .setContentText("The Monitor has disconnected.")
+                                            .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
+                                            .setContentIntent(contentIntent)
+                                            .setContentInfo("Info");
+
+                                    NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                                    notificationManager.notify(1, b.build());
+
                                     if (active) {
                                         slideContentIn(R.layout.activity_iris);
                                     }

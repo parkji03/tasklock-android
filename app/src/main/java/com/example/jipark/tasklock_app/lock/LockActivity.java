@@ -57,7 +57,7 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
 
             Map<String, Object> lastCompletedMap = new HashMap<>();
             lastCompletedMap.put("last_completed", "all_done");
-            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").updateChildren(lastCompletedMap);
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).updateChildren(lastCompletedMap);
 
 
             int completedTaskCount = SINGLETON.getTaskCount();
@@ -90,7 +90,7 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
             if (lastTaskCompleted.isComplete()) {
                 Map<String, Object> lastCompletedMap = new HashMap<>();
                 lastCompletedMap.put("last_completed", lastTaskCompleted.getTask());
-                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").updateChildren(lastCompletedMap);
+                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).updateChildren(lastCompletedMap);
             }
         }
     }
@@ -168,13 +168,17 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
             alertDialog.setTitle("You have " + remainingCount + " tasks remaining.");
         }
 
-        alertDialog.setMessage("Are you sure you want to go back?");
+        if (SINGLETON.isJoiner() && SINGLETON.isPaired()) {
+            alertDialog.setMessage("Your Monitor will be notified if you quit.\nAre you sure you want to stop?");
+        }
+        else {
+            alertDialog.setMessage("Are you sure you want to stop?");
+        }
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
-                        //TODO: send notification to server that we stopped doing our tasks
                         if (SINGLETON.isJoiner() && SINGLETON.isPaired()) {
                             //status: active
                             SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").setValue(false);
