@@ -1,9 +1,7 @@
 package com.example.jipark.tasklock_app.lock;
 
-import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +20,6 @@ import android.widget.Toast;
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
 import com.example.jipark.tasklock_app.iris.ClosingService;
-import com.example.jipark.tasklock_app.iris.ScreenReceiver;
 import com.example.jipark.tasklock_app.task.Task;
 
 import java.text.DateFormat;
@@ -62,19 +59,22 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
 
         if (SINGLETON.checkTasksAllTrue()) {
 
-            Map<String, Object> lastCompletedMap = new HashMap<>();
-            lastCompletedMap.put("last_completed", "all_done");
-            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).updateChildren(lastCompletedMap);
-
+            if (SINGLETON.isPaired() && SINGLETON.isJoiner()) {
+                Map<String, Object> lastCompletedMap = new HashMap<>();
+                lastCompletedMap.put("last_completed", "all_done");
+                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).updateChildren(lastCompletedMap);
+            }
 
             int completedTaskCount = SINGLETON.getTaskCount();
             SINGLETON.getTaskList().clear();
             SINGLETON.saveTasks(LockActivity.this);
 
-            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("owner").removeEventListener(SINGLETON.checkOwnerDisconnectedListener);
-            SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
-//            SINGLETON.disconnectJoinerFromRoom();
-            SINGLETON.resetLocalJoinerValues();
+            if (SINGLETON.isPaired() && SINGLETON.isJoiner()) {
+                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("owner").removeEventListener(SINGLETON.checkOwnerDisconnectedListener);
+                SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
+//                SINGLETON.disconnectJoinerFromRoom();
+                SINGLETON.resetLocalJoinerValues();
+            }
 
             AlertDialog alertDialog = new AlertDialog.Builder(LockActivity.this).create();
             alertDialog.setCanceledOnTouchOutside(false);
