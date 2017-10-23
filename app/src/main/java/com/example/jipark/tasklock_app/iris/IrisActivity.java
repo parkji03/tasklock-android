@@ -188,7 +188,7 @@ public class IrisActivity extends AppCompatActivity {
                                     .setWhen(System.currentTimeMillis())
                                     .setSmallIcon(R.drawable.ic_stat_name)
                                     .setTicker("TL Ticker")
-                                    .setContentTitle("Task complete!")
+                                    .setContentTitle("All tasks complete!")
                                     .setContentText("The joiner has completed all of their tasks.")
                                     .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
                                     .setContentIntent(contentIntent)
