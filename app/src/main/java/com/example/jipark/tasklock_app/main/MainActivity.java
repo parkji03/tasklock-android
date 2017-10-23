@@ -14,10 +14,15 @@ import android.widget.Toast;
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
 import com.example.jipark.tasklock_app.app_manager.AppManagerActivity;
+import com.example.jipark.tasklock_app.iris.ClosingService;
 import com.example.jipark.tasklock_app.iris.IrisActivity;
 import com.example.jipark.tasklock_app.lock.LockActivity;
+import com.example.jipark.tasklock_app.task.Task;
 import com.example.jipark.tasklock_app.task.TaskActivity;
+import com.google.firebase.database.DatabaseReference;
 
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private String tasksFileName = "tasks.json";
@@ -28,10 +33,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SINGLETON = Utils.getInstance();
+        getApplicationContext().startService(new Intent(this, ClosingService.class));
 
         if (SINGLETON.isFilePresent(this, tasksFileName)) {
             SINGLETON.loadTasks(this);
         }
+    }
+
+    public void launchIrisActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, IrisActivity.class);
+        startActivity(intent);
     }
 
     public void launchTaskActivity(View view) {
@@ -41,39 +52,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void launchAppManagerActivity(View view) {
         Intent intent = new Intent(MainActivity.this, AppManagerActivity.class);
-        startActivity(intent);
-    }
+            startActivity(intent);
+        }
 
     public void launchLockActivity(View view) {
         if(SINGLETON.getTaskList().isEmpty()) {
             Toast.makeText(this, "No tasks are available to start!", Toast.LENGTH_SHORT).show();
         }
         else {
-            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-            if(SINGLETON.getTaskCount() == 1) {
-                alertDialog.setTitle("You have " + SINGLETON.getTaskCount() + " task.");
-            }
-            else {
-                alertDialog.setTitle("You have " + SINGLETON.getTaskCount() + " tasks.");
-            }
-            alertDialog.setMessage("Are you sure?");
-            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                            Intent intent = new Intent(MainActivity.this, LockActivity.class);
-                            startActivity(intent);
-                        }
-                    });
-            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-            alertDialog.show();
+            SINGLETON.sendTasksToDatabase();
+            Intent intent = new Intent(MainActivity.this, LockActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -98,21 +87,17 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_eye:
-//                Toast.makeText(this, "Iris Mode", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, IrisActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.action_about:
                 Toast.makeText(this, "Coming Soon!", Toast.LENGTH_SHORT).show();
                 return true;
+            case R.id.action_settings:
+                Toast.makeText(this, "Coming Soon!", Toast.LENGTH_SHORT).show();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //TODO: add method to send to database that the client disconnected...
     }
 }

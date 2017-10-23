@@ -1,104 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.jipark.tasklock_app.task.TaskActivity">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginTop="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginBottom="8dp"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/activity_task">
 
     <LinearLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="0dp" />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:orientation="vertical"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="15dp"
-        tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="15dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:id="@+id/linearLayout3">
+        android:layout_weight="6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <MultiAutoCompleteTextView
-                android:id="@+id/task_edit_text"
-                android:nextFocusUp="@id/task_edit_text"
-                android:nextFocusLeft="@id/task_edit_text"
-                android:layout_alignParentLeft="true"
-                android:layout_height="wrap_content"
-                android:layout_width="220dp"
-                android:inputType="text"
-                android:hint="Create a new task"/>
+                <MultiAutoCompleteTextView
+                    android:id="@+id/task_edit_text"
+                    android:nextFocusUp="@id/task_edit_text"
+                    android:nextFocusLeft="@id/task_edit_text"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:inputType="text"
+                    android:hint="@string/add_task_hint"/>
 
-            <Button
-                android:textColor="@color/white"
-                android:background="@color/mainBlue"
-                android:id="@+id/add_task_button"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:text="Add Task"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:onClick="addTask"/>
-        </RelativeLayout>
+                <Button
+                    android:layout_marginEnd="3dp"
+                    android:layout_marginRight="3dp"
+                    android:textColor="@color/white"
+                    android:background="@color/mainBlue"
+                    android:id="@+id/add_task_button"
+                    android:text="@string/add_task_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:onClick="addTask"/>
+
+            </LinearLayout>
 
         <TextView
             android:textColor="@color/gray"
             android:id="@+id/hidden_text"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="1000dp"
             android:visibility="gone"
-            android:text="You have no tasks." />
+            android:text="@string/no_task_notification" />
 
         <android.support.v7.widget.RecyclerView
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_marginTop="16dp"
             android:id="@+id/task_list"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
-            android:layout_height="450dp"
+            android:layout_height="match_parent"
             android:isScrollContainer="false"/>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:gravity="center|bottom"
         android:orientation="vertical"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        android:layout_marginStart="72dp"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout3"
-        android:layout_marginEnd="72dp"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="1dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="72dp"
-        android:layout_marginRight="72dp">
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
 
         <Button
             android:fitsSystemWindows="false"
@@ -107,8 +78,7 @@
             android:layout_height="wrap_content"
             android:background="@color/mainBlue"
             android:onClick="finishTaskActivity"
-            android:text="Done"
+            android:text="@string/button_done"
             android:textColor="@color/white" />
     </LinearLayout>
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

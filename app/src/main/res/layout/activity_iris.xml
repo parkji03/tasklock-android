@@ -1,14 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.jipark.tasklock_app.iris.IrisActivity">
+<LinearLayout
+    android:layout_marginTop="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginBottom="8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/activity_iris">
 
-    <TextView
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_weight="6"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="iris mode activity"/>
+        android:layout_height="wrap_content">
 
-</android.support.constraint.ConstraintLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/iris_mode"
+            android:textSize="30sp"
+            android:gravity="center"/>
+
+        <ImageView
+            android:contentDescription="@string/iris_mode"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/gray"
+            android:src="@drawable/ic_remove_red_eye_black_24dp"/>
+
+        <TextView
+            android:textColor="@color/gray"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:text="@string/iris_subtext"/>
+
+        <TextView
+            android:textSize="17sp"
+            android:gravity="center"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="@string/iris_direction"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:gravity="center|bottom"
+        android:orientation="vertical"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/create_room_button"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:layout_marginBottom="10dp"
+                android:background="@color/mainBlue"
+                android:onClick="createRoom"
+                android:text="@string/button_monitor_child"
+                android:textColor="@color/white" />
+
+            <Button
+                android:layout_gravity="center|bottom"
+                android:id="@+id/join_room_button"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:background="@color/mainBlue"
+                android:text="@string/button_link_parent"
+                android:textColor="@color/white"
+                android:onClick="joinRoom"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,11 +1,59 @@
 <resources>
     <string name="app_name">TaskLock</string>
+
+    <!--Global Button Labels-->
+    <string name="button_cancel">Cancel</string>
+    <string name="button_done">Done</string>
+
+    <!--Action Bar Labels-->
+    <string name="launch_about">About</string>
+    <string name="launch_settings">Settings</string>
+
+    <!--Main Activity Labels-->
     <string name="launch_task_activity">Edit Tasks</string>
     <string name="launch_app_manager_activity">App Manager</string>
     <string name="launch_lock_activity">Start Tasks</string>
-    <string name="launch_iris">Iris Mode</string>
-    <string name="launch_about">About</string>
+    <string name="launch_iris">Monitor Mode</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!--Iris Activity Labels-->
+    <string name="button_monitor_child">Become a Monitor</string>
+    <string name="button_link_parent">Connect With A Monitor</string>
+    <string name="button_link">Connect With My Monitor</string>
+    <string name="button_return_home">Return Home</string>
+    <string name="button_close_room">Close Room</string>
+    <string name="button_enter_room">Enter Room</string>
+    <string name="button_close_connection">Close Connection</string>
+
+    <!--Texts-->
+    <string name="iris_subtext">Your device isn\'t connected to another device yet.</string>
+    <string name="iris_direction">Supervise another person\'s tasks by becoming a Monitor or connect with a Monitor by selecting an option below.</string>
+    <string name="room_join_direction">You can obtain a room key from your Monitor.</string>
+    <string name="room_join_success_subtext">You\'re now connected with your Monitor!</string>
+    <string name="room_join_success_direction">Your Monitor will be notified once you start your tasks.</string>
+    <string name="title_success">Success!</string>
+    <string name="iris_mode">Monitor Mode</string>
+    <string name="room_key">Room Key</string>
+    <string name="waiting_to_receive">Waiting to receive tasks...</string>
+    <string name="paired_notification">Your devices are now paired.</string>
+    <string name="room_create_subtitle">You\'re now connected!</string>
+    <string name="room_create_direction">You\'ll receive a notification once the joiner starts their task.</string>
+    <string name="room_create_loading">Waiting for participant to start their task...</string>
+    <string name="received_task_title">Viewing received tasks:</string>
+    <string name="lock_title">Turn your phone display off with this screen on and get started on your tasks!</string>
+    <!--<string name="lock_notice">Turning off your phone screen will display TaskLock in front of your lock screen.</string>-->
+    <string name="lock_notice">TaskLock will display in front of your lock screen.</string>
+    <string name="lock_direction">Press the home button to get back to your phone\'s lock screen after turning your display off.</string>
+    <string name="lock_date">Saturday, September 30</string>
+
+    <!--EditText Hints-->
+    <string name="room_join_edit_text_hint">Room Key</string>
+    <string name="room_join_subtext">Room keys are lowercase alphanumeric.</string>
+
+    <!--Random-->
+    <string name="add_task_label">Add Task</string>
+    <string name="add_task_hint">Create a new task</string>
+    <string name="no_task_notification">You have no tasks.</string>
+
+    <item name="visible" type="id" />
+    <item name="masked" type="id" />
 </resources>

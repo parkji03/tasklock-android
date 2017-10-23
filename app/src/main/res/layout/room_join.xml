@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginTop="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginBottom="8dp"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/room_join_linear">
+
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_weight="6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:focusableInTouchMode="true"
+            android:focusable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+            <android.support.design.widget.TextInputLayout
+                android:gravity="center"
+                android:id="@+id/input_key_layout"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp">
+
+                <EditText
+                    android:gravity="center"
+                    android:inputType="textNoSuggestions"
+                    android:maxLines="1"
+                    android:maxLength="6"
+                    android:imeOptions="actionDone"
+                    android:textSize="30sp"
+                    android:id="@+id/join_room_key_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/room_join_edit_text_hint" />
+
+            </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:textSize="13sp"
+            android:textColor="@color/gray"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/room_join_subtext"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:text="@string/room_join_direction"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:gravity="center|bottom"
+        android:orientation="vertical"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:visibility="invisible"
+            android:id="@+id/room_join_link"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="10dp"
+            android:background="@color/mainBlue"
+            android:text="@string/button_link"
+            android:textColor="@color/white"
+            android:onClick="enterRoomJoin"/>
+
+        <Button
+            android:layout_gravity="center|bottom"
+            android:id="@+id/room_join_cancel"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:background="@color/gray"
+            android:onClick="cancelRoomJoin"
+            android:text="@string/button_cancel"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</LinearLayout>

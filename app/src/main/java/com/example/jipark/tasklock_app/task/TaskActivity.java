@@ -1,6 +1,7 @@
 package com.example.jipark.tasklock_app.task;
 
 import android.content.Context;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -52,6 +53,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Task
     @Override
     public void onMethodCallback() {
         SINGLETON.saveTasks(this);
+        //TODO: send database that we completed a task...
         showHiddenText();
     }
 
@@ -63,7 +65,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Task
             SINGLETON.addTaskToHead(task);
             mAdapter.notifyItemInserted(0);
             mRecyclerView.smoothScrollToPosition(0);
-//            mAdapter.notifyItemInserted(SINGLETON.getTaskList().size() - 1);
+            mAdapter.notifyDataSetChanged();
             SINGLETON.saveTasks(this);
             showHiddenText();
         }
@@ -80,7 +82,6 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Task
     private boolean initAutoCompleteTextView() {
         mMultiAutoCompleteTextView = (MultiAutoCompleteTextView)findViewById(R.id.task_edit_text);
 
-        //TODO: add animations for focus change, redo add task button to look better
         mMultiAutoCompleteTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -96,7 +97,7 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Task
         mMultiAutoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId== EditorInfo.IME_ACTION_DONE){
+                if(actionId == EditorInfo.IME_ACTION_DONE){
                     //hide soft keyboard
                     mMultiAutoCompleteTextView.setText("");
                     InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -148,11 +149,39 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Task
         in.setDuration(1100);
 
         if (SINGLETON.getTaskList().isEmpty()) {
+            mRecyclerView.setVisibility(View.GONE);
             mHiddenText.startAnimation(in);
             mHiddenText.setVisibility(View.VISIBLE);
         }
         else {
             mHiddenText.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
         }
     }
+
+    //    @Override
+//    protected void onDestroy() {
+//        if (SINGLETON.isOwner() && SINGLETON.isPaired()) {
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeEventListener(SINGLETON.waitForTasksListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").removeEventListener(SINGLETON.lastTaskCompletedListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").removeEventListener(SINGLETON.waitForJoinerActiveListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
+//            SINGLETON.disconnectOwnerFromRoom();
+//            SINGLETON.resetLocalOwnerValues();
+//        }
+//        else if (SINGLETON.isOwner()) {
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").removeEventListener(SINGLETON.lastTaskCompletedListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").removeEventListener(SINGLETON.waitForJoinerActiveListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue(); //need to remove listener when removing values...
+//            SINGLETON.resetLocalOwnerValues();
+//        }
+//        else if (SINGLETON.isJoiner()) {
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("owner").removeEventListener(SINGLETON.checkOwnerDisconnectedListener);
+//            SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
+//            SINGLETON.disconnectJoinerFromRoom();
+//            SINGLETON.resetLocalJoinerValues();
+//        }
+//        super.onDestroy();
+//    }
 }

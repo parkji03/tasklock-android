@@ -2,23 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:focusable="true"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-    android:clickable="true"
+    android:clickable="false"
     android:background="?android:attr/selectableItemBackground"
     android:orientation="horizontal"
     android:weightSum="1">
 
     <CheckBox
+        android:clickable="false"
         android:scaleX="1.5"
         android:scaleY="1.5"
         android:gravity="center_vertical"
-        app:buttonTint="@color/mainBlue"
-        android:id="@+id/lock_checkbox"
+        android:id="@+id/received_task_check_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -26,7 +25,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:gravity="center_vertical"
-        android:id="@+id/lock_task"
+        android:id="@+id/received_task_text"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"

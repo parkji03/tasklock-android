@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.jipark.tasklock_app">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,6 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service android:name=".iris.ClosingService"
+            android:stopWithTask="false"/>
         <activity android:name=".main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,11 +27,11 @@
         </activity>
         <activity
             android:name=".app_manager.AppManagerActivity"
-            android:label="@string/app_name"></activity>
+            android:label="@string/app_name" />
         <activity
             android:name=".lock.LockActivity"
-            android:label="@string/app_name"></activity>
-        <activity android:name=".iris.IrisActivity"></activity>
+            android:label="@string/app_name" />
+        <activity android:name=".iris.IrisActivity" />
     </application>
 
 </manifest>
