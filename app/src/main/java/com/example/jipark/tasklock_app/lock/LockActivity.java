@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
+import com.example.jipark.tasklock_app.iris.ClosingService;
 import com.example.jipark.tasklock_app.iris.ScreenReceiver;
 import com.example.jipark.tasklock_app.task.Task;
 
@@ -40,12 +41,7 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-//        filter.addAction(Intent.ACTION_SCREEN_OFF);
-//        BroadcastReceiver mReceiver = new ScreenReceiver();
-//        registerReceiver(mReceiver, filter);
-
+        getApplicationContext().startService(new Intent(this, ClosingService.class));
 
         setContentView(R.layout.activity_lock);
         SINGLETON = Utils.getInstance();
@@ -74,6 +70,11 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
             int completedTaskCount = SINGLETON.getTaskCount();
             SINGLETON.getTaskList().clear();
             SINGLETON.saveTasks(LockActivity.this);
+
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("owner").removeEventListener(SINGLETON.checkOwnerDisconnectedListener);
+            SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
+//            SINGLETON.disconnectJoinerFromRoom();
+            SINGLETON.resetLocalJoinerValues();
 
             AlertDialog alertDialog = new AlertDialog.Builder(LockActivity.this).create();
             alertDialog.setCanceledOnTouchOutside(false);
@@ -175,7 +176,7 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
 //        }
 
         if (SINGLETON.isJoiner() && SINGLETON.isPaired()) {
-            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").setValue(true);
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").setValue(false);
         }
 
         super.onPause();
@@ -285,27 +286,27 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
 
     @Override
     protected void onDestroy() {
-        if (SINGLETON.isOwner() && SINGLETON.isPaired()) {
-            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeEventListener(SINGLETON.waitForTasksListener);
-            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").removeEventListener(SINGLETON.lastTaskCompletedListener);
-            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").removeEventListener(SINGLETON.waitForJoinerActiveListener);
-            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
-            SINGLETON.disconnectOwnerFromRoom();
-            SINGLETON.resetLocalOwnerValues();
-        }
-        else if (SINGLETON.isOwner()) {
-            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").removeEventListener(SINGLETON.lastTaskCompletedListener);
-            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").removeEventListener(SINGLETON.waitForJoinerActiveListener);
-            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
-            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue(); //need to remove listener when removing values...
-            SINGLETON.resetLocalOwnerValues();
-        }
-        else if (SINGLETON.isJoiner()) {
-            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("owner").removeEventListener(SINGLETON.checkOwnerDisconnectedListener);
-            SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
-            SINGLETON.disconnectJoinerFromRoom();
-            SINGLETON.resetLocalJoinerValues();
-        }
+//        if (SINGLETON.isOwner() && SINGLETON.isPaired()) {
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeEventListener(SINGLETON.waitForTasksListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").removeEventListener(SINGLETON.lastTaskCompletedListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").removeEventListener(SINGLETON.waitForJoinerActiveListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
+//            SINGLETON.disconnectOwnerFromRoom();
+//            SINGLETON.resetLocalOwnerValues();
+//        }
+//        else if (SINGLETON.isOwner()) {
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").removeEventListener(SINGLETON.lastTaskCompletedListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").removeEventListener(SINGLETON.waitForJoinerActiveListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue(); //need to remove listener when removing values...
+//            SINGLETON.resetLocalOwnerValues();
+//        }
+//        else if (SINGLETON.isJoiner()) {
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("owner").removeEventListener(SINGLETON.checkOwnerDisconnectedListener);
+//            SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
+//            SINGLETON.disconnectJoinerFromRoom();
+//            SINGLETON.resetLocalJoinerValues();
+//        }
         super.onDestroy();
     }
 }

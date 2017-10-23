@@ -73,6 +73,8 @@ public class IrisActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         SINGLETON = Utils.getInstance();
 
+        getApplicationContext().startService(new Intent(this, ClosingService.class));
+
         if (SINGLETON.isJoiner()) {
             currentLayout = R.layout.room_join_success;
             setContentView(R.layout.room_join_success);
@@ -191,6 +193,13 @@ public class IrisActivity extends AppCompatActivity {
                                     .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
                                     .setContentIntent(contentIntent)
                                     .setContentInfo("Info");
+
+                            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeEventListener(SINGLETON.waitForTasksListener);
+                            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").removeEventListener(SINGLETON.lastTaskCompletedListener);
+                            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").removeEventListener(SINGLETON.waitForJoinerActiveListener);
+                            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
+//                            SINGLETON.disconnectOwnerFromRoom();
+                            SINGLETON.resetLocalOwnerValues();
                         }
                         else {
                             String completedTask = "Last completed task: " + dataSnapshot.getValue();

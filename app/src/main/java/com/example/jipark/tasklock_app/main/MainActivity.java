@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
 import com.example.jipark.tasklock_app.app_manager.AppManagerActivity;
+import com.example.jipark.tasklock_app.iris.ClosingService;
 import com.example.jipark.tasklock_app.iris.IrisActivity;
 import com.example.jipark.tasklock_app.lock.LockActivity;
 import com.example.jipark.tasklock_app.task.Task;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SINGLETON = Utils.getInstance();
+        getApplicationContext().startService(new Intent(this, ClosingService.class));
 
         if (SINGLETON.isFilePresent(this, tasksFileName)) {
             SINGLETON.loadTasks(this);
