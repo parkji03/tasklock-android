@@ -25,18 +25,6 @@ public class MainActivity extends AppCompatActivity {
     private String appsFileName = "apps.json";
     private Utils SINGLETON;
 
-    // Call `launchTestService()` in the activity
-    // to startup the service
-    public void launchTestService() {
-        // Construct our Intent specifying the Service
-        //Intent i = new Intent(this, MyTestService.class);
-        // Add extras to the bundle
-        //i.putExtra("foo", "bar");
-        // Start the service
-        //startService(i);
-        startService(new Intent(this, MyTestService.class));
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         if (SINGLETON.isFilePresent(this, appsFileName)) {
             SINGLETON.loadApps(this);
         }
-        launchTestService();
+        startService(new Intent(this, MyTestService.class));
     }
 
     public void launchTaskActivity(View view) {

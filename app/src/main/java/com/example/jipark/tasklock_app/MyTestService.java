@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.content.*;
 import android.os.*;
 import android.widget.Toast;
+
+import com.rvalerio.fgchecker.AppChecker;
+
 /**
  * Created by Scott on 10/21/2017.
  */
@@ -27,8 +30,13 @@ public class MyTestService extends Service {
         handler = new Handler();
         runnable = new Runnable() {
             public void run() {
-                Toast.makeText(context, "Service is still running", Toast.LENGTH_LONG).show();
-                handler.postDelayed(runnable, 10000);
+                //Toast.makeText(context, "Service is still running", Toast.LENGTH_LONG).show();
+                AppChecker appChecker = new AppChecker();
+                appChecker.start(context);
+                String packageName = appChecker.getForegroundApp(context);
+                Toast.makeText(context, packageName, Toast.LENGTH_LONG).show();
+
+                handler.postDelayed(runnable, 5);
             }
         };
 
