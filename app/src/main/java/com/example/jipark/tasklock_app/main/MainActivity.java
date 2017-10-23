@@ -50,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void launchAppManagerActivity(View view) {
         Intent intent = new Intent(MainActivity.this, AppManagerActivity.class);
-        startActivity(intent);
-    }
+            startActivity(intent);
+        }
 
     public void launchLockActivity(View view) {
         if(SINGLETON.getTaskList().isEmpty()) {
@@ -61,65 +61,6 @@ public class MainActivity extends AppCompatActivity {
             SINGLETON.sendTasksToDatabase();
             Intent intent = new Intent(MainActivity.this, LockActivity.class);
             startActivity(intent);
-//            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-//            if(SINGLETON.getTaskCount() == 1) {
-//                alertDialog.setTitle("You have " + SINGLETON.getTaskCount() + " task.");
-//            }
-//            else {
-//                alertDialog.setTitle("You have " + SINGLETON.getTaskCount() + " tasks.");
-//            }
-//            alertDialog.setMessage("Are you sure?");
-//            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm",
-//                    new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            dialogInterface.dismiss();
-//                            if (SINGLETON.isJoiner() && SINGLETON.isPaired()) { //make sure we're connected to database...
-//                                SINGLETON.setSentTasks(true);
-//
-//                                //add tasks holder to database
-//                                Map<String, Object> tasks = new HashMap<>();
-//                                tasks.put("tasks", "");
-//                                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).updateChildren(tasks);
-//
-//                                DatabaseReference tasksRoot = SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("tasks");
-//
-//                                int iter = 0;
-//                                for (Task taskIter : SINGLETON.getTaskList()) {
-//                                    String iterString = String.valueOf(iter); //id for tasks
-//
-//                                    //create objects to put into database
-//                                    Map<String, Object> tasksID = new HashMap<>();
-//                                    Map<String, Object> taskString = new HashMap<>();
-//                                    Map<String, Object> taskDone = new HashMap<>();
-//
-//                                    tasksID.put(iterString, "");
-//                                    taskString.put("task", taskIter.getTask());
-//                                    taskDone.put("complete", taskIter.isComplete());
-//
-//                                    //update database
-//                                    tasksRoot.updateChildren(tasksID);
-//                                    tasksRoot.child(iterString).updateChildren(taskString);
-//                                    tasksRoot.child(iterString).updateChildren(taskDone);
-//
-//                                    iter++;
-//                                }
-//                            }
-//                            else {
-//                                //didn't send tasks...
-//                            }
-//                            Intent intent = new Intent(MainActivity.this, LockActivity.class);
-//                            startActivity(intent);
-//                        }
-//                    });
-//            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
-//                    new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            dialogInterface.dismiss();
-//                        }
-//                    });
-//            alertDialog.show();
         }
     }
 
@@ -155,17 +96,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (SINGLETON.isOwner()) {
-            SINGLETON.disconnectOwnerFromRoom();
-        }
-        else if (SINGLETON.isJoiner()) {
-            SINGLETON.disconnectJoinerFromRoom();
         }
     }
 }

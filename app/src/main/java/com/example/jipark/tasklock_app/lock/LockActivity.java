@@ -1,6 +1,9 @@
 package com.example.jipark.tasklock_app.lock;
 
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
+import com.example.jipark.tasklock_app.iris.ScreenReceiver;
 import com.example.jipark.tasklock_app.task.Task;
 
 import java.text.DateFormat;
@@ -36,6 +40,13 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+//        filter.addAction(Intent.ACTION_SCREEN_OFF);
+//        BroadcastReceiver mReceiver = new ScreenReceiver();
+//        registerReceiver(mReceiver, filter);
+
+
         setContentView(R.layout.activity_lock);
         SINGLETON = Utils.getInstance();
         initRecyclerView();
@@ -143,8 +154,56 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
         }
     }
 
+
+    @Override
+    protected void onPause() {
+        // WHEN THE SCREEN IS ABOUT TO TURN OFF
+//        if (ScreenReceiver.wasScreenOn) {
+//            // THIS IS THE CASE WHEN ONPAUSE() IS CALLED BY THE SYSTEM DUE TO A SCREEN STATE CHANGE
+//            System.out.println("SCREEN TURNED OFF");
+//        } else {
+//            // THIS IS WHEN ONPAUSE() IS CALLED WHEN THE SCREEN STATE HAS NOT CHANGED
+//            System.out.println("ON PAUSE NOT BY SCREEN BUTTON");
+//            System.out.println("ON PAUSE NOT BY SCREEN BUTTON");
+//            System.out.println("ON PAUSE NOT BY SCREEN BUTTON");
+//            System.out.println("ON PAUSE NOT BY SCREEN BUTTON");
+//            System.out.println("ON PAUSE NOT BY SCREEN BUTTON");
+//
+//            if (SINGLETON.isJoiner() && SINGLETON.isPaired()) {
+//                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").setValue(false);
+//            }
+//        }
+
+        if (SINGLETON.isJoiner() && SINGLETON.isPaired()) {
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").setValue(true);
+        }
+
+        super.onPause();
+    }
+
     @Override
     protected void onResume() {
+        // ONLY WHEN SCREEN TURNS ON
+//        if (!ScreenReceiver.wasScreenOn) {
+//            // THIS IS WHEN ONRESUME() IS CALLED DUE TO A SCREEN STATE CHANGE
+//            System.out.println("SCREEN TURNED ON");
+//        } else {
+//            System.out.println("ON RESUME NOT BY SCREEN BUTTON");
+//            System.out.println("ON RESUME NOT BY SCREEN BUTTON");
+//            System.out.println("ON RESUME NOT BY SCREEN BUTTON");
+//            System.out.println("ON RESUME NOT BY SCREEN BUTTON");
+//            System.out.println("ON RESUME NOT BY SCREEN BUTTON");
+//
+//            if (SINGLETON.isJoiner() && SINGLETON.isPaired()) {
+//                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").setValue(true);
+//            }
+//            // THIS IS WHEN ONRESUME() IS CALLED WHEN THE SCREEN STATE HAS NOT CHANGED
+//        }
+
+        if (SINGLETON.isJoiner() && SINGLETON.isPaired()) {
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").setValue(true);
+        }
+
         super.onResume();
 
         Window window = this.getWindow();
@@ -222,5 +281,31 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
             }
         });
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (SINGLETON.isOwner() && SINGLETON.isPaired()) {
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeEventListener(SINGLETON.waitForTasksListener);
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").removeEventListener(SINGLETON.lastTaskCompletedListener);
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").removeEventListener(SINGLETON.waitForJoinerActiveListener);
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
+            SINGLETON.disconnectOwnerFromRoom();
+            SINGLETON.resetLocalOwnerValues();
+        }
+        else if (SINGLETON.isOwner()) {
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").removeEventListener(SINGLETON.lastTaskCompletedListener);
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").removeEventListener(SINGLETON.waitForJoinerActiveListener);
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue(); //need to remove listener when removing values...
+            SINGLETON.resetLocalOwnerValues();
+        }
+        else if (SINGLETON.isJoiner()) {
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("owner").removeEventListener(SINGLETON.checkOwnerDisconnectedListener);
+            SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
+            SINGLETON.disconnectJoinerFromRoom();
+            SINGLETON.resetLocalJoinerValues();
+        }
+        super.onDestroy();
     }
 }

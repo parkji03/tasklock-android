@@ -6,8 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.TextInputLayout;
@@ -146,6 +144,7 @@ public class IrisActivity extends AppCompatActivity {
     public void createRoom(View view) {
         //first check if internet is connected
         if (isInternetConnected()) {
+            SINGLETON.first = true;
             Map<String, Object> newRoom = new HashMap<>();
             Map<String, Object> newRoomVar = new HashMap<>();
 
@@ -181,7 +180,7 @@ public class IrisActivity extends AppCompatActivity {
                         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                         NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
 
-                        if (dataSnapshot.getValue().equals("done")) {
+                        if (dataSnapshot.getValue().equals("all_done")) {
                             b.setAutoCancel(true)
                                     .setDefaults(Notification.DEFAULT_ALL)
                                     .setWhen(System.currentTimeMillis())
@@ -194,7 +193,7 @@ public class IrisActivity extends AppCompatActivity {
                                     .setContentInfo("Info");
                         }
                         else {
-                            String completedTask = "Joiner last completed: " + dataSnapshot.getValue();
+                            String completedTask = "Last completed task: " + dataSnapshot.getValue();
 
                             b.setAutoCancel(true)
                                     .setDefaults(Notification.DEFAULT_ALL)
@@ -657,3 +656,4 @@ public class IrisActivity extends AppCompatActivity {
         return true;
     }
 }
+

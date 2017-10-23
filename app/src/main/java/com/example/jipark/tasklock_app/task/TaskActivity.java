@@ -158,4 +158,30 @@ public class TaskActivity extends AppCompatActivity implements TasksAdapter.Task
             mRecyclerView.setVisibility(View.VISIBLE);
         }
     }
+
+    //    @Override
+//    protected void onDestroy() {
+//        if (SINGLETON.isOwner() && SINGLETON.isPaired()) {
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeEventListener(SINGLETON.waitForTasksListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").removeEventListener(SINGLETON.lastTaskCompletedListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").removeEventListener(SINGLETON.waitForJoinerActiveListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
+//            SINGLETON.disconnectOwnerFromRoom();
+//            SINGLETON.resetLocalOwnerValues();
+//        }
+//        else if (SINGLETON.isOwner()) {
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("last_completed").removeEventListener(SINGLETON.lastTaskCompletedListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").removeEventListener(SINGLETON.waitForJoinerActiveListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("joiner").removeEventListener(SINGLETON.waitForJoinerListener);
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue(); //need to remove listener when removing values...
+//            SINGLETON.resetLocalOwnerValues();
+//        }
+//        else if (SINGLETON.isJoiner()) {
+//            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("owner").removeEventListener(SINGLETON.checkOwnerDisconnectedListener);
+//            SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
+//            SINGLETON.disconnectJoinerFromRoom();
+//            SINGLETON.resetLocalJoinerValues();
+//        }
+//        super.onDestroy();
+//    }
 }
