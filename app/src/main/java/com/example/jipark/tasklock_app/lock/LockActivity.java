@@ -56,45 +56,47 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
         initFloatingActionButton();
         initDateTime();
 
-        if (SINGLETON.isJoiner() && SINGLETON.isPaired()) {
-            //status: active
-            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").setValue(true);
+        if (SINGLETON.parentSentTaskListener == null) {
+            if (SINGLETON.isJoiner() && SINGLETON.isPaired()) {
+                //status: active
+                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").setValue(true);
 
-            SINGLETON.initParentSentTaskListener = true;
-            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("assigned_task").addValueEventListener(SINGLETON.parentSentTaskListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(!dataSnapshot.getValue().equals("none")) {
-                        SINGLETON.getTaskList().add(new Task((String)dataSnapshot.getValue(), false));
-                        mAdapter.notifyItemInserted(SINGLETON.getTaskList().size() - 1);
-                        SINGLETON.saveTasks(LockActivity.this);
-                        SINGLETON.sendTasksToDatabase();
+                SINGLETON.initParentSentTaskListener = true;
+                SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("assigned_task").addValueEventListener(SINGLETON.parentSentTaskListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(!dataSnapshot.getValue().equals("none")) {
+                            SINGLETON.getTaskList().add(new Task((String)dataSnapshot.getValue(), false));
+                            SINGLETON.lockAdapterPointer.notifyItemInserted(SINGLETON.getTaskList().size() - 1);
+                            SINGLETON.saveTasks(LockActivity.this);
+                            SINGLETON.sendTasksToDatabase();
 
-                        Intent intent = new Intent(getApplicationContext(), LockActivity.class);
-                        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
+                            Intent intent = new Intent(getApplicationContext(), LockActivity.class);
+                            PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
 
-                        b.setAutoCancel(true)
-                                .setDefaults(Notification.DEFAULT_ALL)
-                                .setWhen(System.currentTimeMillis())
-                                .setSmallIcon(R.drawable.ic_stat_name)
-                                .setTicker("TL Ticker")
-                                .setContentTitle("Notice")
-                                .setContentText("The Monitor has assigned a new task.")
-                                .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
-                                .setContentIntent(contentIntent)
-                                .setContentInfo("Info");
+                            b.setAutoCancel(true)
+                                    .setDefaults(Notification.DEFAULT_ALL)
+                                    .setWhen(System.currentTimeMillis())
+                                    .setSmallIcon(R.drawable.ic_stat_name)
+                                    .setTicker("TL Ticker")
+                                    .setContentTitle("Notice")
+                                    .setContentText("The Monitor has assigned a new task.")
+                                    .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
+                                    .setContentIntent(contentIntent)
+                                    .setContentInfo("Info");
 
-                        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                        notificationManager.notify(1, b.build());
+                            NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                            notificationManager.notify(1, b.build());
+                        }
                     }
-                }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-                }
-            });
+                    }
+                });
+            }
         }
     }
 
@@ -166,6 +168,7 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
     private boolean initRecyclerView() {
         mRecyclerView = (RecyclerView)findViewById(R.id.lock_task_list);
         mAdapter = new LockAdapter(SINGLETON.getTaskList(), this);
+        SINGLETON.lockAdapterPointer = mAdapter;
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());

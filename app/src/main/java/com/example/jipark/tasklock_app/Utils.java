@@ -68,6 +68,8 @@ public class Utils {
     public ValueEventListener parentSentTaskListener;
     public boolean initParentSentTaskListener = false;
 
+    public LockAdapter lockAdapterPointer;
+
     public int currentLayoutNum = 0;
     public boolean first = true;
 
