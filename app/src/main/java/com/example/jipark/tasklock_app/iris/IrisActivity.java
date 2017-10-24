@@ -157,6 +157,7 @@ public class IrisActivity extends AppCompatActivity {
             newRoomVar.put("joiner", "none");
             newRoomVar.put("active", false);
             newRoomVar.put("last_completed", "none");
+            newRoomVar.put("assigned_task", "none");
 
             SINGLETON.getRoomsReference().updateChildren(newRoom);
             DatabaseReference roomRoot = SINGLETON.getRoomsReference().child(roomKey);
@@ -189,7 +190,7 @@ public class IrisActivity extends AppCompatActivity {
                                     .setSmallIcon(R.drawable.ic_stat_name)
                                     .setTicker("TL Ticker")
                                     .setContentTitle("All tasks complete!")
-                                    .setContentText("The joiner has completed all of their tasks.")
+                                    .setContentText("The child has completed all of their tasks.")
                                     .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
                                     .setContentIntent(contentIntent)
                                     .setContentInfo("Info");
@@ -241,7 +242,7 @@ public class IrisActivity extends AppCompatActivity {
                                 .setSmallIcon(R.drawable.ic_stat_name)
                                 .setTicker("TL Ticker")
                                 .setContentTitle("Notice")
-                                .setContentText("The joiner has started their tasks.")
+                                .setContentText("The child has started their tasks.")
                                 .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
                                 .setContentIntent(contentIntent)
                                 .setContentInfo("Info");
@@ -260,7 +261,7 @@ public class IrisActivity extends AppCompatActivity {
                                 .setSmallIcon(R.drawable.ic_stat_name)
                                 .setTicker("TL Ticker")
                                 .setContentTitle("Notice")
-                                .setContentText("The joiner has stopped doing their tasks.")
+                                .setContentText("The child has stopped doing their tasks.")
                                 .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
                                 .setContentIntent(contentIntent)
                                 .setContentInfo("Info");
@@ -331,7 +332,7 @@ public class IrisActivity extends AppCompatActivity {
                                 .setSmallIcon(R.drawable.ic_stat_name)
                                 .setTicker("TL Ticker")
                                 .setContentTitle("Notice")
-                                .setContentText("The joiner has disconnected.")
+                                .setContentText("The child has disconnected from their app.")
                                 .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
                                 .setContentIntent(contentIntent)
                                 .setContentInfo("Info");
@@ -464,6 +465,9 @@ public class IrisActivity extends AppCompatActivity {
                                 if ((dataSnapshot.getValue()).equals("disconnected")) {
                                     SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("owner").removeEventListener(SINGLETON.checkOwnerDisconnectedListener);
                                     SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
+                                    if (SINGLETON.initParentSentTaskListener) {
+                                        SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("assigned_task").removeEventListener(SINGLETON.parentSentTaskListener);
+                                    }
                                     SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).removeValue();
                                     SINGLETON.resetLocalJoinerValues();
 
@@ -560,10 +564,49 @@ public class IrisActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("owner").removeEventListener(SINGLETON.checkOwnerDisconnectedListener);
+                if (SINGLETON.initParentSentTaskListener) {
+                    SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("assigned_task").removeEventListener(SINGLETON.parentSentTaskListener);
+                }
                 SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
                 SINGLETON.disconnectJoinerFromRoom();
                 SINGLETON.resetLocalJoinerValues();
                 slideContentIn(R.layout.activity_iris);
+            }
+        });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+    private boolean quickAddTask(EditText inputView) {
+        String taskText = inputView.getText().toString();
+        if (!taskText.isEmpty()) {
+            inputView.setText("");
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("assigned_task").setValue(taskText);
+            return true;
+        }
+        else {
+            Toast.makeText(this, "Cannot create empty task!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
+    public void assignTask(View view) {
+        //send to database...
+        final EditText mEditText = new EditText(this);
+        final AlertDialog alertDialog = new AlertDialog.Builder(IrisActivity.this).create();
+        alertDialog.setTitle("Assign a new task");
+        alertDialog.setView(mEditText, 50, 0, 50, 0);
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Add", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(quickAddTask(mEditText)) {
+                    dialogInterface.dismiss();
+                }
             }
         });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {

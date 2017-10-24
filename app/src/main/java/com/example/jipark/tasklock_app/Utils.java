@@ -8,6 +8,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.example.jipark.tasklock_app.iris.IrisActivity;
+import com.example.jipark.tasklock_app.lock.LockAdapter;
 import com.example.jipark.tasklock_app.task.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -64,6 +65,8 @@ public class Utils {
     //for joiners
     public ValueEventListener checkRoomExistsBeforeJoinListener;
     public ValueEventListener checkOwnerDisconnectedListener;
+    public ValueEventListener parentSentTaskListener;
+    public boolean initParentSentTaskListener = false;
 
     public int currentLayoutNum = 0;
     public boolean first = true;

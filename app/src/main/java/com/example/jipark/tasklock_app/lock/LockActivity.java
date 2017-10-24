@@ -1,11 +1,16 @@
 package com.example.jipark.tasklock_app.lock;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +25,11 @@ import android.widget.Toast;
 import com.example.jipark.tasklock_app.R;
 import com.example.jipark.tasklock_app.Utils;
 import com.example.jipark.tasklock_app.iris.ClosingService;
+import com.example.jipark.tasklock_app.iris.IrisActivity;
 import com.example.jipark.tasklock_app.task.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -50,6 +59,42 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
         if (SINGLETON.isJoiner() && SINGLETON.isPaired()) {
             //status: active
             SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("active").setValue(true);
+
+            SINGLETON.initParentSentTaskListener = true;
+            SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("assigned_task").addValueEventListener(SINGLETON.parentSentTaskListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(!dataSnapshot.getValue().equals("none")) {
+                        SINGLETON.getTaskList().add(new Task((String)dataSnapshot.getValue(), false));
+                        mAdapter.notifyItemInserted(SINGLETON.getTaskList().size() - 1);
+                        SINGLETON.saveTasks(LockActivity.this);
+                        SINGLETON.sendTasksToDatabase();
+
+                        Intent intent = new Intent(getApplicationContext(), LockActivity.class);
+                        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext());
+
+                        b.setAutoCancel(true)
+                                .setDefaults(Notification.DEFAULT_ALL)
+                                .setWhen(System.currentTimeMillis())
+                                .setSmallIcon(R.drawable.ic_stat_name)
+                                .setTicker("TL Ticker")
+                                .setContentTitle("Notice")
+                                .setContentText("The Monitor has assigned a new task.")
+                                .setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND)
+                                .setContentIntent(contentIntent)
+                                .setContentInfo("Info");
+
+                        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.notify(1, b.build());
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 
@@ -71,6 +116,9 @@ public class LockActivity extends AppCompatActivity implements LockAdapter.LockA
 
             if (SINGLETON.isPaired() && SINGLETON.isJoiner()) {
                 SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("owner").removeEventListener(SINGLETON.checkOwnerDisconnectedListener);
+                if (SINGLETON.initParentSentTaskListener) {
+                    SINGLETON.getRoomsReference().child(SINGLETON.getMasterRoomKey()).child("assigned_task").removeEventListener(SINGLETON.parentSentTaskListener);
+                }
                 SINGLETON.getRoomsReference().removeEventListener(SINGLETON.checkRoomExistsBeforeJoinListener);
 //                SINGLETON.disconnectJoinerFromRoom();
                 SINGLETON.resetLocalJoinerValues();

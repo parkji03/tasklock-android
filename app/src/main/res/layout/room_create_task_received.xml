@@ -39,7 +39,17 @@
         android:layout_marginBottom="10dp"
         android:layout_gravity="center_horizontal"
         android:layout_width="match_parent"
-        android:layout_height="120dp">
+        android:layout_height="170dp">
+
+        <Button
+            android:layout_gravity="center|bottom"
+            android:layout_width="240dp"
+            android:layout_marginBottom="10dp"
+            android:layout_height="wrap_content"
+            android:background="@color/mainBlue"
+            android:text="@string/button_send_task"
+            android:textColor="@color/white"
+            android:onClick="assignTask"/>
 
         <Button
             android:layout_gravity="center|bottom"
