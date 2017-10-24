@@ -271,6 +271,7 @@ public class Utils {
         this.sentTasks = false;
         this.masterRoomKey = "";
         this.receivedTasks = false;
+        this.initParentSentTaskListener = false;
     }
 
     public void resetLocalOwnerValues() {
